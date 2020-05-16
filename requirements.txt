@@ -1,0 +1,5 @@
+quokka~=0.0.0
+Flask~=1.1.2
+PyYAML~=5.3.1
+napalm~=3.0.0
+setuptools~=46.1.3

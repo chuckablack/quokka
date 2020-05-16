@@ -8,5 +8,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////tmp/test.db"
 db = SQLAlchemy(app)
 
 import quokka.views
+import quokka.models
 
 
+db.create_all()

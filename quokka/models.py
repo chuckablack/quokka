@@ -9,11 +9,33 @@ class Device(db.Model):
     ip_address = db.Column(db.Text, unique=True, nullable=False)
     vendor = db.Column(db.Text)
     os = db.Column(db.Text)
+    ssh_hostname = db.Column(db.Text)
+    ssh_port = db.Column(db.Integer)
     ssh_username = db.Column(db.Text)
     ssh_password = db.Column(db.Text)
 
     def __repr__(self):
         return '<Device %r>' % self.name
+
+
+def get_device(device_id=None, device_name=None):
+
+    if device_id and device_name:
+        return "failed", "Must provide either device_id or device_name, but not both"
+
+    if device_id:
+        search = {"id": device_id}
+    elif device_name:
+        search = {"name": device_name}
+    else:
+        return "failed", "Must provide either device_id or device_name"
+
+    device_obj = Device.query.filter_by(**search).one_or_none()
+    if not device_obj:
+        return "failed", "Could not find device in DB"
+
+    # return "success", dict(device_obj)
+    return "success", device_obj.__dict__
 
 
 def get_devices():
@@ -42,7 +64,7 @@ def import_inventory(filename=None, filetype=None):
         return None
 
     Device.query.delete()
-    with open(filename, "r") as import_file:
+    with open("quokka/data/" + filename, "r") as import_file:
 
         if filetype.lower() == "json":
             inventory = json.loads(import_file.read())
@@ -52,6 +74,7 @@ def import_inventory(filename=None, filetype=None):
             return None
 
     set_devices(inventory)
+    return {"inventory": inventory}
 
 
 def export_inventory(filename=None, filetype=None):
