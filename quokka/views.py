@@ -12,7 +12,7 @@ def inventory():
     from_file = request.args.get("import_from")
 
     if request.method == "GET":
-        return "GET inventory"
+        return {"inventory": get_devices()}
 
     elif request.method == "POST":
 

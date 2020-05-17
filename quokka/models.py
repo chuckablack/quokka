@@ -3,6 +3,22 @@ import yaml
 from quokka import db
 
 
+def get_model_as_dict(model_obj):
+
+    model_dict = dict()
+    for k, v in model_obj.__dict__.items():
+
+        if k.startswith("_"):
+            continue
+
+        if isinstance(v, list) or isinstance(v, dict):
+            get_model_as_dict(v)
+        else:
+            model_dict[k] = v
+
+    return model_dict
+
+
 class Device(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text, unique=True, nullable=False)
@@ -40,11 +56,11 @@ def get_device(device_id=None, device_name=None):
 
 def get_devices():
 
-    devices_obj = Device.query.all()
+    device_objs = Device.query.all()
 
     devices = list()
-    for device_obj in devices_obj:
-        devices.append(dict(device_obj))
+    for device_obj in device_objs:
+        devices.append(get_model_as_dict(device_obj))
 
     return devices
 
@@ -100,5 +116,3 @@ def get_status():
 
 def get_versions():
     return
-
-
