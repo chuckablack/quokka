@@ -1,5 +1,5 @@
 import napalm
-from quokka.models import get_device
+from quokka.models.apis import get_device
 
 
 def get_device_info(device_name, requested_info):

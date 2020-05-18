@@ -2,7 +2,7 @@ from quokka import app
 from flask import request
 
 from quokka.controller import get_device_info
-from quokka.models import get_devices, get_status, get_versions, import_inventory, export_inventory
+from quokka.models.apis import get_devices, import_inventory, export_inventory
 
 
 @app.route("/inventory", methods=["GET", "POST"])
@@ -47,5 +47,3 @@ def device():
             return result_info, 200
         else:
             return result_info, 406
-
-
