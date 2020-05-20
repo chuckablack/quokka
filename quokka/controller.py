@@ -33,6 +33,8 @@ def get_device_info(device_name, requested_info):
         return "success", {"mac": napalm_device.get_mac_address_table()}
     elif requested_info == "config":
         return "success", {"config": napalm_device.get_config()}
+    elif requested_info == "counters":
+        return "success", {"counters": napalm_device.get_interfaces_counters()}
 
     else:
         return "failure", "Unknown requested info"

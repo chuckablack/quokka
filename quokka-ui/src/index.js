@@ -1,9 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import Arp from './components/Arp'
+import Facts from './components/Facts'
+import Counters from './components/Counters'
 import './index.css';
 
 ReactDOM.render(
-  <App />,
+    <div>
+        <Facts />
+        <Arp />
+        <Counters />
+    </div>,
   document.getElementById('root')
 );
