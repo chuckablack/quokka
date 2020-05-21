@@ -11,6 +11,7 @@ class Counters extends Component {
     }
 
     fetchCounters() {
+        this.setState({isLoading: true});
         fetch('http://127.0.0.1:5000/device?device=devnet-csr-always-on-sandbox&info=counters')
             .then(res => res.json())
             .then((data) => {
@@ -20,7 +21,6 @@ class Counters extends Component {
             .catch(console.log)
     }
     componentDidMount() {
-        this.setState({isLoading: true});
         this.fetchCounters()
     }
 
@@ -29,7 +29,12 @@ class Counters extends Component {
         const {counters, isLoading} = this.state;
 
         if (isLoading) {
-            return <p>Loading ...</p>;
+            return (
+                <div className="container">
+                    <h1>Interface Counters Table</h1>
+                    <p>Loading ...</p>
+                </div>
+            );
         }
         return (
             <div className="container">

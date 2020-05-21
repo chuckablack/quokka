@@ -11,6 +11,7 @@ class Facts extends Component {
     }
 
     fetchFacts() {
+        this.setState({isLoading: true});
         fetch('http://127.0.0.1:5000/device?device=devnet-csr-always-on-sandbox&info=facts')
             .then(res => res.json())
             .then((data) => {
@@ -21,7 +22,6 @@ class Facts extends Component {
     }
 
     componentDidMount() {
-        this.setState({isLoading: true});
         this.fetchFacts()
     }
 
@@ -30,7 +30,12 @@ class Facts extends Component {
         const {facts, isLoading} = this.state;
 
         if (isLoading) {
-            return <p>Loading ...</p>;
+            return (
+                <div className="container">
+                    <h1>Facts Table</h1>
+                    <p>Loading ...</p>
+                </div>
+            );
         }
         return (
             <div className="container">

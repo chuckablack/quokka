@@ -10,9 +10,8 @@ class Arp extends Component {
         };
     }
 
-    componentDidMount() {
+    fetchArp() {
         this.setState({isLoading: true});
-
         fetch('http://127.0.0.1:5000/device?device=devnet-csr-always-on-sandbox&info=arp')
             .then(res => res.json())
             .then((data) => {
@@ -22,16 +21,26 @@ class Arp extends Component {
             .catch(console.log)
     }
 
+    componentDidMount() {
+        this.fetchArp()
+    }
+
     render() {
 
         const {arp_table, isLoading} = this.state;
 
         if (isLoading) {
-            return <p>Loading ...</p>;
+            return (
+                <div className="container">
+                    <h1>ARP Table</h1>
+                    <p>Loading ...</p>
+                </div>
+            );
         }
         return (
             <div className="container">
                 <h1>ARP Table</h1>
+                <button onClick={() => {this.fetchArp()}}>Refresh Arp Information</button>
                 <table width="80%">
                     <tbody>
                     <tr>
