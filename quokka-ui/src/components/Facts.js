@@ -10,9 +10,7 @@ class Facts extends Component {
         };
     }
 
-    componentDidMount() {
-        this.setState({isLoading: true});
-
+    fetchFacts() {
         fetch('http://127.0.0.1:5000/device?device=devnet-csr-always-on-sandbox&info=facts')
             .then(res => res.json())
             .then((data) => {
@@ -20,6 +18,11 @@ class Facts extends Component {
                 console.log(this.state.facts)
             })
             .catch(console.log)
+    }
+
+    componentDidMount() {
+        this.setState({isLoading: true});
+        this.fetchFacts()
     }
 
     render() {
@@ -32,6 +35,7 @@ class Facts extends Component {
         return (
             <div className="container">
                 <h1>Facts</h1>
+                <button onClick={() => {this.fetchFacts()}}>Refresh Facts</button>
                 <table width="80%" cellPadding='2'>
                     <tbody>
                     <tr>
