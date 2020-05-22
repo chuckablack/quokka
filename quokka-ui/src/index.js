@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Arp from './components/Arp'
+import ArpClass from './components/ArpClass'
 import Facts from './components/Facts'
 import Counters from './components/Counters'
 import './index.css';
@@ -8,7 +8,7 @@ import './index.css';
 ReactDOM.render(
     <div>
         <Facts />
-        <Arp />
+        <ArpClass />
         <Counters />
     </div>,
   document.getElementById('root')

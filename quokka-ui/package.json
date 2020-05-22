@@ -7,7 +7,9 @@
     "react-dom": "^16.13.1",
     "react-scripts": "0.9.5"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@material-ui/core": "^4.9.14"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

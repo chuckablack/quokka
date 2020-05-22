@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import Button from '@material-ui/core/Button'
 
 class Counters extends Component {
 
@@ -39,7 +40,7 @@ class Counters extends Component {
         return (
             <div className="container">
                 <h1>Interface Counters Table</h1>
-                <button onClick={() => {this.fetchCounters()}}>Refresh Counters</button>
+                <Button variant="contained" onClick={() => {this.fetchCounters()}}>Refresh Counters</Button>
                 <table width="80%">
                     <tbody>
                     <tr>

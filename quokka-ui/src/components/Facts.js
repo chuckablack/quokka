@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import Button from '@material-ui/core/Button'
 
 class Facts extends Component {
 
@@ -40,12 +41,12 @@ class Facts extends Component {
         return (
             <div className="container">
                 <h1>Facts</h1>
-                <button onClick={() => {this.fetchFacts()}}>Refresh Facts</button>
+                <Button variant="contained" onClick={() => {this.fetchFacts()}}>Refresh Facts</Button>
                 <table width="80%" cellPadding='2'>
                     <tbody>
                     <tr>
                         <td style={{ fontWeight:'bold' }}>FQDN</td>
-                        <td>key={facts.facts.fqdn}</td>
+                        <td>{facts.facts.fqdn}</td>
                     </tr>
                     <tr>
                         <td style={{ fontWeight:'bold' }}>Hostname</td>

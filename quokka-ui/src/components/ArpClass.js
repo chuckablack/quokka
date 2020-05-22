@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import Button from '@material-ui/core/Button'
 
 class Arp extends Component {
 
@@ -40,7 +41,7 @@ class Arp extends Component {
         return (
             <div className="container">
                 <h1>ARP Table</h1>
-                <button onClick={() => {this.fetchArp()}}>Refresh Arp Information</button>
+                <Button variant="contained" onClick={() => {this.fetchArp()}}>Refresh Arp</Button>
                 <table width="80%">
                     <tbody>
                     <tr>
