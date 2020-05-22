@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import Button from '@material-ui/core/Button'
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 class Arp extends Component {
 
@@ -35,6 +36,7 @@ class Arp extends Component {
                 <div className="container">
                     <h1>ARP Table</h1>
                     <p>Loading ...</p>
+                    <CircularProgress />
                 </div>
             );
         }

@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import Button from '@material-ui/core/Button'
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 class Counters extends Component {
 
@@ -34,6 +35,7 @@ class Counters extends Component {
                 <div className="container">
                     <h1>Interface Counters Table</h1>
                     <p>Loading ...</p>
+                    <CircularProgress />
                 </div>
             );
         }
