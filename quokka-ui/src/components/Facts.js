@@ -1,6 +1,12 @@
 import React, {Component} from 'react';
 import Button from '@material-ui/core/Button'
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Grid from "@material-ui/core/Grid";
+import Table from '@material-ui/core/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableRow from '@material-ui/core/TableRow'
+import TableCell from '@material-ui/core/TableCell'
+import 'typeface-roboto'
 
 class Facts extends Component {
 
@@ -35,43 +41,45 @@ class Facts extends Component {
             return (
                 <div className="container">
                     <h1>Facts Table</h1>
-                    <p>Loading ...</p>
+                    <p>Loading {this.props.deviceName}...</p>
                     <CircularProgress />
                 </div>
             );
         }
         return (
             <div className="container">
-                <h1>Facts</h1>
-                <Button variant="contained" onClick={() => {this.fetchFacts()}}>Refresh Facts</Button>
-                <table width="80%" cellPadding='2'>
-                    <tbody>
-                    <tr>
-                        <td style={{ fontWeight:'bold' }}>FQDN</td>
-                        <td>{facts.facts.fqdn}</td>
-                    </tr>
-                    <tr>
-                        <td style={{ fontWeight:'bold' }}>Hostname</td>
-                        <td>{facts.facts.hostname}</td>
-                    </tr>
-                    <tr>
-                        <td style={{ fontWeight:'bold' }}>Model</td>
-                        <td>{facts.facts.model}</td>
-                    </tr>
-                    <tr>
-                        <td style={{ fontWeight:'bold' }}>OS Version</td>
-                        <td>{facts.facts.os_version}</td>
-                    </tr>
-                    <tr>
-                        <td style={{ fontWeight:'bold' }}>Serial</td>
-                        <td>{facts.facts.serial_number}</td>
-                    </tr>
-                    <tr>
-                        <td style={{ fontWeight:'bold' }}>Vendor</td>
-                        <td>{facts.facts.vendor}</td>
-                    </tr>
-                    </tbody>
-                </table>
+                <Grid container direction="row" justify="space-between" alignItems="center">
+                    <h1>Facts</h1>
+                    <Button variant="contained" onClick={() => {this.fetchFacts()}}>Refresh Facts</Button>
+                </Grid>
+                <Table>
+                    <TableBody>
+                    <TableRow>
+                        <TableCell style={{ fontWeight:'bold' }}>FQDN</TableCell>
+                        <TableCell>{facts.facts.fqdn}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                        <TableCell style={{ fontWeight:'bold' }}>Hostname</TableCell>
+                        <TableCell>{facts.facts.hostname}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                        <TableCell style={{ fontWeight:'bold' }}>Model</TableCell>
+                        <TableCell>{facts.facts.model}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                        <TableCell style={{ fontWeight:'bold' }}>OS Version</TableCell>
+                        <TableCell>{facts.facts.os_version}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                        <TableCell style={{ fontWeight:'bold' }}>Serial</TableCell>
+                        <TableCell>{facts.facts.serial_number}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                        <TableCell style={{ fontWeight:'bold' }}>Vendor</TableCell>
+                        <TableCell>{facts.facts.vendor}</TableCell>
+                    </TableRow>
+                    </TableBody>
+                </Table>
             </div>
         );
     }

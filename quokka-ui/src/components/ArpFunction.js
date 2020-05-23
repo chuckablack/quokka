@@ -34,7 +34,7 @@ function ArpFunction(props) {
         <div className="container">
             <h1>ARP Table</h1>
             <Button onClick={() => {fetchArp()}}>Refresh Arp Information</Button>
-            <table width="80%">
+            <table>
                 <tbody>
                 <tr>
                     <th>IP Address</th>
