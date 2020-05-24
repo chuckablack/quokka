@@ -2,6 +2,7 @@ import json
 import yaml
 from quokka import db
 from quokka.models.Device import Device
+from quokka.models.DeviceFacts import DeviceFacts
 from quokka.models.util import get_model_as_dict
 
 
@@ -36,11 +37,51 @@ def get_devices():
     return devices
 
 
+def get_facts(device_name):
+
+    facts_obj = DeviceFacts.query.filter_by(**{"device_name": device_name}).one_or_none()
+    if not facts_obj:
+        return "failed", "Could not find device facts in DB"
+
+    return "success", get_model_as_dict(facts_obj)
+
+
 def set_devices(inventory):
 
     for device in inventory:
         device_obj = Device(**device)
         db.session.add(device_obj)
+
+    db.session.commit()
+
+
+def set_facts(device, facts):
+
+    device_facts = dict()
+    device_facts["fqdn"] = facts["facts"]["fqdn"]
+    device_facts["uptime"] = facts["facts"]["uptime"]
+    device_facts["vendor"] = facts["facts"]["vendor"]
+    device_facts["os_version"] = facts["facts"]["os_version"]
+    device_facts["serial_number"] = facts["facts"]["serial_number"]
+    device_facts["model"] = facts["facts"]["model"]
+    device_facts["hostname"] = facts["facts"]["hostname"]
+
+    device_facts["device_name"] = device["name"]
+    device_facts_obj = DeviceFacts(**device_facts)
+
+    facts_obj = DeviceFacts.query.filter_by(**{"device_name": device_facts["device_name"]}).one_or_none()
+    if not facts_obj:
+        db.session.add(device_facts_obj)
+
+    else:
+        facts_obj.fqdn = device_facts["fqdn"]
+        facts_obj.uptime = device_facts["uptime"]
+        facts_obj.vendor = device_facts["vendor"]
+        facts_obj.os_version = device_facts["os_version"]
+        facts_obj.serial_number = device_facts["serial_number"]
+        facts_obj.model = device_facts["model"]
+        facts_obj.hostname = device_facts["hostname"]
+        facts_obj.device_name = device_facts["device_name"]
 
     db.session.commit()
 

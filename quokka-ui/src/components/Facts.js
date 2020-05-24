@@ -52,7 +52,7 @@ class Facts extends Component {
                     <h1>Facts</h1>
                     <Button variant="contained" onClick={() => {this.fetchFacts()}}>Refresh Facts</Button>
                 </Grid>
-                <Table>
+                <Table size="small">
                     <TableBody>
                     <TableRow>
                         <TableCell style={{ fontWeight:'bold' }}>FQDN</TableCell>

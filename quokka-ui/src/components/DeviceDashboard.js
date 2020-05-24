@@ -29,13 +29,13 @@ class DeviceDashboard extends Component {
 
         return (
             <Grid container direction="column">
-                <DeviceAppBar deviceName={"devnet-csr-always-on-sandbox"}/>
+                <DeviceAppBar deviceName="devnet-csr-always-on-sandbox"/>
                 <Grid container direction="row">
                     <Grid item>
                         <Grid container direction="column">
-                            <Button variant="contained" onClick={() => {this.setState({show:"facts"})}}>Facts</Button>
-                            <Button variant="contained" onClick={() => {this.setState({show:"arp"})}}>Arp</Button>
-                            <Button variant="contained" onClick={() => {this.setState({show:"counters"})}}>Counters</Button>
+                            <Button color="primary" onClick={() => {this.setState({show:"facts"})}}>Facts</Button>
+                            <Button color="primary" onClick={() => {this.setState({show:"arp"})}}>Arp</Button>
+                            <Button color="primary" onClick={() => {this.setState({show:"counters"})}}>Counters</Button>
                         </Grid>
                     </Grid>
                     <Grid item>

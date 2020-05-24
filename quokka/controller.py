@@ -1,5 +1,5 @@
 import napalm
-from quokka.models.apis import get_device
+from quokka.models.apis import get_device, get_facts
 
 
 def get_device_info(device_name, requested_info):
@@ -9,6 +9,13 @@ def get_device_info(device_name, requested_info):
         return result, info
 
     device = info
+
+    # Try to get the info from the DB first
+    if requested_info == "facts":
+        result, facts = get_facts(device["name"])
+        if result == "success":
+            return "success", {"facts": facts}
+
     if device["os"] == "ios" or device["os"] == "iosxe":
         driver = napalm.get_network_driver("ios")
     else:
