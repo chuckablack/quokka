@@ -38,11 +38,19 @@ def device():
 
         device_name = request.args.get("device")
         requested_info = request.args.get("info")
+        live = request.args.get("live")
 
         if not device_name or not requested_info:
             return "Must provide device and info", 400
+        if not live:
+            get_live_info = False
+        else:
+            if live.lower() not in {"true", "false"}:
+                return "Value of 'live', if specified, must be 'true' or 'false'"
+            else:
+                get_live_info = bool(live)
 
-        status, result_info = get_device_info(device_name, requested_info)
+        status, result_info = get_device_info(device_name, requested_info, get_live_info)
         if status == "success":
             return result_info, 200
         else:

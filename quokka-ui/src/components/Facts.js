@@ -7,6 +7,7 @@ import TableBody from '@material-ui/core/TableBody'
 import TableRow from '@material-ui/core/TableRow'
 import TableCell from '@material-ui/core/TableCell'
 import 'typeface-roboto'
+import Backdrop from "@material-ui/core/Backdrop";
 
 class Facts extends Component {
 
@@ -18,9 +19,13 @@ class Facts extends Component {
         };
     }
 
-    fetchFacts() {
+    fetchFacts(getLive) {
         this.setState({isLoading: true});
-        fetch('http://127.0.0.1:5000/device?device=devnet-csr-always-on-sandbox&info=facts')
+        let requestUrl = 'http://127.0.0.1:5000/device?device=devnet-csr-always-on-sandbox&info=facts'
+        if (getLive) {
+            requestUrl += '&live=true'
+        }
+        fetch(requestUrl)
             .then(res => res.json())
             .then((data) => {
                 this.setState({facts: data, isLoading: false})
@@ -30,27 +35,23 @@ class Facts extends Component {
     }
 
     componentDidMount() {
-        this.fetchFacts()
+        this.fetchFacts(false)
     }
 
     render() {
 
         const {facts, isLoading} = this.state;
 
-        if (isLoading) {
-            return (
-                <div className="container">
-                    <h1>Facts Table</h1>
-                    <p>Loading {this.props.deviceName}...</p>
-                    <CircularProgress />
-                </div>
-            );
-        }
         return (
             <div className="container">
                 <Grid container direction="row" justify="space-between" alignItems="center">
                     <h1>Facts</h1>
-                    <Button variant="contained" onClick={() => {this.fetchFacts()}}>Refresh Facts</Button>
+                    {isLoading ?
+                        <Backdrop open={true}>
+                            <CircularProgress color="inherit" />
+                        </Backdrop>
+                        : ""}
+                    <Button variant="contained" onClick={() => {this.fetchFacts(true)}}>Refresh Facts Live</Button>
                 </Grid>
                 <Table size="small">
                     <TableBody>
@@ -78,6 +79,10 @@ class Facts extends Component {
                         <TableCell style={{ fontWeight:'bold' }}>Vendor</TableCell>
                         <TableCell>{facts.facts.vendor}</TableCell>
                     </TableRow>
+                        <TableRow>
+                            <TableCell style={{ fontWeight:'bold' }}>Uptime</TableCell>
+                            <TableCell>{facts.facts.uptime}</TableCell>
+                        </TableRow>
                     </TableBody>
                 </Table>
             </div>

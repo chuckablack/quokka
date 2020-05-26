@@ -1,8 +1,8 @@
 import napalm
-from quokka.models.apis import get_device, get_facts
+from quokka.models.apis import get_device, get_facts, set_facts
 
 
-def get_device_info(device_name, requested_info):
+def get_device_info(device_name, requested_info, get_live_info=False):
 
     result, info = get_device(device_name=device_name)
     if result == "failed":
@@ -11,7 +11,7 @@ def get_device_info(device_name, requested_info):
     device = info
 
     # Try to get the info from the DB first
-    if requested_info == "facts":
+    if requested_info == "facts" and not get_live_info:
         result, facts = get_facts(device["name"])
         if result == "success":
             return "success", {"facts": facts}
@@ -31,6 +31,8 @@ def get_device_info(device_name, requested_info):
     napalm_device.open()
 
     if requested_info == "facts":
+        facts = napalm_device.get_facts()
+        set_facts(device, {"facts": facts})
         return "success", {"facts": napalm_device.get_facts()}
     elif requested_info == "interfaces":
         return "success", {"interfaces": napalm_device.get_interfaces()}

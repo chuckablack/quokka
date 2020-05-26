@@ -8,6 +8,7 @@ import TableRow from '@material-ui/core/TableRow'
 import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import 'typeface-roboto'
+import Backdrop from "@material-ui/core/Backdrop";
 
 class Arp extends Component {
 
@@ -38,19 +39,15 @@ class Arp extends Component {
 
         const {arp_table, isLoading} = this.state;
 
-        if (isLoading) {
-            return (
-                <div className="container">
-                    <h1>ARP Table</h1>
-                    <p>Loading ...</p>
-                    <CircularProgress/>
-                </div>
-            );
-        }
         return (
             <div className="container">
                 <Grid container direction="row" justify="space-between" alignItems="center">
                     <h1>ARP Table</h1>
+                    {isLoading ?
+                        <Backdrop open={true}>
+                            <CircularProgress color="inherit" />
+                        </Backdrop>
+                        : ""}
                     <Button variant="contained" onClick={() => {
                         this.fetchArp()
                     }}>Refresh Arp</Button>
