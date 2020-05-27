@@ -8,6 +8,7 @@ import Facts from "./Facts";
 import Arp from "./Arp";
 import Counters from "./Counters";
 import Config from "./Config";
+import Inventory from "./Inventory";
 
 class DeviceDashboard extends Component {
 
@@ -24,16 +25,16 @@ class DeviceDashboard extends Component {
 
         let info;
         if (this.state.show==="facts") {
-            info = <Facts deviceName={deviceName}/>;
+            info = <Facts deviceName={deviceName} />;
         } else if (this.state.show==="arp") {
-            info = <Arp deviceName={deviceName}/>;
+            info = <Arp deviceName={deviceName} />;
         } else if (this.state.show==="counters") {
-            info = <Counters deviceName={deviceName}/>;
+            info = <Counters deviceName={deviceName} />;
         } else if (this.state.show==="config") {
-            info = <Config deviceName={deviceName}/>;
+            info = <Config deviceName={deviceName} />;
+        } else if (this.state.show==="inventory") {
+            info = <Inventory />;
         }
-
-
 
         return (
             <Grid container direction="column">
@@ -45,6 +46,7 @@ class DeviceDashboard extends Component {
                             <Button color="primary" onClick={() => {this.setState({show:"arp"})}}>Arp</Button>
                             <Button color="primary" onClick={() => {this.setState({show:"counters"})}}>Counters</Button>
                             <Button color="primary" onClick={() => {this.setState({show:"config"})}}>Config</Button>
+                            <Button color="primary" onClick={() => {this.setState({show:"inventory"})}}>Inventory</Button>
                         </Grid>
                     </Grid>
                     <Grid item style={{ width: '90%' }}>
