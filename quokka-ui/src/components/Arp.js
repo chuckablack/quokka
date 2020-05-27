@@ -15,14 +15,17 @@ class Arp extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            deviceName: props.deviceName,
             arp_table: {arp: []},
             isLoading: false,
         };
     }
 
     fetchArp() {
+        const deviceName = this.state.deviceName
+
         this.setState({isLoading: true});
-        fetch('http://127.0.0.1:5000/device?device=devnet-csr-always-on-sandbox&info=arp')
+        fetch('http://127.0.0.1:5000/device?device=' + deviceName + '&info=arp')
             .then(res => res.json())
             .then((data) => {
                 this.setState({arp_table: data, isLoading: false})

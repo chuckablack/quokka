@@ -14,14 +14,17 @@ class Facts extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            deviceName: props.deviceName,
             facts: {facts: {}},
             isLoading: false,
         };
     }
 
     fetchFacts(getLive) {
+        const deviceName = this.state.deviceName
+
         this.setState({isLoading: true});
-        let requestUrl = 'http://127.0.0.1:5000/device?device=devnet-csr-always-on-sandbox&info=facts'
+        let requestUrl = 'http://127.0.0.1:5000/device?device=' + deviceName + '&info=facts'
         if (getLive) {
             requestUrl += '&live=true'
         }

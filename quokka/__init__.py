@@ -18,7 +18,7 @@ db.create_all()
 from quokka.models.apis import import_inventory, get_devices, set_facts
 from quokka.controller import get_device_info
 
-import_inventory(filename="inventory.json", filetype="json")
+import_inventory(filename="inventory.yaml", filetype="yaml")
 
 # Pre-populate the DB with device facts
 inventory = get_devices()

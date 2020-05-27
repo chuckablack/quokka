@@ -14,28 +14,30 @@ class DeviceDashboard extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            deviceName: this.props.deviceName,
             show: "facts",
         };
     }
 
     render() {
+        const deviceName = this.state.deviceName
 
         let info;
         if (this.state.show==="facts") {
-            info = <Facts deviceName={"devnet-csr-always-on-sandbox"}/>;
+            info = <Facts deviceName={deviceName}/>;
         } else if (this.state.show==="arp") {
-            info = <Arp />;
+            info = <Arp deviceName={deviceName}/>;
         } else if (this.state.show==="counters") {
-            info = <Counters />;
+            info = <Counters deviceName={deviceName}/>;
         } else if (this.state.show==="config") {
-            info = <Config />;
+            info = <Config deviceName={deviceName}/>;
         }
 
 
 
         return (
             <Grid container direction="column">
-                <DeviceAppBar deviceName="devnet-csr-always-on-sandbox"/>
+                <DeviceAppBar deviceName={deviceName}/>
                 <Grid container direction="row">
                     <Grid item style={{ width: '10%' }}>
                         <Grid container direction="column">

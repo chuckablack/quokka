@@ -15,6 +15,7 @@ class Config extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            deviceName: props.deviceName,
             config: "",
             isLoading: false,
         };
@@ -22,7 +23,8 @@ class Config extends Component {
 
     fetchConfig() {
         this.setState({isLoading: true});
-        fetch('http://127.0.0.1:5000/device?device=devnet-csr-always-on-sandbox&info=config')
+        const deviceName = this.state.deviceName
+        fetch('http://127.0.0.1:5000/device?device=' + deviceName + '&info=config')
             .then(res => res.json())
             .then((data) => {
                 this.setState({

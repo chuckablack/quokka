@@ -18,6 +18,8 @@ def get_device_info(device_name, requested_info, get_live_info=False):
 
     if device["os"] == "ios" or device["os"] == "iosxe":
         driver = napalm.get_network_driver("ios")
+    elif device["os"] == "nxos":
+        driver = napalm.get_network_driver("nxos_ssh")
     else:
         return "failed", "Unsupported OS"
 
