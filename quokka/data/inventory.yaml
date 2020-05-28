@@ -1,0 +1,19 @@
+- id: 1
+  ip_address: 10.0.0.1
+  name: devnet-csr-always-on-sandbox
+  os: iosxe
+  ssh_hostname: ios-xe-mgmt-latest.cisco.com
+  ssh_password: C1sco12345
+  ssh_port: 8181
+  ssh_username: developer
+  vendor: cisco
+
+- id: 2
+  ip_address: 10.0.0.2
+  name: devnet-nexus-always-on-sandbox
+  os: nxos
+  ssh_hostname: sbx-nxos-mgmt.cisco.com
+  ssh_password: Admin_1234!
+  ssh_port: 8181
+  ssh_username: admin
+  vendor: cisco
