@@ -42,7 +42,7 @@ class Counters extends Component {
         // if (isLoading) {
         //     return (
         //         <div style={{textAlign: "center"}} className="container">
-        //             <h1>Counters Table</h1>
+        //             <h2>Counters Table</h2>
         //             <p>Loading ...</p>
         //             <CircularProgress/>
         //         </div>
@@ -52,7 +52,7 @@ class Counters extends Component {
         return (
             <div className="container">
                 <Grid container direction="row" justify="space-between" alignItems="center">
-                    <h1>Counters Table</h1>
+                    <h2>Counters Table</h2>
                     {isLoading ?
                         <Backdrop open={true}>
                             <CircularProgress color="inherit" />

@@ -32,7 +32,7 @@ class Interfaces extends Component {
         return (
             <div className="container">
                 <div className="col-xs-12">
-                    <h1>Interfaces Table</h1>
+                    <h2>Interfaces Table</h2>
                     <table width="80%">
                         <tbody>
                         <tr>

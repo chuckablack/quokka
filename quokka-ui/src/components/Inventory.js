@@ -17,11 +17,11 @@ class Inventory extends Component {
         this.state = {
             devices: {inventory: []},
             isLoading: false,
+            deviceDashboard: props.deviceDashboard,
         };
     }
 
     fetchInventory(getLive) {
-        const deviceName = this.state.deviceName
 
         this.setState({isLoading: true});
         let requestUrl = 'http://127.0.0.1:5000/inventory'
@@ -38,6 +38,10 @@ class Inventory extends Component {
         this.fetchInventory(false)
     }
 
+    renderDashboardFacts(deviceName) {
+        this.state.deviceDashboard.setState({deviceName: deviceName, show: "facts"})
+    }
+
     render() {
 
         const {devices, isLoading} = this.state;
@@ -45,7 +49,7 @@ class Inventory extends Component {
         return (
             <div className="container">
                 <Grid container direction="row" justify="space-between" alignItems="center">
-                    <h1>Device Inventory Table</h1>
+                    <h2>Device Inventory Table</h2>
                     {isLoading ?
                         <Backdrop open={true}>
                             <CircularProgress color="inherit" />
@@ -67,7 +71,7 @@ class Inventory extends Component {
                     <TableBody>
                         {devices.inventory.map((device) => (
                             <TableRow key={device.name}>
-                                <TableCell>{device.name}</TableCell>
+                                <TableCell onClick={() => this.renderDashboardFacts(device.name)} style={{cursor: 'pointer'}}>{device.name}</TableCell>
                                 <TableCell>{device.vendor}</TableCell>
                                 <TableCell>{device.os}</TableCell>
                                 <TableCell>{device.ip_address}</TableCell>

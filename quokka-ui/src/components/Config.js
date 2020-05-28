@@ -2,11 +2,6 @@ import React, {Component} from 'react';
 import Button from '@material-ui/core/Button'
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Grid from "@material-ui/core/Grid";
-import Table from '@material-ui/core/Table'
-import TableBody from '@material-ui/core/TableBody'
-import TableRow from '@material-ui/core/TableRow'
-import TableCell from '@material-ui/core/TableCell'
-import TableHead from '@material-ui/core/TableHead'
 import 'typeface-roboto'
 import Backdrop from "@material-ui/core/Backdrop";
 
@@ -48,7 +43,7 @@ class Config extends Component {
         return (
             <div className="container">
                 <Grid container direction="row" justify="space-between" alignItems="center">
-                    <h1>Configuration</h1>
+                    <h2>Configuration</h2>
                     {isLoading ?
                         <Backdrop open={true}>
                             <CircularProgress color="inherit"/>

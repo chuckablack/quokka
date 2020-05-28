@@ -30,7 +30,7 @@ export default function DeviceAppBar(props) {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" className={classes.title}>
-                        Device: {props.deviceName}
+                        Device Dashboard: {props.deviceName}
                     </Typography>
                     <Button color="inherit">Login</Button>
                 </Toolbar>

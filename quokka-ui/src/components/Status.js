@@ -32,7 +32,7 @@ class Status extends Component {
         return (
             <div className="container">
                 <div className="col-xs-12">
-                    <h1>Status Table</h1>
+                    <h2>Status Table</h2>
                     <table width="80%">
                         <tbody>
                         <tr>

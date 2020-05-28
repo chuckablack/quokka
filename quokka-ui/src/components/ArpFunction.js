@@ -25,14 +25,14 @@ function ArpFunction(props) {
     if (isLoading) {
         return (
             <div className="container">
-                <h1>ARP Table</h1>
+                <h2>ARP Table</h2>
                 <p>Loading ...</p>
             </div>
         );
     }
     return (
         <div className="container">
-            <h1>ARP Table</h1>
+            <h2>ARP Table</h2>
             <Button onClick={() => {fetchArp()}}>Refresh Arp Information</Button>
             <table>
                 <tbody>

@@ -16,7 +16,7 @@ class DeviceDashboard extends Component {
         super(props);
         this.state = {
             deviceName: this.props.deviceName,
-            show: "facts",
+            show: "inventory",
         };
     }
 
@@ -33,7 +33,7 @@ class DeviceDashboard extends Component {
         } else if (this.state.show==="config") {
             info = <Config deviceName={deviceName} />;
         } else if (this.state.show==="inventory") {
-            info = <Inventory />;
+            info = <Inventory deviceDashboard={this}/>;
         }
 
         return (
@@ -42,11 +42,11 @@ class DeviceDashboard extends Component {
                 <Grid container direction="row">
                     <Grid item style={{ width: '10%' }}>
                         <Grid container direction="column">
+                            <Button color="primary" onClick={() => {this.setState({show:"inventory"})}}>Inventory</Button>
                             <Button color="primary" onClick={() => {this.setState({show:"facts"})}}>Facts</Button>
                             <Button color="primary" onClick={() => {this.setState({show:"arp"})}}>Arp</Button>
                             <Button color="primary" onClick={() => {this.setState({show:"counters"})}}>Counters</Button>
                             <Button color="primary" onClick={() => {this.setState({show:"config"})}}>Config</Button>
-                            <Button color="primary" onClick={() => {this.setState({show:"inventory"})}}>Inventory</Button>
                         </Grid>
                     </Grid>
                     <Grid item style={{ width: '90%' }}>

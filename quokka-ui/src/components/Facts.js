@@ -48,7 +48,7 @@ class Facts extends Component {
         return (
             <div className="container">
                 <Grid container direction="row" justify="space-between" alignItems="center">
-                    <h1>Facts</h1>
+                    <h2>Facts</h2>
                     {isLoading ?
                         <Backdrop open={true}>
                             <CircularProgress color="inherit" />

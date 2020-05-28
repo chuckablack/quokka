@@ -97,7 +97,7 @@ def import_inventory(filename=None, filetype=None):
         if filetype.lower() == "json":
             inventory = json.loads(import_file.read())
         elif filetype.lower() == "yaml":
-            inventory = yaml.load(import_file.read())
+            inventory = yaml.safe_load(import_file.read())
         else:
             return None
 

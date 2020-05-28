@@ -45,7 +45,7 @@ class Arp extends Component {
         return (
             <div className="container">
                 <Grid container direction="row" justify="space-between" alignItems="center">
-                    <h1>ARP Table</h1>
+                    <h2>ARP Table</h2>
                     {isLoading ?
                         <Backdrop open={true}>
                             <CircularProgress color="inherit" />
