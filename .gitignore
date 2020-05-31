@@ -1,2 +1,4 @@
 .idea/
 quokka/__pycache__/
+quokka/controller/__pycache__/
+quokka/models/__pycache__/
