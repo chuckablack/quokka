@@ -3,7 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/../netmon/.idea/netmon.iml" filepath="$PROJECT_DIR$/../netmon/.idea/netmon.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../quokka/.idea/quokka.iml" filepath="$PROJECT_DIR$/../quokka/.idea/quokka.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../python-netmon/.idea/python-netmon.iml" filepath="$PROJECT_DIR$/../python-netmon/.idea/python-netmon.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/quokka.iml" filepath="$PROJECT_DIR$/.idea/quokka.iml" />
     </modules>
   </component>
 </project>

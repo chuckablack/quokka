@@ -32,7 +32,8 @@ export default function DeviceAppBar(props) {
                     <Typography variant="h6" className={classes.title}>
                         Device Dashboard: {props.deviceName}
                     </Typography>
-                    <Button color="inherit">Login</Button>
+                    <Button color="inherit">Inventory</Button>
+                    <Button color="inherit">Status</Button>
                 </Toolbar>
             </AppBar>
         </div>

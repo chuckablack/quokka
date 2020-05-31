@@ -4,6 +4,7 @@ from quokka import db
 from quokka.models.Device import Device
 from quokka.models.DeviceFacts import DeviceFacts
 from quokka.models.util import get_model_as_dict
+from quokka.models.Host import Host
 
 
 def get_device(device_id=None, device_name=None):
@@ -120,6 +121,34 @@ def export_inventory(filename=None, filetype=None):
             output_file.write(yaml.dump(inventory))
         else:
             return None
+
+
+def get_host(hostname):
+
+    search = {"name": hostname}
+    host_obj = Host.query.filter_by(**search).one_or_none()
+    if not host_obj:
+        return None
+    else:
+        return get_model_as_dict(host_obj)
+
+
+def set_host(host):
+
+    search = {"name": host["name"]}
+    host_obj = Host.query.filter_by(**search).one_or_none()
+    if not host_obj:
+        host_obj = Host(**host)
+        db.session.add(host_obj)
+    else:
+        host_obj.name = host["name"]
+        host_obj.ip_address = host["ip_address"]
+        host_obj.mac_address = host["mac_address"]
+        host_obj.availability = host["availability"]
+        host_obj.response_time = host["response_time"]
+        host_obj.last_heard = host["last_heard"]
+
+    db.session.commit()
 
 
 def get_status():

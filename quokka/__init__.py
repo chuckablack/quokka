@@ -16,7 +16,7 @@ import quokka.models
 db.create_all()
 
 from quokka.models.apis import import_inventory, get_devices, set_facts
-from quokka.controller import get_device_info
+from quokka.controller.device_info import get_device_info
 
 import_inventory(filename="inventory.yaml", filetype="yaml")
 
@@ -26,4 +26,7 @@ for device in inventory:
     result, facts = get_device_info(device_name=device["name"], requested_info="facts")
     if result == "success":
         set_facts(device, facts)
+
+from quokka.controller.ping_discovery import discover
+discover()
 
