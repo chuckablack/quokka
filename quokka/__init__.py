@@ -1,5 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
+import threading
+
 
 app = Flask(__name__)
 CORS(app)
@@ -27,6 +29,11 @@ for device in inventory:
     if result == "success":
         set_facts(device, facts)
 
-from quokka.controller.ping_discovery import discover
-discover()
+from quokka.controller.discovery import discover
+discovery_thread = threading.Thread(target=discover, args=(3600,))
+discovery_thread.start()
+
+from quokka.controller.monitor import monitor
+monitor_thread = threading.Thread(target=monitor, args=(300,))
+monitor_thread.start()
 

@@ -133,6 +133,17 @@ def get_host(hostname):
         return get_model_as_dict(host_obj)
 
 
+def get_all_hosts():
+
+    host_objs = Host.query.all()
+
+    hosts = list()
+    for host_obj in host_objs:
+        host = get_model_as_dict(host_obj)
+        hosts.append(host)
+
+    return hosts
+
 def set_host(host):
 
     search = {"name": host["name"]}
