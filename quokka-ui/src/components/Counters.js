@@ -39,16 +39,6 @@ class Counters extends Component {
 
         const {counters, isLoading} = this.state;
 
-        // if (isLoading) {
-        //     return (
-        //         <div style={{textAlign: "center"}} className="container">
-        //             <h2>Counters Table</h2>
-        //             <p>Loading ...</p>
-        //             <CircularProgress/>
-        //         </div>
-        //     );
-        // }
-
         return (
             <div className="container">
                 <Grid container direction="row" justify="space-between" alignItems="center">
@@ -67,20 +57,20 @@ class Counters extends Component {
                         <TableHead>
                             <TableRow>
                                 <TableCell>Interface</TableCell>
-                                <TableCell>Rx Octets</TableCell>
-                                <TableCell>Tx Octets</TableCell>
-                                <TableCell>Rx Packets</TableCell>
-                                <TableCell>Tx Packets</TableCell>
+                                <TableCell align="right">Rx Octets</TableCell>
+                                <TableCell align="right">Tx Octets</TableCell>
+                                <TableCell align="right">Rx Packets</TableCell>
+                                <TableCell align="right">Tx Packets</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {Object.keys(counters.counters).map((key, index) => (
                                 <TableRow key={index}>
                                     <TableCell>{key}</TableCell>
-                                    <TableCell>{counters.counters[key].rx_octets}</TableCell>
-                                    <TableCell>{counters.counters[key].tx_octets}</TableCell>
-                                    <TableCell>{counters.counters[key].rx_unicast_packets}</TableCell>
-                                    <TableCell>{counters.counters[key].tx_unicast_packets}</TableCell>
+                                    <TableCell align="right">{counters.counters[key].rx_octets}</TableCell>
+                                    <TableCell align="right">{counters.counters[key].tx_octets}</TableCell>
+                                    <TableCell align="right">{counters.counters[key].rx_unicast_packets}</TableCell>
+                                    <TableCell align="right">{counters.counters[key].tx_unicast_packets}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>

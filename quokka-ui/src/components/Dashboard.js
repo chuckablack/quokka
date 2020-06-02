@@ -25,17 +25,17 @@ class Dashboard extends Component {
         const deviceName = this.state.deviceName
 
         let info;
-        if (this.state.show==="facts") {
-            info = <Facts deviceName={deviceName} />;
-        } else if (this.state.show==="arp") {
-            info = <Arp deviceName={deviceName} />;
-        } else if (this.state.show==="counters") {
-            info = <Counters deviceName={deviceName} />;
-        } else if (this.state.show==="config") {
-            info = <Config deviceName={deviceName} />;
-        } else if (this.state.show==="devices") {
+        if (this.state.show === "facts") {
+            info = <Facts deviceName={deviceName}/>;
+        } else if (this.state.show === "arp") {
+            info = <Arp deviceName={deviceName}/>;
+        } else if (this.state.show === "counters") {
+            info = <Counters deviceName={deviceName}/>;
+        } else if (this.state.show === "config") {
+            info = <Config deviceName={deviceName}/>;
+        } else if (this.state.show === "devices") {
             info = <Devices dashboard={this}/>;
-        } else if (this.state.show==="hosts") {
+        } else if (this.state.show === "hosts") {
             info = <Hosts dashboard={this}/>;
         }
 
@@ -43,20 +43,34 @@ class Dashboard extends Component {
         return (
             <Grid container direction="column">
                 <DashboardAppBar dashboard={this}/>
-                <Grid container direction="row">
-                    <Grid item style={{ width: '10%' }}>
-                        <Grid container direction="column">
-                            {/*<Button color="primary" onClick={() => {this.setState({show:"devices"})}}>Devices</Button>*/}
-                            {/*<Button color="primary" onClick={() => {this.setState({show:"hosts"})}}>Hosts</Button>*/}
-                            <Button color="primary" onClick={() => {this.setState({show:"facts"})}}>Facts</Button>
-                            <Button color="primary" onClick={() => {this.setState({show:"arp"})}}>Arp</Button>
-                            <Button color="primary" onClick={() => {this.setState({show:"counters"})}}>Counters</Button>
-                            <Button color="primary" onClick={() => {this.setState({show:"config"})}}>Config</Button>
+                <Grid container direction="row" style={{paddingTop:"10px"}}>
+                    {(this.state.show !== "devices" && this.state.show !== "hosts") &&
+                        <Grid item style={{width: '10%'}}>
+                            <Grid container direction="column">
+                                <Button color="primary" onClick={() => {
+                                    this.setState({show: "facts"})
+                                }}>Facts</Button>
+                                <Button color="primary" onClick={() => {
+                                    this.setState({show: "arp"})
+                                }}>Arp</Button>
+                                <Button color="primary" onClick={() => {
+                                    this.setState({show: "counters"})
+                                }}>Counters</Button>
+                                <Button color="primary" onClick={() => {
+                                    this.setState({show: "config"})
+                                }}>Config</Button>
+                            </Grid>
                         </Grid>
-                    </Grid>
-                    <Grid item style={{ width: '90%' }}>
-                        {info}
-                    </Grid>
+                    }
+                    {(this.state.show !== "devices" && this.state.show !== "hosts") ?
+                        <Grid item style={{width: '90%'}}>
+                            {info}
+                        </Grid>
+                        :
+                        <Grid item style={{width: '100%'}}>
+                            {info}
+                        </Grid>
+                    }
                 </Grid>
             </Grid>
         );

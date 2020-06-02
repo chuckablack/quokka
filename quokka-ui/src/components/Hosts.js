@@ -24,7 +24,7 @@ class Hosts extends Component {
         };
     }
 
-    fetchHosts(getLive) {
+    fetchHosts() {
 
         this.setState({isLoading: true});
         let requestUrl = 'http://127.0.0.1:5000/hosts'
@@ -38,7 +38,12 @@ class Hosts extends Component {
     }
 
     componentDidMount() {
-        this.fetchHosts(false)
+        this.fetchHosts()
+        this.interval = setInterval(() => this.fetchHosts(), 300000)
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.interval)
     }
 
     render() {
