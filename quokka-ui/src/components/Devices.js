@@ -10,21 +10,21 @@ import 'typeface-roboto'
 import Backdrop from "@material-ui/core/Backdrop";
 import TableHead from "@material-ui/core/TableHead";
 
-class Inventory extends Component {
+class Devices extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            devices: {inventory: []},
+            devices: {devices: []},
             isLoading: false,
-            deviceDashboard: props.deviceDashboard,
+            dashboard: props.dashboard,
         };
     }
 
-    fetchInventory(getLive) {
+    fetchDevices(getLive) {
 
         this.setState({isLoading: true});
-        let requestUrl = 'http://127.0.0.1:5000/inventory'
+        let requestUrl = 'http://127.0.0.1:5000/devices'
         fetch(requestUrl)
             .then(res => res.json())
             .then((data) => {
@@ -35,11 +35,11 @@ class Inventory extends Component {
     }
 
     componentDidMount() {
-        this.fetchInventory(false)
+        this.fetchDevices(false)
     }
 
     renderDashboardFacts(deviceName) {
-        this.state.deviceDashboard.setState({deviceName: deviceName, show: "facts"})
+        this.state.dashboard.setState({deviceName: deviceName, show: "facts"})
     }
 
     render() {
@@ -49,15 +49,15 @@ class Inventory extends Component {
         return (
             <div className="container">
                 <Grid container direction="row" justify="space-between" alignItems="center">
-                    <h2>Device Inventory Table</h2>
+                    <h2>Devices Table</h2>
                     {isLoading ?
                         <Backdrop open={true}>
-                            <CircularProgress color="inherit" />
+                            <CircularProgress color="inherit"/>
                         </Backdrop>
                         : ""}
                     <Button variant="contained" onClick={() => {
-                        this.fetchInventory()
-                    }}>Refresh Inventory</Button>
+                        this.fetchDevices()
+                    }}>Refresh Devices</Button>
                 </Grid>
                 <Table size="small">
                     <TableHead>
@@ -69,9 +69,10 @@ class Inventory extends Component {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {devices.inventory.map((device) => (
+                        {devices.devices.map((device) => (
                             <TableRow key={device.name}>
-                                <TableCell onClick={() => this.renderDashboardFacts(device.name)} style={{cursor: 'pointer'}}>{device.name}</TableCell>
+                                <TableCell onClick={() => this.renderDashboardFacts(device.name)}
+                                           style={{cursor: 'pointer'}}>{device.name}</TableCell>
                                 <TableCell>{device.vendor}</TableCell>
                                 <TableCell>{device.os}</TableCell>
                                 <TableCell>{device.ip_address}</TableCell>
@@ -84,4 +85,4 @@ class Inventory extends Component {
     }
 }
 
-export default Inventory;
+export default Devices;

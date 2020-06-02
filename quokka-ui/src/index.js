@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import DeviceDashboard from './components/DeviceDashboard'
+import Dashboard from './components/Dashboard'
 
 ReactDOM.render(
-    <DeviceDashboard deviceName='' />,
+    <Dashboard deviceName='' />,
   document.getElementById('root')
 );

@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -19,8 +19,17 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function DeviceAppBar(props) {
+function renderHosts(dashboard) {
+    dashboard.setState({show: "hosts"})
+}
+function renderDevices(dashboard) {
+    dashboard.setState({show: "devices"})
+}
+
+
+export default function DashboardAppBar(props) {
     const classes = useStyles();
+    const dashboard = props.dashboard;
 
     return (
         <div className={classes.root}>
@@ -30,9 +39,10 @@ export default function DeviceAppBar(props) {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" className={classes.title}>
-                        Device Dashboard: {props.deviceName}
+                        Dashboard: {props.deviceName}
                     </Typography>
-                    <Button color="inherit">Inventory</Button>
+                    <Button color="inherit" onClick={() => renderHosts(dashboard)}>Hosts</Button>
+                    <Button color="inherit" onClick={() => renderDevices(dashboard)}>Devices</Button>
                     <Button color="inherit">Status</Button>
                 </Toolbar>
             </AppBar>

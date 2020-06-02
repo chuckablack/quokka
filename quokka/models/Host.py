@@ -8,7 +8,7 @@ class Host(db.Model):
     ip_address = db.Column(db.Text, unique=True, nullable=False)
     mac_address = db.Column(db.Text,)
     availability = db.Column(db.Boolean)
-    response_time = db.Column(db.Float)
+    response_time = db.Column(db.Integer)
     last_heard = db.Column(db.Text)
 
     def __repr__(self):

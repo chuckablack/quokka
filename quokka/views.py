@@ -2,30 +2,30 @@ from quokka import app
 from flask import request
 
 from quokka.controller.device_info import get_device_info
-from quokka.models.apis import get_devices, import_inventory, export_inventory
+from quokka.models.apis import get_devices, import_devices, export_devices, get_all_hosts
 
 
-@app.route("/inventory", methods=["GET", "POST"])
-def inventory():
+@app.route("/devices", methods=["GET", "POST"])
+def devices():
 
     to_file = request.args.get("export_to")
     from_file = request.args.get("import_from")
 
     if request.method == "GET":
-        return {"inventory": get_devices()}
+        return {"devices": get_devices()}
 
     elif request.method == "POST":
 
         if to_file and from_file:
-            return "Specify only 'export_to' or 'import_from' on POST inventory, not both."
+            return "Specify only 'export_to' or 'import_from' on POST devices, not both."
 
         if to_file:
-            return export_inventory(to_file, 'json')
+            return export_devices(to_file, 'json')
         elif from_file:
-            return import_inventory(from_file, 'json')
+            return import_devices(from_file, 'json')
 
         else:
-            return "Must specify either 'export_to' or 'import_from' on POST inventory"
+            return "Must specify either 'export_to' or 'import_from' on POST devices"
 
     else:
         return "Invalid request method"
@@ -55,3 +55,13 @@ def device():
             return result_info, 200
         else:
             return result_info, 406
+
+
+@app.route("/hosts", methods=["GET"])
+def hosts():
+
+    if request.method == "GET":
+        return {"hosts": get_all_hosts()}
+
+    else:
+        return "Invalid request method"

@@ -47,9 +47,9 @@ def get_facts(device_name):
     return "success", get_model_as_dict(facts_obj)
 
 
-def set_devices(inventory):
+def set_devices(devices):
 
-    for device in inventory:
+    for device in devices:
         device_obj = Device(**device)
         db.session.add(device_obj)
 
@@ -87,7 +87,7 @@ def set_facts(device, facts):
     db.session.commit()
 
 
-def import_inventory(filename=None, filetype=None):
+def import_devices(filename=None, filetype=None):
 
     if not filename or not filetype:
         return None
@@ -96,29 +96,29 @@ def import_inventory(filename=None, filetype=None):
     with open("quokka/data/" + filename, "r") as import_file:
 
         if filetype.lower() == "json":
-            inventory = json.loads(import_file.read())
+            devices = json.loads(import_file.read())
         elif filetype.lower() == "yaml":
-            inventory = yaml.safe_load(import_file.read())
+            devices = yaml.safe_load(import_file.read())
         else:
             return None
 
-    set_devices(inventory)
-    return {"inventory": inventory}
+    set_devices(devices)
+    return {"devices": devices}
 
 
-def export_inventory(filename=None, filetype=None):
+def export_devices(filename=None, filetype=None):
 
     if not filename or not filetype:
         return None
 
-    inventory = get_devices()
+    devices = get_devices()
 
     with open(filename, "w") as output_file:
 
         if filetype.lower() == "json":
-            output_file.write(json.dumps(inventory))
+            output_file.write(json.dumps(devices))
         elif filetype.lower() == "yaml":
-            output_file.write(yaml.dump(inventory))
+            output_file.write(yaml.dump(devices))
         else:
             return None
 
@@ -144,6 +144,7 @@ def get_all_hosts():
 
     return hosts
 
+
 def set_host(host):
 
     search = {"name": host["name"]}
@@ -156,15 +157,16 @@ def set_host(host):
         host_obj.ip_address = host["ip_address"]
         host_obj.mac_address = host["mac_address"]
         host_obj.availability = host["availability"]
-        host_obj.response_time = host["response_time"]
+        if "response_time" in host:
+            host_obj.response_time = host["response_time"]
         host_obj.last_heard = host["last_heard"]
 
     db.session.commit()
 
 
 def get_status():
-    return
+    return None
 
 
 def get_versions():
-    return
+    return None

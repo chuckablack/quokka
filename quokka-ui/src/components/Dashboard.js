@@ -3,20 +3,21 @@ import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import 'typeface-roboto'
 
-import DeviceAppBar from "./DeviceAppBar";
+import DashboardAppBar from "./DashboardAppBar";
 import Facts from "./Facts";
 import Arp from "./Arp";
 import Counters from "./Counters";
 import Config from "./Config";
-import Inventory from "./Inventory";
+import Devices from "./Devices";
+import Hosts from "./Hosts";
 
-class DeviceDashboard extends Component {
+class Dashboard extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
             deviceName: this.props.deviceName,
-            show: "inventory",
+            show: "devices",
         };
     }
 
@@ -32,17 +33,21 @@ class DeviceDashboard extends Component {
             info = <Counters deviceName={deviceName} />;
         } else if (this.state.show==="config") {
             info = <Config deviceName={deviceName} />;
-        } else if (this.state.show==="inventory") {
-            info = <Inventory deviceDashboard={this}/>;
+        } else if (this.state.show==="devices") {
+            info = <Devices dashboard={this}/>;
+        } else if (this.state.show==="hosts") {
+            info = <Hosts dashboard={this}/>;
         }
+
 
         return (
             <Grid container direction="column">
-                <DeviceAppBar deviceName={deviceName}/>
+                <DashboardAppBar dashboard={this}/>
                 <Grid container direction="row">
                     <Grid item style={{ width: '10%' }}>
                         <Grid container direction="column">
-                            <Button color="primary" onClick={() => {this.setState({show:"inventory"})}}>Inventory</Button>
+                            {/*<Button color="primary" onClick={() => {this.setState({show:"devices"})}}>Devices</Button>*/}
+                            {/*<Button color="primary" onClick={() => {this.setState({show:"hosts"})}}>Hosts</Button>*/}
                             <Button color="primary" onClick={() => {this.setState({show:"facts"})}}>Facts</Button>
                             <Button color="primary" onClick={() => {this.setState({show:"arp"})}}>Arp</Button>
                             <Button color="primary" onClick={() => {this.setState({show:"counters"})}}>Counters</Button>
@@ -58,4 +63,4 @@ class DeviceDashboard extends Component {
     }
 }
 
-export default DeviceDashboard;
+export default Dashboard;
