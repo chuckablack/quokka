@@ -15,7 +15,7 @@ def get_response_time(ping_output):
         return int(m.group(1))
 
 
-class MonitorTask:
+class ServiceMonitorTask:
 
     def __init__(self):
         self.terminate = False

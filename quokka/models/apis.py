@@ -27,7 +27,7 @@ def get_device(device_id=None, device_name=None):
     return "success", device_obj.__dict__
 
 
-def get_devices():
+def get_all_devices():
 
     device_objs = Device.query.all()
 
@@ -52,6 +52,28 @@ def set_devices(devices):
     for device in devices:
         device_obj = Device(**device)
         db.session.add(device_obj)
+
+    db.session.commit()
+
+
+def set_device(device):
+
+    search = {"name": device["name"]}
+    device_obj = Device.query.filter_by(**search).one_or_none()
+    if not device_obj:
+        device_obj = Host(**device)
+        db.session.add(device_obj)
+    else:
+        if "ip_address" in device and device["ip_address"]:
+            device_obj.ip_address = device["ip_address"]
+        if "mac_address" in device and device["mac_address"]:
+            device_obj.mac_address = device["mac_address"]
+        if "availability" in device and device["availability"]:
+            device_obj.availability = device["availability"]
+        if "response_time" in device and device["response_time"]:
+            device_obj.response_time = device["response_time"]
+        if "last_heard" in device and device["last_heard"]:
+            device_obj.last_heard = device["last_heard"]
 
     db.session.commit()
 
@@ -111,7 +133,7 @@ def export_devices(filename=None, filetype=None):
     if not filename or not filetype:
         return None
 
-    devices = get_devices()
+    devices = get_all_devices()
 
     with open(filename, "w") as output_file:
 
@@ -153,13 +175,16 @@ def set_host(host):
         host_obj = Host(**host)
         db.session.add(host_obj)
     else:
-        host_obj.name = host["name"]
-        host_obj.ip_address = host["ip_address"]
-        host_obj.mac_address = host["mac_address"]
-        host_obj.availability = host["availability"]
+        if "ip_address" in host:
+            host_obj.ip_address = host["ip_address"]
+        if "mac_address" in host:
+            host_obj.mac_address = host["mac_address"]
+        if "availability" in host:
+            host_obj.availability = host["availability"]
         if "response_time" in host:
             host_obj.response_time = host["response_time"]
-        host_obj.last_heard = host["last_heard"]
+        if "last_heard" in host:
+            host_obj.last_heard = host["last_heard"]
 
     db.session.commit()
 

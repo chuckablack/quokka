@@ -17,13 +17,13 @@ import quokka.models
 
 db.create_all()
 
-from quokka.models.apis import import_devices, get_devices, set_facts
+from quokka.models.apis import import_devices, get_all_devices, set_facts
 from quokka.controller.device_info import get_device_info
 
 import_devices(filename="devices.yaml", filetype="yaml")
 
 # Pre-populate the DB with device facts
-devices = get_devices()
+devices = get_all_devices()
 for device in devices:
     result, facts = get_device_info(device_name=device["name"], requested_info="facts")
     if result == "success":
@@ -34,20 +34,26 @@ discover_task = DiscoverTask()
 discover_thread = threading.Thread(target=discover_task.discover, args=(3600,))
 discover_thread.start()
 
-from quokka.controller.MonitorTask import MonitorTask
-monitor_task = MonitorTask()
-monitor_thread = threading.Thread(target=monitor_task.monitor, args=(60,))
-monitor_thread.start()
+from quokka.controller.HostMonitorTask import HostMonitorTask
+host_monitor_task = HostMonitorTask()
+host_monitor_thread = threading.Thread(target=host_monitor_task.monitor, args=(60,))
+host_monitor_thread.start()
+
+
+from quokka.controller.DeviceMonitorTask import DeviceMonitorTask
+device_monitor_task = DeviceMonitorTask()
+device_monitor_thread = threading.Thread(target=device_monitor_task.monitor, args=(60,))
+device_monitor_thread.start()
 
 
 def shutdown():
-    print("---> Entering shutdown sequence")
+    print("\n\n\n---> Entering shutdown sequence")
     discover_task.set_terminate()
-    monitor_task.set_terminate()
+    host_monitor_task.set_terminate()
 
     print("--- ---> Shutting down threads")
     discover_thread.join()
-    monitor_thread.join()
+    host_monitor_thread.join()
 
     print("--- ---> all threads shut down, terminating.")
 

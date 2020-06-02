@@ -2,7 +2,7 @@ from quokka import app
 from flask import request
 
 from quokka.controller.device_info import get_device_info
-from quokka.models.apis import get_devices, import_devices, export_devices, get_all_hosts
+from quokka.models.apis import get_all_devices, import_devices, export_devices, get_all_hosts
 
 
 @app.route("/devices", methods=["GET", "POST"])
@@ -12,7 +12,7 @@ def devices():
     from_file = request.args.get("import_from")
 
     if request.method == "GET":
-        return {"devices": get_devices()}
+        return {"devices": get_all_devices()}
 
     elif request.method == "POST":
 

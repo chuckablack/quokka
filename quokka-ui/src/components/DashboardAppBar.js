@@ -43,7 +43,7 @@ export default function DashboardAppBar(props) {
                     </Typography>
                     <Button color="inherit" onClick={() => renderHosts(dashboard)}>Hosts</Button>
                     <Button color="inherit" onClick={() => renderDevices(dashboard)}>Devices</Button>
-                    <Button color="inherit">Status</Button>
+                    <Button color="inherit">Services</Button>
                 </Toolbar>
             </AppBar>
         </div>

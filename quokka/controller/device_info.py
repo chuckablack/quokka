@@ -36,6 +36,8 @@ def get_device_info(device_name, requested_info, get_live_info=False):
         facts = napalm_device.get_facts()
         set_facts(device, {"facts": facts})
         return "success", {"facts": napalm_device.get_facts()}
+    elif requested_info == "environment":
+        return "success", {"environment": napalm_device.get_environment()}
     elif requested_info == "interfaces":
         return "success", {"interfaces": napalm_device.get_interfaces()}
     elif requested_info == "arp":
