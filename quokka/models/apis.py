@@ -1,11 +1,15 @@
 import json
 import yaml
+
 from quokka import db
+
 from quokka.models.Device import Device
 from quokka.models.DeviceFacts import DeviceFacts
 from quokka.models.Compliance import Compliance
-from quokka.models.util import get_model_as_dict
 from quokka.models.Host import Host
+from quokka.models.Service import Service
+
+from quokka.models.util import get_model_as_dict
 
 
 def get_device(device_id=None, device_name=None):
@@ -169,6 +173,24 @@ def import_compliance(filename=None):
     for standard in standards:
         standard_obj = Compliance(**standard)
         db.session.add(standard_obj)
+
+    db.session.commit()
+    return
+
+
+def import_services(filename=None):
+
+    Service.query.delete()
+
+    try:
+        with open("quokka/data/" + filename, "r") as import_file:
+            services = yaml.safe_load(import_file.read())
+    except FileNotFoundError as e:
+        print(f"Could not import services file: {repr(e)}")
+
+    for service in services:
+        service_obj = Compliance(**service)
+        db.session.add(service_obj)
 
     db.session.commit()
     return

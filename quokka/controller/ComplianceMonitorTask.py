@@ -29,6 +29,13 @@ def check_os_compliance(device):
 
 def check_config_compliance(device):
 
+    standard = Compliance.query.filter_by(**{"vendor": device["vendor"], "os": device["os"]}).one_or_none()
+    if standard is None:
+        print(f"!!! Error retrieving compliance record for this device {device['name']}")
+        return False
+
+    standard_filename = "quokka/data/" + standard.standard_config_file
+
     result, config = get_device_info(device["name"], "config")
     if result != "success" or "config" not in config or "running" not in config["config"]:
         print(f"!!! Error retrieving running config for this device {device['name']}")
@@ -37,7 +44,7 @@ def check_config_compliance(device):
     config_running = config["config"]["running"]
 
     try:
-        standard_filename = "quokka/data/" + device["vendor"] + "." + device["os"] + "." + "standard.config"
+        # standard_filename = "quokka/data/" + device["vendor"] + "." + device["os"] + "." + "standard.config"
         with open(standard_filename, "r") as config_out:
             config_standard = config_out.read()
     except (FileExistsError, FileNotFoundError) as e:
