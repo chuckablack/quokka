@@ -13,7 +13,7 @@ import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import {green, red} from "@material-ui/core/colors";
 import CancelIcon from "@material-ui/icons/Cancel";
 
-class Devices extends Component {
+class Compliance extends Component {
 
     constructor(props) {
         super(props);
@@ -24,7 +24,7 @@ class Devices extends Component {
         };
     }
 
-    fetchDevices() {
+    fetchCompliance() {
 
         this.setState({isLoading: true});
         let requestUrl = 'http://127.0.0.1:5000/devices'
@@ -38,8 +38,8 @@ class Devices extends Component {
     }
 
     componentDidMount() {
-        this.fetchDevices(false)
-        this.interval = setInterval(() => this.fetchDevices(), 300000)
+        this.fetchCompliance(false)
+        this.interval = setInterval(() => this.fetchCompliance(), 300000)
     }
 
     componentWillUnmount() {
@@ -57,15 +57,15 @@ class Devices extends Component {
         return (
             <div className="container">
                 <Grid container direction="row" justify="space-between" alignItems="center">
-                    <h2>Devices Table</h2>
+                    <h2>Compliance Table</h2>
                     {isLoading ?
                         <Backdrop open={true}>
                             <CircularProgress color="inherit"/>
                         </Backdrop>
                         : ""}
                     <Button variant="contained" onClick={() => {
-                        this.fetchDevices()
-                    }}>Refresh Devices</Button>
+                        this.fetchCompliance()
+                    }}>Refresh Compliance</Button>
                 </Grid>
                 <Table size="small">
                     <TableHead>
@@ -74,10 +74,9 @@ class Devices extends Component {
                             <TableCell>Name</TableCell>
                             <TableCell>Vendor : OS</TableCell>
                             <TableCell>IP Address</TableCell>
-                            <TableCell>CPU%</TableCell>
-                            <TableCell>Memory%</TableCell>
-                            <TableCell align="center">Rsp Time (sec)</TableCell>
-                            <TableCell>Last Heard</TableCell>
+                            <TableCell align="center">OS</TableCell>
+                            <TableCell align="center">Config</TableCell>
+                            <TableCell>Last Checked</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -91,10 +90,15 @@ class Devices extends Component {
                                            style={{cursor: 'pointer'}}>{device.name}</TableCell>
                                 <TableCell>{device.vendor} : {device.os}</TableCell>
                                 <TableCell>{device.ip_address}</TableCell>
-                                <TableCell align="center">{device.cpu}</TableCell>
-                                <TableCell align="center">{device.memory}</TableCell>
-                                <TableCell align="center">{device.response_time}</TableCell>
-                                <TableCell>{device.last_heard}</TableCell>
+                                <TableCell align="center">{device.os_compliance ?
+                                    <CheckCircleIcon style={{color: green[500]}}/>
+                                    : <CancelIcon  style={{color: red[500]}}/>
+                                }</TableCell>
+                                <TableCell align="center">{device.config_compliance ?
+                                    <CheckCircleIcon style={{color: green[500]}}/>
+                                    : <CancelIcon  style={{color: red[500]}}/>
+                                }</TableCell>
+                                <TableCell>{device.last_compliance_check}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
@@ -104,4 +108,4 @@ class Devices extends Component {
     }
 }
 
-export default Devices;
+export default Compliance;

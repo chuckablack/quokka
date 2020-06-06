@@ -3,6 +3,7 @@ import yaml
 from quokka import db
 from quokka.models.Device import Device
 from quokka.models.DeviceFacts import DeviceFacts
+from quokka.models.Compliance import Compliance
 from quokka.models.util import get_model_as_dict
 from quokka.models.Host import Host
 
@@ -61,7 +62,7 @@ def set_device(device):
     search = {"name": device["name"]}
     device_obj = Device.query.filter_by(**search).one_or_none()
     if not device_obj:
-        device_obj = Host(**device)
+        device_obj = Device(**device)
         db.session.add(device_obj)
     else:
         if "ip_address" in device and device["ip_address"]:
@@ -74,6 +75,16 @@ def set_device(device):
             device_obj.response_time = device["response_time"]
         if "last_heard" in device and device["last_heard"]:
             device_obj.last_heard = device["last_heard"]
+        if "cpu" in device and device["cpu"]:
+            device_obj.cpu = device["cpu"]
+        if "memory" in device and device["memory"]:
+            device_obj.memory = device["memory"]
+        if "os_compliance" in device and device["os_compliance"]:
+            device_obj.os_compliance = device["os_compliance"]
+        if "config_compliance" in device and device["config_compliance"]:
+            device_obj.config_compliance = device["config_compliance"]
+        if "last_compliance_check" in device and device["last_compliance_check"]:
+            device_obj.last_compliance_check = device["last_compliance_check"]
 
     db.session.commit()
 
@@ -143,6 +154,24 @@ def export_devices(filename=None, filetype=None):
             output_file.write(yaml.dump(devices))
         else:
             return None
+
+
+def import_compliance(filename=None):
+
+    Compliance.query.delete()
+
+    try:
+        with open("quokka/data/" + filename, "r") as import_file:
+            standards = yaml.safe_load(import_file.read())
+    except FileNotFoundError as e:
+        print(f"Could not import compliance file: {repr(e)}")
+
+    for standard in standards:
+        standard_obj = Compliance(**standard)
+        db.session.add(standard_obj)
+
+    db.session.commit()
+    return
 
 
 def get_host(hostname):

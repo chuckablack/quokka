@@ -5,6 +5,7 @@ from datetime import datetime
 from time import sleep
 
 from quokka.models.apis import set_host
+from quokka.controller.utils import get_response_time
 
 from python_arptable import get_arp_table
 from pprint import pprint
@@ -52,14 +53,14 @@ class DiscoverTask:
 
                 print(f"--- discovery pinging {str(ip_addr)}")
                 try:
-                    ping_output = subprocess.check_output(["ping", "-c1", "-n", "-i0.5", "-W2", str(ip_addr)])
+                    ping_output = subprocess.check_output(["ping", "-c3", "-n", "-i0.5", "-W2", str(ip_addr)])
                 except subprocess.CalledProcessError:
                     continue
 
                 print(f"--- found one: {str(ip_addr)}")
                 try:
                     hostname = socket.gethostbyaddr(str(ip_addr))
-                except socket.error:
+                except (socket.error, socket.gaierror) as e:
                     hostname = (str(ip_addr), [], [str(ip_addr)])
 
                 if hostname:
@@ -70,6 +71,7 @@ class DiscoverTask:
                 host["ip_address"] = str(ip_addr)
                 host["mac_address"] = mac_addresses[str(ip_addr)] if str(ip_addr) in mac_addresses else ""
                 host["availability"] = True
+                host["response_time"] = get_response_time(str(ping_output))
                 host["last_heard"] = str(datetime.now())
 
                 set_host(host)

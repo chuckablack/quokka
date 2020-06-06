@@ -14,6 +14,13 @@ class Device(db.Model):
     response_time = db.Column(db.Integer)
     last_heard = db.Column(db.Text)
 
+    cpu = db.Column(db.Integer)
+    memory = db.Column(db.Integer)
+
+    os_compliance = db.Column(db.Boolean)
+    config_compliance = db.Column(db.Boolean)
+    last_compliance_check = db.Column(db.Text)
+
     ssh_hostname = db.Column(db.Text)
     ssh_port = db.Column(db.Integer)
     ssh_username = db.Column(db.Text)

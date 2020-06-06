@@ -10,6 +10,7 @@ import Counters from "./Counters";
 import Config from "./Config";
 import Devices from "./Devices";
 import Hosts from "./Hosts";
+import Compliance from "./Compliance"
 
 class Dashboard extends Component {
 
@@ -23,20 +24,23 @@ class Dashboard extends Component {
 
     render() {
         const deviceName = this.state.deviceName
+        const show = this.state.show
 
         let info;
-        if (this.state.show === "facts") {
+        if (show === "facts") {
             info = <Facts deviceName={deviceName}/>;
-        } else if (this.state.show === "arp") {
+        } else if (show === "arp") {
             info = <Arp deviceName={deviceName}/>;
-        } else if (this.state.show === "counters") {
+        } else if (show === "counters") {
             info = <Counters deviceName={deviceName}/>;
-        } else if (this.state.show === "config") {
+        } else if (show === "config") {
             info = <Config deviceName={deviceName}/>;
-        } else if (this.state.show === "devices") {
+        } else if (show === "devices") {
             info = <Devices dashboard={this}/>;
-        } else if (this.state.show === "hosts") {
+        } else if (show === "hosts") {
             info = <Hosts dashboard={this}/>;
+        } else if (show === "compliance") {
+            info = <Compliance dashboard={this}/>;
         }
 
 
@@ -44,7 +48,7 @@ class Dashboard extends Component {
             <Grid container direction="column">
                 <DashboardAppBar dashboard={this}/>
                 <Grid container direction="row" style={{paddingTop:"10px"}}>
-                    {(this.state.show !== "devices" && this.state.show !== "hosts") &&
+                    {(show !== "devices" && show !== "hosts" && show !== "compliance") &&
                         <Grid item style={{width: '10%'}}>
                             <Grid container direction="column">
                                 <Button color="primary" onClick={() => {
@@ -62,7 +66,7 @@ class Dashboard extends Component {
                             </Grid>
                         </Grid>
                     }
-                    {(this.state.show !== "devices" && this.state.show !== "hosts") ?
+                    {(show !== "devices" && show !== "hosts" && show !== "compliance") ?
                         <Grid item style={{width: '90%'}}>
                             {info}
                         </Grid>

@@ -25,6 +25,9 @@ function renderHosts(dashboard) {
 function renderDevices(dashboard) {
     dashboard.setState({show: "devices"})
 }
+function renderCompliance(dashboard) {
+    dashboard.setState({show: "compliance"})
+}
 
 
 export default function DashboardAppBar(props) {
@@ -39,10 +42,11 @@ export default function DashboardAppBar(props) {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" className={classes.title}>
-                        Dashboard: {props.deviceName}
+                        Dashboard {props.deviceName}
                     </Typography>
                     <Button color="inherit" onClick={() => renderHosts(dashboard)}>Hosts</Button>
                     <Button color="inherit" onClick={() => renderDevices(dashboard)}>Devices</Button>
+                    <Button color="inherit" onClick={() => renderCompliance(dashboard)}>Compliance</Button>
                     <Button color="inherit">Services</Button>
                 </Toolbar>
             </AppBar>

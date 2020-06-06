@@ -66,7 +66,7 @@ class Hosts extends Component {
                 <Table size="small">
                     <TableHead>
                         <TableRow>
-                            <TableCell>Availability</TableCell>
+                            <TableCell align="center">Availability</TableCell>
                             <TableCell>Name</TableCell>
                             <TableCell>IP Address</TableCell>
                             <TableCell>MAC Address</TableCell>
@@ -77,7 +77,7 @@ class Hosts extends Component {
                     <TableBody>
                         {hosts.hosts.map((host) => (
                             <TableRow key={host.name}>
-                                <TableCell>{host.availability ?
+                                <TableCell align="center">{host.availability ?
                                     <CheckCircleIcon style={{color: green[500]}}/>
                                     : <CancelIcon  style={{color: red[500]}}/>
                                 }</TableCell>

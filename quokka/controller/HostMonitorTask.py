@@ -31,7 +31,7 @@ class HostMonitorTask:
                 print(f"--- monitor:host pinging {host['ip_address']}")
                 try:
                     ping_output = subprocess.check_output(
-                        ["ping", "-c1", "-n", "-i0.5", "-W2", str(host["ip_address"])])
+                        ["ping", "-c3", "-n", "-i0.5", "-W2", str(host["ip_address"])])
                     host["availability"] = True
                     host["response_time"] = get_response_time(str(ping_output))
                     host["last_heard"] = str(datetime.now())[:-3]
