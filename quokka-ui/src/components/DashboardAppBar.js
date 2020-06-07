@@ -28,6 +28,9 @@ function renderDevices(dashboard) {
 function renderCompliance(dashboard) {
     dashboard.setState({show: "compliance"})
 }
+function renderServices(dashboard) {
+    dashboard.setState({show: "services"})
+}
 
 
 export default function DashboardAppBar(props) {
@@ -47,7 +50,7 @@ export default function DashboardAppBar(props) {
                     <Button color="inherit" onClick={() => renderHosts(dashboard)}>Hosts</Button>
                     <Button color="inherit" onClick={() => renderDevices(dashboard)}>Devices</Button>
                     <Button color="inherit" onClick={() => renderCompliance(dashboard)}>Compliance</Button>
-                    <Button color="inherit">Services</Button>
+                    <Button color="inherit" onClick={() => renderServices(dashboard)}>Services</Button>
                 </Toolbar>
             </AppBar>
         </div>

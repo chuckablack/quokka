@@ -23,7 +23,7 @@ from quokka.controller.device_info import get_device_info
 
 import_devices(filename="devices.yaml", filetype="yaml")
 import_compliance(filename="compliance.yaml")
-# import_services(filename="services.yaml")
+import_services(filename="services.yaml")
 
 # Pre-populate the DB with device facts
 devices = get_all_devices()
@@ -52,6 +52,11 @@ compliance_monitor_task = ComplianceMonitorTask()
 compliance_monitor_thread = threading.Thread(target=compliance_monitor_task.monitor, args=(60,))
 compliance_monitor_thread.start()
 
+from quokka.controller.ServiceMonitorTask import ServiceMonitorTask
+service_monitor_task = ServiceMonitorTask()
+service_monitor_thread = threading.Thread(target=service_monitor_task.monitor, args=(600,))
+service_monitor_thread.start()
+
 
 def shutdown():
     print("\n\n\n---> Entering shutdown sequence")
@@ -59,12 +64,14 @@ def shutdown():
     host_monitor_task.set_terminate()
     device_monitor_task.set_terminate()
     compliance_monitor_task.set_terminate()
+    service_monitor_task.set_terminate()
 
     print("--- ---> Shutting down threads")
     discover_thread.join()
     host_monitor_thread.join()
     device_monitor_thread.join()
     compliance_monitor_thread.join()
+    service_monitor_thread.join()
 
     print("--- ---> all threads shut down, terminating.")
 

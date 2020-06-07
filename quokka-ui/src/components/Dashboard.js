@@ -11,6 +11,7 @@ import Config from "./Config";
 import Devices from "./Devices";
 import Hosts from "./Hosts";
 import Compliance from "./Compliance"
+import Services from "./Services"
 
 class Dashboard extends Component {
 
@@ -41,6 +42,8 @@ class Dashboard extends Component {
             info = <Hosts dashboard={this}/>;
         } else if (show === "compliance") {
             info = <Compliance dashboard={this}/>;
+        } else if (show === "services") {
+            info = <Services dashboard={this}/>;
         }
 
 
@@ -48,7 +51,7 @@ class Dashboard extends Component {
             <Grid container direction="column">
                 <DashboardAppBar dashboard={this}/>
                 <Grid container direction="row" style={{paddingTop:"10px"}}>
-                    {(show !== "devices" && show !== "hosts" && show !== "compliance") &&
+                    {(show !== "devices" && show !== "hosts" && show !== "compliance"&& show !== "services") &&
                         <Grid item style={{width: '10%'}}>
                             <Grid container direction="column">
                                 <Button color="primary" onClick={() => {
@@ -66,7 +69,7 @@ class Dashboard extends Component {
                             </Grid>
                         </Grid>
                     }
-                    {(show !== "devices" && show !== "hosts" && show !== "compliance") ?
+                    {(show !== "devices" && show !== "hosts" && show !== "compliance" && show !== "services") ?
                         <Grid item style={{width: '90%'}}>
                             {info}
                         </Grid>

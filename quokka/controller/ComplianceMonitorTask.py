@@ -15,7 +15,10 @@ def check_os_compliance(device):
         print(f"!!! Error retrieving compliance record for this device {device['name']}")
         return False
 
-    result, facts = get_device_info(device["name"], "facts", get_live_info=True)
+    try:
+        result, facts = get_device_info(device["name"], "facts", get_live_info=True)
+    except BaseException as e:
+        print(f"!!! Exception getting device info in compliance monitoring for {device['name']}")
 
     if result == "success":
         if standard.standard_version == facts["facts"]["os_version"]:

@@ -189,7 +189,7 @@ def import_services(filename=None):
         print(f"Could not import services file: {repr(e)}")
 
     for service in services:
-        service_obj = Compliance(**service)
+        service_obj = Service(**service)
         db.session.add(service_obj)
 
     db.session.commit()
@@ -236,6 +236,44 @@ def set_host(host):
             host_obj.response_time = host["response_time"]
         if "last_heard" in host:
             host_obj.last_heard = host["last_heard"]
+
+    db.session.commit()
+
+
+def get_all_services():
+
+    service_objs = Service.query.all()
+
+    services = list()
+    for service_obj in service_objs:
+        service = get_model_as_dict(service_obj)
+        services.append(service)
+
+    return services
+
+
+def set_service(service):
+
+    search = {"name": service["name"]}
+    service_obj = Service.query.filter_by(**search).one_or_none()
+    if not service_obj:
+        service_obj = Service(**service)
+        db.session.add(service_obj)
+    else:
+        if "type" in service:
+            service_obj.availability = service["type"]
+        if "target" in service:
+            service_obj.availability = service["target"]
+        if "username" in service:
+            service_obj.availability = service["username"]
+        if "password" in service:
+            service_obj.availability = service["password"]
+        if "availability" in service:
+            service_obj.availability = service["availability"]
+        if "response_time" in service:
+            service_obj.response_time = service["response_time"]
+        if "last_heard" in service:
+            service_obj.last_heard = service["last_heard"]
 
     db.session.commit()
 

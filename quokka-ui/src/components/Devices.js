@@ -76,7 +76,7 @@ class Devices extends Component {
                             <TableCell>IP Address</TableCell>
                             <TableCell>CPU%</TableCell>
                             <TableCell>Memory%</TableCell>
-                            <TableCell align="center">Rsp Time (sec)</TableCell>
+                            <TableCell align="center">Rsp Time (msec)</TableCell>
                             <TableCell>Last Heard</TableCell>
                         </TableRow>
                     </TableHead>

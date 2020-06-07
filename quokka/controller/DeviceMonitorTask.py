@@ -69,7 +69,7 @@ class DeviceMonitorTask:
                         device["ip_address"] = ip_address
 
                     device["availability"] = True
-                    device["response_time"] = int(response_time)
+                    device["response_time"] = int(response_time*1000)
                     device["last_heard"] = str(datetime.now())[:-3]
 
                     device["cpu"] = calculate_cpu(env["environment"]["cpu"])

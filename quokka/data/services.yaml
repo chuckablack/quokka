@@ -1,0 +1,36 @@
+- id: 1
+  name: HTTP google
+  type: http
+  target: http://www.google.com
+
+- id: 2
+  name: HTTP wikipedia
+  type: http
+  target: http://www.wikipedia.com
+
+- id: 3
+  name: HTTP BBC
+  type: http
+  target: http://bbc.com/news
+
+- id: 4
+  name: HTTP Tallac
+  type: http
+  target: http://www.tallac.com
+
+- id: 5
+  name: DNS b-r via google
+  type: dns
+  target: 8.8.8.8
+  data: baskinrobbins.com
+
+- id: 6
+  name: DNS b-r via OpenDNS
+  type: dns
+  target: 208.67.222.222
+  data: baskinrobbins.com
+
+- id: 7
+  name: NTP us.pool.ntp.org
+  type: ntp
+  target: us.pool.ntp.org

@@ -2,7 +2,7 @@ from quokka import app
 from flask import request
 
 from quokka.controller.device_info import get_device_info
-from quokka.models.apis import get_all_devices, import_devices, export_devices, get_all_hosts
+from quokka.models.apis import get_all_devices, import_devices, export_devices, get_all_hosts, get_all_services
 
 
 @app.route("/devices", methods=["GET", "POST"])
@@ -62,6 +62,16 @@ def hosts():
 
     if request.method == "GET":
         return {"hosts": get_all_hosts()}
+
+    else:
+        return "Invalid request method"
+
+
+@app.route("/services", methods=["GET"])
+def services():
+
+    if request.method == "GET":
+        return {"services": get_all_services()}
 
     else:
         return "Invalid request method"
