@@ -50,7 +50,7 @@ class Dashboard extends Component {
         return (
             <Grid container direction="column">
                 <DashboardAppBar dashboard={this}/>
-                <Grid container direction="row" style={{paddingTop:"10px"}}>
+                <Grid container direction="row" style={{paddingTop: "10px"}}>
                     {(show !== "devices" && show !== "hosts" && show !== "compliance"&& show !== "services") &&
                         <Grid item style={{width: '10%'}}>
                             <Grid container direction="column">
@@ -70,7 +70,7 @@ class Dashboard extends Component {
                         </Grid>
                     }
                     {(show !== "devices" && show !== "hosts" && show !== "compliance" && show !== "services") ?
-                        <Grid item style={{width: '90%'}}>
+                        <Grid item style={{width: '90%', paddingTop: "10px"}}>
                             {info}
                         </Grid>
                         :

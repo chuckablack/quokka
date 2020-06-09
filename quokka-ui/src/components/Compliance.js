@@ -12,6 +12,7 @@ import TableHead from "@material-ui/core/TableHead";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import {green, red} from "@material-ui/core/colors";
 import CancelIcon from "@material-ui/icons/Cancel";
+import MaterialTable from "material-table";
 
 class Compliance extends Component {
 
@@ -55,7 +56,11 @@ class Compliance extends Component {
         const {devices, isLoading} = this.state;
 
         return (
-            <div className="container">
+            <div className="container" style={{maxWidth: "100%"}}>
+                <link
+                    rel="stylesheet"
+                    href="https://fonts.googleapis.com/icon?family=Material+Icons"
+                />
                 <Grid container direction="row" justify="space-between" alignItems="center">
                     <h2>Compliance Table</h2>
                     {isLoading ?
@@ -67,42 +72,79 @@ class Compliance extends Component {
                         this.fetchCompliance()
                     }}>Refresh Compliance</Button>
                 </Grid>
-                <Table size="small">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell align="center">Status</TableCell>
-                            <TableCell>Name</TableCell>
-                            <TableCell>Vendor : OS</TableCell>
-                            <TableCell>IP Address</TableCell>
-                            <TableCell align="center">OS</TableCell>
-                            <TableCell align="center">Config</TableCell>
-                            <TableCell>Last Checked</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {devices.devices.map((device) => (
-                            <TableRow key={device.name}>
-                                <TableCell align="center">{device.availability ?
+                <MaterialTable
+                    title="Device OS and Config Compliance"
+                    columns={[
+                        {
+                            width: null,
+                            title: 'Status',
+                            render: rowData =>
+                                rowData.availability ?
+                                    <CheckCircleIcon style={{color: green[500]}}/>
+                                    : <CancelIcon style={{color: red[500]}}/>,
+                         },
+                        { title: 'Name', field: 'name' },
+                        { title: 'Vendor : OS', render: rowData => rowData.vendor + " : " + rowData.os},
+                        { title: 'IP Address', field: 'ip_address' },
+                        {
+                            title: 'OS',
+                            render: rowData =>
+                                rowData.os_compliance ?
                                     <CheckCircleIcon style={{color: green[500]}}/>
                                     : <CancelIcon  style={{color: red[500]}}/>
-                                }</TableCell>
-                                <TableCell onClick={() => this.renderDashboardFacts(device.name)}
-                                           style={{cursor: 'pointer'}}>{device.name}</TableCell>
-                                <TableCell>{device.vendor} : {device.os}</TableCell>
-                                <TableCell>{device.ip_address}</TableCell>
-                                <TableCell align="center">{device.os_compliance ?
+                        },
+                        {
+                            title: 'Config',
+                            render: rowData =>
+                                rowData.config_compliance ?
                                     <CheckCircleIcon style={{color: green[500]}}/>
                                     : <CancelIcon  style={{color: red[500]}}/>
-                                }</TableCell>
-                                <TableCell align="center">{device.config_compliance ?
-                                    <CheckCircleIcon style={{color: green[500]}}/>
-                                    : <CancelIcon  style={{color: red[500]}}/>
-                                }</TableCell>
-                                <TableCell>{device.last_compliance_check}</TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
+                                    },
+                        { title: 'Last Checked', field: 'last_compliance_check' },
+                    ]}
+                    data={ devices.devices }
+                    options={{
+                        sorting: true,
+                        padding: "dense",
+                        pageSize: 10,
+                    }}
+                />
+                {/*<Table size="small">*/}
+                {/*    <TableHead>*/}
+                {/*        <TableRow>*/}
+                {/*            <TableCell align="center">Status</TableCell>*/}
+                {/*            <TableCell>Name</TableCell>*/}
+                {/*            <TableCell>Vendor : OS</TableCell>*/}
+                {/*            <TableCell>IP Address</TableCell>*/}
+                {/*            <TableCell align="center">OS</TableCell>*/}
+                {/*            <TableCell align="center">Config</TableCell>*/}
+                {/*            <TableCell>Last Checked</TableCell>*/}
+                {/*        </TableRow>*/}
+                {/*    </TableHead>*/}
+                {/*    <TableBody>*/}
+                {/*        {devices.devices.map((device) => (*/}
+                {/*            <TableRow key={device.name}>*/}
+                {/*                <TableCell align="center">{device.availability ?*/}
+                {/*                    <CheckCircleIcon style={{color: green[500]}}/>*/}
+                {/*                    : <CancelIcon  style={{color: red[500]}}/>*/}
+                {/*                }</TableCell>*/}
+                {/*                <TableCell onClick={() => this.renderDashboardFacts(device.name)}*/}
+                {/*                           style={{cursor: 'pointer'}}>{device.name}</TableCell>*/}
+                {/*                <TableCell>{device.vendor} : {device.os}</TableCell>*/}
+                {/*                <TableCell>{device.ip_address}</TableCell>*/}
+                {/*                <TableCell align="center">{device.os_compliance ?*/}
+                {/*                    <CheckCircleIcon style={{color: green[500]}}/>*/}
+                {/*                    : <CancelIcon  style={{color: red[500]}}/>*/}
+                {/*                }</TableCell>*/}
+                {/*                <TableCell align="center">{device.config_compliance ?*/}
+                {/*                    <CheckCircleIcon style={{color: green[500]}}/>*/}
+                {/*                    : <CancelIcon  style={{color: red[500]}}/>*/}
+                {/*                }</TableCell>*/}
+                {/*                <TableCell>{device.last_compliance_check}</TableCell>*/}
+                {/*            </TableRow>*/}
+                {/*        ))}*/}
+                {/*    </TableBody>*/}
+                {/*</Table>*/}
             </div>
         );
     }

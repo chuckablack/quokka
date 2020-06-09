@@ -1,6 +1,6 @@
 - id: 1
   ip_address: 10.0.0.1
-  name: devnet-csr-always-on-sandbox
+  name: CSR-sandbox
   os: iosxe
   ssh_hostname: ios-xe-mgmt-latest.cisco.com
   ssh_password: C1sco12345
@@ -10,7 +10,7 @@
 
 - id: 2
   ip_address: 10.0.0.2
-  name: devnet-nexus-always-on-sandbox
+  name: NXOS-sandbox
   os: nxos
   ssh_hostname: sbx-nxos-mgmt.cisco.com
   ssh_password: Admin_1234!

@@ -19,13 +19,13 @@
   target: http://www.tallac.com
 
 - id: 5
-  name: DNS b-r via google
+  name: DNS via google
   type: dns
   target: 8.8.8.8
   data: baskinrobbins.com
 
 - id: 6
-  name: DNS b-r via OpenDNS
+  name: DNS via OpenDNS
   type: dns
   target: 208.67.222.222
   data: baskinrobbins.com

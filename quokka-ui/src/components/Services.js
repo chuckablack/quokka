@@ -12,6 +12,7 @@ import TableHead from "@material-ui/core/TableHead";
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
 import { green, red } from '@material-ui/core/colors';
+import MaterialTable from "material-table";
 
 class Services extends Component {
 
@@ -51,7 +52,11 @@ class Services extends Component {
         const {services, isLoading} = this.state;
 
         return (
-            <div className="container">
+            <div className="container" style={{maxWidth: "100%"}}>
+                <link
+                    rel="stylesheet"
+                    href="https://fonts.googleapis.com/icon?family=Material+Icons"
+                />
                 <Grid container direction="row" justify="space-between" alignItems="center">
                     <h2>Services Table</h2>
                     {isLoading ?
@@ -63,35 +68,61 @@ class Services extends Component {
                         this.fetchServices()
                     }}>Refresh Services</Button>
                 </Grid>
-                <Table size="small">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell align="center">Availability</TableCell>
-                            <TableCell>Name</TableCell>
-                            <TableCell>Type</TableCell>
-                            <TableCell>Target</TableCell>
-                            <TableCell>Data</TableCell>
-                            <TableCell align="right">Rsp Time (msec)</TableCell>
-                            <TableCell>Last Heard</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {services.services.map((service) => (
-                            <TableRow key={service.name}>
-                                <TableCell align="center">{service.availability ?
+                <MaterialTable
+                    title="Services Availability and Response Time"
+                    columns={[
+                        {
+                            title: 'Availability',
+                            field: 'availability',
+                            render: rowData =>
+                                rowData.availability ?
                                     <CheckCircleIcon style={{color: green[500]}}/>
-                                    : <CancelIcon  style={{color: red[500]}}/>
-                                }</TableCell>
-                                <TableCell >{service.name}</TableCell>
-                                <TableCell >{service.type}</TableCell>
-                                <TableCell >{service.target}</TableCell>
-                                <TableCell >{service.data}</TableCell>
-                                <TableCell align="right">{service.response_time}</TableCell>
-                                <TableCell>{service.last_heard}</TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
+                                    : <CancelIcon style={{color: red[500]}}/>
+
+                        },
+                        { title: 'Name', field: 'name' },
+                        { title: 'Type', field: 'type' },
+                        { title: 'Target', field: 'target' },
+                        { title: 'Data', field: 'data' },
+                        { title: 'Rsp Time', field: 'response_time' },
+                        { title: 'Last Heard', field: 'last_heard' },
+                    ]}
+                    data={ services.services }
+                    options={{
+                        sorting: true,
+                        padding: "dense",
+                        pageSize: 10,
+                    }}
+                />
+                {/*<Table size="small">*/}
+                {/*    <TableHead>*/}
+                {/*        <TableRow>*/}
+                {/*            <TableCell align="center">Availability</TableCell>*/}
+                {/*            <TableCell>Name</TableCell>*/}
+                {/*            <TableCell>Type</TableCell>*/}
+                {/*            <TableCell>Target</TableCell>*/}
+                {/*            <TableCell>Data</TableCell>*/}
+                {/*            <TableCell align="right">Rsp Time (msec)</TableCell>*/}
+                {/*            <TableCell>Last Heard</TableCell>*/}
+                {/*        </TableRow>*/}
+                {/*    </TableHead>*/}
+                {/*    <TableBody>*/}
+                {/*        {services.services.map((service) => (*/}
+                {/*            <TableRow key={service.name}>*/}
+                {/*                <TableCell align="center">{service.availability ?*/}
+                {/*                    <CheckCircleIcon style={{color: green[500]}}/>*/}
+                {/*                    : <CancelIcon  style={{color: red[500]}}/>*/}
+                {/*                }</TableCell>*/}
+                {/*                <TableCell >{service.name}</TableCell>*/}
+                {/*                <TableCell >{service.type}</TableCell>*/}
+                {/*                <TableCell >{service.target}</TableCell>*/}
+                {/*                <TableCell >{service.data}</TableCell>*/}
+                {/*                <TableCell align="right">{service.response_time}</TableCell>*/}
+                {/*                <TableCell>{service.last_heard}</TableCell>*/}
+                {/*            </TableRow>*/}
+                {/*        ))}*/}
+                {/*    </TableBody>*/}
+                {/*</Table>*/}
             </div>
         );
     }

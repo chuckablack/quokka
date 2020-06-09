@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "material-table": "^1.56.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "^0.9.5",
