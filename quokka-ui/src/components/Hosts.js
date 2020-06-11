@@ -42,6 +42,10 @@ class Hosts extends Component {
         clearInterval(this.interval)
     }
 
+    renderHostTS(hostId) {
+        this.state.dashboard.setState({hostId: hostId, show: "hostts"})
+    }
+
     render() {
 
         const {hosts, isLoading} = this.state;
@@ -85,34 +89,17 @@ class Hosts extends Component {
                         padding: "dense",
                         pageSize: 10,
                     }}
+                    actions={[
+                        {
+                            icon: 'poll',
+                            tooltip: 'Display Time-Series for Host',
+                            onClick: (event, rowData) => {
+                                this.renderHostTS(rowData.id)
+                            }
+                        }
+                    ]}
+
                 />
-                {/*<Table size="small">*/}
-                {/*    <TableHead>*/}
-                {/*        <TableRow>*/}
-                {/*            <TableCell align="center">Availability</TableCell>*/}
-                {/*            <TableCell>Name</TableCell>*/}
-                {/*            <TableCell>IP Address</TableCell>*/}
-                {/*            <TableCell>MAC Address</TableCell>*/}
-                {/*            <TableCell align="right">Rsp Time (msec)</TableCell>*/}
-                {/*            <TableCell>Last Heard</TableCell>*/}
-                {/*        </TableRow>*/}
-                {/*    </TableHead>*/}
-                {/*    <TableBody>*/}
-                {/*        {hosts.hosts.map((host) => (*/}
-                {/*            <TableRow key={host.name}>*/}
-                {/*                <TableCell align="center">{host.availability ?*/}
-                {/*                    <CheckCircleIcon style={{color: green[500]}}/>*/}
-                {/*                    : <CancelIcon  style={{color: red[500]}}/>*/}
-                {/*                }</TableCell>*/}
-                {/*                <TableCell >{host.name}</TableCell>*/}
-                {/*                <TableCell>{host.ip_address}</TableCell>*/}
-                {/*                <TableCell>{host.mac_address}</TableCell>*/}
-                {/*                <TableCell align="right">{host.response_time}</TableCell>*/}
-                {/*                <TableCell>{host.last_heard}</TableCell>*/}
-                {/*            </TableRow>*/}
-                {/*        ))}*/}
-                {/*    </TableBody>*/}
-                {/*</Table>*/}
             </div>
         );
     }

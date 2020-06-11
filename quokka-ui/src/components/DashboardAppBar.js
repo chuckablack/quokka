@@ -31,15 +31,6 @@ function renderCompliance(dashboard) {
 function renderServices(dashboard) {
     dashboard.setState({show: "services"})
 }
-function renderDash(dashboard) {
-    dashboard.setState({show: "dash"})
-}
-function renderChartTest(dashboard) {
-    dashboard.setState({show: "charttest"})
-}
-function renderVis(dashboard) {
-    dashboard.setState({show: "vis"})
-}
 
 
 export default function DashboardAppBar(props) {
@@ -60,9 +51,6 @@ export default function DashboardAppBar(props) {
                     <Button color="inherit" onClick={() => renderDevices(dashboard)}>Devices</Button>
                     <Button color="inherit" onClick={() => renderCompliance(dashboard)}>Compliance</Button>
                     <Button color="inherit" onClick={() => renderServices(dashboard)}>Services</Button>
-                    <Button color="inherit" onClick={() => renderDash(dashboard)}>Dash</Button>
-                    <Button color="inherit" onClick={() => renderChartTest(dashboard)}>Chart</Button>
-                    <Button color="inherit" onClick={() => renderVis(dashboard)}>Vis</Button>
                 </Toolbar>
             </AppBar>
         </div>

@@ -12,9 +12,8 @@ import Devices from "./Devices";
 import Hosts from "./Hosts";
 import Compliance from "./Compliance"
 import Services from "./Services"
-import Vis from "./Vis"
-// import Dash from "./Dash";
-// import ChartTest from "./ChartTest";
+import HostTS from "./HostTS"
+import DeviceTS from "./DeviceTS"
 
 class Dashboard extends Component {
 
@@ -22,13 +21,13 @@ class Dashboard extends Component {
         super(props);
         this.state = {
             deviceName: this.props.deviceName,
+            hostId: this.props.hostId,
             show: "devices",
         };
     }
 
     render() {
-        const deviceName = this.state.deviceName
-        const show = this.state.show
+        const {deviceName, show, hostId} = this.state
 
         let info;
         if (show === "facts") {
@@ -47,14 +46,12 @@ class Dashboard extends Component {
             info = <Compliance dashboard={this}/>;
         } else if (show === "services") {
             info = <Services dashboard={this}/>;
-        } else if (show === "vis") {
-            info = <Vis dashboard={this}/>;
+        } else if (show === "hostts") {
+            info = <HostTS hostId={hostId} dashboard={this}/>;
+        } else if (show === "devicets") {
+            info = <DeviceTS deviceName={deviceName} dashboard={this}/>;
         }
-        // } else if (show === "dash") {
-        //     info = <Dash dashboard={this}/>;
-        // } else if (show === "charttest") {
-        //     info = <ChartTest dashboard={this}/>;
-        // }
+
 
         return (
             <Grid container direction="column">
@@ -75,6 +72,10 @@ class Dashboard extends Component {
                                 <Button color="primary" onClick={() => {
                                     this.setState({show: "config"})
                                 }}>Config</Button>
+                                <Button color="primary" onClick={() => {
+                                    this.setState({show: "devicets"})
+                                }}>Status</Button>
+
                             </Grid>
                         </Grid>
                     }

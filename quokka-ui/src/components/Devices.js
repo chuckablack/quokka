@@ -45,6 +45,9 @@ class Devices extends Component {
     renderDashboardFacts(deviceName) {
         this.state.dashboard.setState({deviceName: deviceName, show: "facts"})
     }
+    renderDashboardStatus(deviceName) {
+        this.state.dashboard.setState({deviceName: deviceName, show: "devicets"})
+    }
 
     render() {
 
@@ -95,48 +98,13 @@ class Devices extends Component {
                     actions={[
                         {
                             icon: 'dns',
-                            tooltip: 'Display Device Facts',
+                            tooltip: 'Display Device Status',
                             onClick: (event, rowData) => {
-                                this.renderDashboardFacts(rowData.name)
+                                this.renderDashboardStatus(rowData.name)
                             }
                         }
                     ]}
-                    // actions={[{
-                    //     onClick: (event, rowData) => {this.renderDashboardFacts(rowData.name)}
-                    // }]}
                 />
-                {/*<Table size="small">*/}
-                {/*    <TableHead>*/}
-                {/*        <TableRow>*/}
-                {/*            <TableCell align="center">Status</TableCell>*/}
-                {/*            <TableCell>Name</TableCell>*/}
-                {/*            <TableCell>Vendor : OS</TableCell>*/}
-                {/*            <TableCell>IP Address</TableCell>*/}
-                {/*            <TableCell>CPU%</TableCell>*/}
-                {/*            <TableCell>Memory%</TableCell>*/}
-                {/*            <TableCell align="center">Rsp Time (msec)</TableCell>*/}
-                {/*            <TableCell>Last Heard</TableCell>*/}
-                {/*        </TableRow>*/}
-                {/*    </TableHead>*/}
-                {/*    <TableBody>*/}
-                {/*        {devices.devices.map((device) => (*/}
-                {/*            <TableRow key={device.name}>*/}
-                {/*                <TableCell align="center">{device.availability ?*/}
-                {/*                    <CheckCircleIcon style={{color: green[500]}}/>*/}
-                {/*                    : <CancelIcon  style={{color: red[500]}}/>*/}
-                {/*                }</TableCell>*/}
-                {/*                <TableCell onClick={() => this.renderDashboardFacts(device.name)}*/}
-                {/*                           style={{cursor: 'pointer'}}>{device.name}</TableCell>*/}
-                {/*                <TableCell>{device.vendor} : {device.os}</TableCell>*/}
-                {/*                <TableCell>{device.ip_address}</TableCell>*/}
-                {/*                <TableCell align="center">{device.cpu}</TableCell>*/}
-                {/*                <TableCell align="center">{device.memory}</TableCell>*/}
-                {/*                <TableCell align="center">{device.response_time}</TableCell>*/}
-                {/*                <TableCell>{device.last_heard}</TableCell>*/}
-                {/*            </TableRow>*/}
-                {/*        ))}*/}
-                {/*    </TableBody>*/}
-                {/*</Table>*/}
             </div>
         );
     }

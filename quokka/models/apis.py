@@ -331,3 +331,25 @@ def get_host_ts_data(host_id, num_datapoints):
         host_ts_data.append(get_model_as_dict(host_ts_obj))
 
     return host_ts_data
+
+
+def get_device_ts_data(device_name, num_datapoints):
+
+    result, info = get_device(device_name=device_name)
+    if result != "success":
+        return result, info
+
+    device_id = info["id"]
+    device_ts_objs = (
+        DeviceStatusTS.query.filter_by(**{"device_id": device_id})
+        .order_by(desc(DeviceStatusTS.timestamp))
+        .limit(num_datapoints)
+        .all()
+    )
+
+    device_ts_data = list()
+    for device_ts_obj in device_ts_objs:
+        device_ts_data.append(get_model_as_dict(device_ts_obj))
+
+    return device_ts_data
+
