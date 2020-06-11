@@ -25,6 +25,12 @@ import_devices(filename="devices.yaml", filetype="yaml")
 import_compliance(filename="compliance.yaml")
 import_services(filename="services.yaml")
 
+# Reset time-series data
+from quokka.models.DeviceStatusTS import DeviceStatusTS
+from quokka.models.HostStatusTS import HostStatusTS
+DeviceStatusTS.query.delete()
+HostStatusTS.query.delete()
+
 # Pre-populate the DB with device facts
 devices = get_all_devices()
 for device in devices:

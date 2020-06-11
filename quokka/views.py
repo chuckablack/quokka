@@ -2,7 +2,14 @@ from quokka import app
 from flask import request
 
 from quokka.controller.device_info import get_device_info
-from quokka.models.apis import get_all_devices, import_devices, export_devices, get_all_hosts, get_all_services
+from quokka.models.apis import (
+    get_all_devices,
+    import_devices,
+    export_devices,
+    get_all_hosts,
+    get_all_services,
+    get_host_ts_data,
+)
 
 
 @app.route("/devices", methods=["GET", "POST"])
@@ -17,12 +24,14 @@ def devices():
     elif request.method == "POST":
 
         if to_file and from_file:
-            return "Specify only 'export_to' or 'import_from' on POST devices, not both."
+            return (
+                "Specify only 'export_to' or 'import_from' on POST devices, not both."
+            )
 
         if to_file:
-            return export_devices(to_file, 'json')
+            return export_devices(to_file, "json")
         elif from_file:
-            return import_devices(from_file, 'json')
+            return import_devices(from_file, "json")
 
         else:
             return "Must specify either 'export_to' or 'import_from' on POST devices"
@@ -50,7 +59,9 @@ def device():
             else:
                 get_live_info = bool(live)
 
-        status, result_info = get_device_info(device_name, requested_info, get_live_info)
+        status, result_info = get_device_info(
+            device_name, requested_info, get_live_info
+        )
         if status == "success":
             return result_info, 200
         else:
@@ -72,6 +83,23 @@ def services():
 
     if request.method == "GET":
         return {"services": get_all_services()}
+
+    else:
+        return "Invalid request method"
+
+
+@app.route("/hosts/ts", methods=["GET"])
+def host_ts():
+
+    if request.method == "GET":
+
+        host_id = request.args.get("hostid")
+        num_datapoints = request.args.get("datapoints")
+
+        if not host_id or not num_datapoints:
+            return "Must provide hostid and datapoints", 400
+
+        return {"host_data": get_host_ts_data(host_id, num_datapoints)}
 
     else:
         return "Invalid request method"

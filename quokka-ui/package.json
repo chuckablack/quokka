@@ -5,8 +5,10 @@
   "dependencies": {
     "material-table": "^1.56.1",
     "react": "^16.13.1",
+    "react-charts": "^2.0.2-next.6",
     "react-dom": "^16.13.1",
     "react-scripts": "^0.9.5",
+    "react-vis": "^1.11.7",
     "typeface-roboto": "0.0.75"
   },
   "devDependencies": {

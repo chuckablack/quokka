@@ -1,5 +1,7 @@
 import json
 import yaml
+from datetime import datetime
+from sqlalchemy import desc
 
 from quokka import db
 
@@ -8,6 +10,9 @@ from quokka.models.DeviceFacts import DeviceFacts
 from quokka.models.Compliance import Compliance
 from quokka.models.Host import Host
 from quokka.models.Service import Service
+
+from quokka.models.DeviceStatusTS import DeviceStatusTS
+from quokka.models.HostStatusTS import HostStatusTS
 
 from quokka.models.util import get_model_as_dict
 
@@ -45,7 +50,9 @@ def get_all_devices():
 
 def get_facts(device_name):
 
-    facts_obj = DeviceFacts.query.filter_by(**{"device_name": device_name}).one_or_none()
+    facts_obj = DeviceFacts.query.filter_by(
+        **{"device_name": device_name}
+    ).one_or_none()
     if not facts_obj:
         return "failed", "Could not find device facts in DB"
 
@@ -107,7 +114,9 @@ def set_facts(device, facts):
     device_facts["device_name"] = device["name"]
     device_facts_obj = DeviceFacts(**device_facts)
 
-    facts_obj = DeviceFacts.query.filter_by(**{"device_name": device_facts["device_name"]}).one_or_none()
+    facts_obj = DeviceFacts.query.filter_by(
+        **{"device_name": device_facts["device_name"]}
+    ).one_or_none()
     if not facts_obj:
         db.session.add(device_facts_obj)
 
@@ -278,9 +287,47 @@ def set_service(service):
     db.session.commit()
 
 
-def get_status():
-    return None
+def record_device_status(device):
+
+    device_status = dict()
+    device_status["device_id"] = device["id"]
+    device_status["timestamp"] = str(datetime.now())[:-3]
+    device_status["availability"] = device["availability"]
+    device_status["response_time"] = device["response_time"]
+    device_status["cpu"] = device["cpu"]
+    device_status["memory"] = device["memory"]
+
+    device_status_obj = DeviceStatusTS(**device_status)
+    db.session.add(device_status_obj)
+
+    db.session.commit()
 
 
-def get_versions():
-    return None
+def record_host_status(host):
+
+    host_status = dict()
+    host_status["host_id"] = host["id"]
+    host_status["timestamp"] = str(datetime.now())[:-3]
+    host_status["availability"] = host["availability"]
+    host_status["response_time"] = host["response_time"]
+
+    host_status_obj = HostStatusTS(**host_status)
+    db.session.add(host_status_obj)
+
+    db.session.commit()
+
+
+def get_host_ts_data(host_id, num_datapoints):
+
+    host_ts_objs = (
+        HostStatusTS.query.filter_by(**{"host_id": host_id})
+        .order_by(desc(HostStatusTS.timestamp))
+        .limit(num_datapoints)
+        .all()
+    )
+
+    host_ts_data = list()
+    for host_ts_obj in host_ts_objs:
+        host_ts_data.append(get_model_as_dict(host_ts_obj))
+
+    return host_ts_data

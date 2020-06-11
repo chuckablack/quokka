@@ -12,6 +12,9 @@ import Devices from "./Devices";
 import Hosts from "./Hosts";
 import Compliance from "./Compliance"
 import Services from "./Services"
+import Vis from "./Vis"
+// import Dash from "./Dash";
+// import ChartTest from "./ChartTest";
 
 class Dashboard extends Component {
 
@@ -44,8 +47,14 @@ class Dashboard extends Component {
             info = <Compliance dashboard={this}/>;
         } else if (show === "services") {
             info = <Services dashboard={this}/>;
+        } else if (show === "vis") {
+            info = <Vis dashboard={this}/>;
         }
-
+        // } else if (show === "dash") {
+        //     info = <Dash dashboard={this}/>;
+        // } else if (show === "charttest") {
+        //     info = <ChartTest dashboard={this}/>;
+        // }
 
         return (
             <Grid container direction="column">

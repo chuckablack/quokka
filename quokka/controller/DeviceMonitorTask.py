@@ -7,6 +7,7 @@ from time import sleep
 from quokka.controller.device_info import get_device_info
 from quokka.models.apis import get_all_devices
 from quokka.models.apis import set_device
+from quokka.models.apis import record_device_status
 
 
 def calculate_cpu(cpu):
@@ -63,6 +64,9 @@ class DeviceMonitorTask:
 
                 if result != "success":
                     device["availability"] = False
+                    device["response_time"] = None
+                    device["cpu"] = None
+                    device["memory"] = None
 
                 else:
                     if ip_address:
@@ -75,6 +79,7 @@ class DeviceMonitorTask:
                     device["cpu"] = calculate_cpu(env["environment"]["cpu"])
                     device["memory"] = calculate_memory(env["environment"]["memory"])
 
+                record_device_status(device)
                 set_device(device)
 
             for _ in range(0, int(interval / 10)):

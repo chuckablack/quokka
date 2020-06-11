@@ -6,6 +6,7 @@ from time import sleep
 from quokka.controller.utils import get_response_time
 from quokka.models.apis import get_all_hosts
 from quokka.models.apis import set_host
+from quokka.models.apis import record_host_status
 
 
 class HostMonitorTask:
@@ -39,6 +40,7 @@ class HostMonitorTask:
                 except subprocess.CalledProcessError:
                     host["availability"] = False
 
+                record_host_status(host)
                 set_host(host)
 
             for _ in range(0, int(interval / 10)):
