@@ -4,9 +4,7 @@ from datetime import datetime
 from time import sleep
 
 from quokka.controller.utils import get_response_time
-from quokka.models.apis import get_all_hosts
-from quokka.models.apis import set_host
-from quokka.models.apis import record_host_status
+from quokka.models.apis import get_all_hosts, set_host, record_host_status
 
 
 class HostMonitorTask:

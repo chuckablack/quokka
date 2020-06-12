@@ -9,6 +9,7 @@ from quokka.models.apis import (
     get_all_hosts,
     get_all_services,
     get_host_ts_data,
+    get_service_ts_data,
     get_device_ts_data,
 )
 
@@ -101,6 +102,23 @@ def host_ts():
             return "Must provide hostid and datapoints", 400
 
         return {"host_data": get_host_ts_data(host_id, num_datapoints)}
+
+    else:
+        return "Invalid request method"
+
+
+@app.route("/service/ts", methods=["GET"])
+def service_ts():
+
+    if request.method == "GET":
+
+        service_id = request.args.get("serviceid")
+        num_datapoints = request.args.get("datapoints")
+
+        if not service_id or not num_datapoints:
+            return "Must provide serviceid and datapoints", 400
+
+        return {"service_data": get_service_ts_data(service_id, num_datapoints)}
 
     else:
         return "Invalid request method"

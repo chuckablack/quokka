@@ -5,8 +5,7 @@ import requests
 from dns.resolver import Resolver, Timeout, NXDOMAIN
 from ntplib import NTPClient, NTPException
 
-from quokka.models.apis import get_all_services
-from quokka.models.apis import set_service
+from quokka.models.apis import get_all_services, set_service, record_service_status
 
 
 def get_avail_and_rsp_time(service):
@@ -103,6 +102,7 @@ class ServiceMonitorTask:
                 service["response_time"] = int(response_time * 1000)
                 service["last_heard"] = str(datetime.now())[:-3]
 
+                record_service_status(service)
                 set_service(service)
 
             for _ in range(0, int(interval / 10)):

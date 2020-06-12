@@ -13,6 +13,7 @@ from quokka.models.Service import Service
 
 from quokka.models.DeviceStatusTS import DeviceStatusTS
 from quokka.models.HostStatusTS import HostStatusTS
+from quokka.models.ServiceStatusTS import ServiceStatusTS
 
 from quokka.models.util import get_model_as_dict
 
@@ -317,6 +318,20 @@ def record_host_status(host):
     db.session.commit()
 
 
+def record_service_status(service):
+
+    service_status = dict()
+    service_status["service_id"] = service["id"]
+    service_status["timestamp"] = str(datetime.now())[:-3]
+    service_status["availability"] = service["availability"]
+    service_status["response_time"] = service["response_time"]
+
+    service_status_obj = ServiceStatusTS(**service_status)
+    db.session.add(service_status_obj)
+
+    db.session.commit()
+
+
 def get_host_ts_data(host_id, num_datapoints):
 
     host_ts_objs = (
@@ -331,6 +346,22 @@ def get_host_ts_data(host_id, num_datapoints):
         host_ts_data.append(get_model_as_dict(host_ts_obj))
 
     return host_ts_data
+
+
+def get_service_ts_data(service_id, num_datapoints):
+
+    service_ts_objs = (
+        ServiceStatusTS.query.filter_by(**{"service_id": service_id})
+        .order_by(desc(ServiceStatusTS.timestamp))
+        .limit(num_datapoints)
+        .all()
+    )
+
+    service_ts_data = list()
+    for service_ts_obj in service_ts_objs:
+        service_ts_data.append(get_model_as_dict(service_ts_obj))
+
+    return service_ts_data
 
 
 def get_device_ts_data(device_name, num_datapoints):

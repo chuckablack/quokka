@@ -14,6 +14,7 @@ import Compliance from "./Compliance"
 import Services from "./Services"
 import HostTS from "./HostTS"
 import DeviceTS from "./DeviceTS"
+import ServiceTS from "./ServiceTS";
 
 class Dashboard extends Component {
 
@@ -27,7 +28,7 @@ class Dashboard extends Component {
     }
 
     render() {
-        const {deviceName, show, hostId} = this.state
+        const {deviceName, show, hostId, serviceId} = this.state
 
         let info;
         if (show === "facts") {
@@ -46,9 +47,11 @@ class Dashboard extends Component {
             info = <Compliance dashboard={this}/>;
         } else if (show === "services") {
             info = <Services dashboard={this}/>;
-        } else if (show === "hostts") {
+        } else if (show === "hostTS") {
             info = <HostTS hostId={hostId} dashboard={this}/>;
-        } else if (show === "devicets") {
+        } else if (show === "serviceTS") {
+            info = <ServiceTS serviceId={serviceId} dashboard={this}/>;
+        } else if (show === "deviceTS") {
             info = <DeviceTS deviceName={deviceName} dashboard={this}/>;
         }
 
@@ -73,7 +76,7 @@ class Dashboard extends Component {
                                     this.setState({show: "config"})
                                 }}>Config</Button>
                                 <Button color="primary" onClick={() => {
-                                    this.setState({show: "devicets"})
+                                    this.setState({show: "deviceTS"})
                                 }}>Status</Button>
 
                             </Grid>

@@ -46,7 +46,7 @@ class Devices extends Component {
         this.state.dashboard.setState({deviceName: deviceName, show: "facts"})
     }
     renderDashboardStatus(deviceName) {
-        this.state.dashboard.setState({deviceName: deviceName, show: "devicets"})
+        this.state.dashboard.setState({deviceName: deviceName, show: "deviceTS"})
     }
 
     render() {

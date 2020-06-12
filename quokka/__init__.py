@@ -28,8 +28,10 @@ import_services(filename="services.yaml")
 # Reset time-series data
 from quokka.models.DeviceStatusTS import DeviceStatusTS
 from quokka.models.HostStatusTS import HostStatusTS
+from quokka.models.ServiceStatusTS import ServiceStatusTS
 DeviceStatusTS.query.delete()
 HostStatusTS.query.delete()
+ServiceStatusTS.query.delete()
 
 # Pre-populate the DB with device facts
 devices = get_all_devices()
@@ -60,7 +62,7 @@ compliance_monitor_thread.start()
 
 from quokka.controller.ServiceMonitorTask import ServiceMonitorTask
 service_monitor_task = ServiceMonitorTask()
-service_monitor_thread = threading.Thread(target=service_monitor_task.monitor, args=(600,))
+service_monitor_thread = threading.Thread(target=service_monitor_task.monitor, args=(60,))
 service_monitor_thread.start()
 
 

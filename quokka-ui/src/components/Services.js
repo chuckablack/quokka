@@ -42,6 +42,10 @@ class Services extends Component {
         clearInterval(this.interval)
     }
 
+    renderServiceTS(serviceId) {
+        this.state.dashboard.setState({serviceId: serviceId, show: "serviceTS"})
+    }
+
     render() {
 
         const {services, isLoading} = this.state;
@@ -88,36 +92,16 @@ class Services extends Component {
                         padding: "dense",
                         pageSize: 10,
                     }}
+                    actions={[
+                        {
+                            icon: 'poll',
+                            tooltip: 'Display Time-Series for Service',
+                            onClick: (event, rowData) => {
+                                this.renderServiceTS(rowData.id)
+                            }
+                        }
+                    ]}
                 />
-                {/*<Table size="small">*/}
-                {/*    <TableHead>*/}
-                {/*        <TableRow>*/}
-                {/*            <TableCell align="center">Availability</TableCell>*/}
-                {/*            <TableCell>Name</TableCell>*/}
-                {/*            <TableCell>Type</TableCell>*/}
-                {/*            <TableCell>Target</TableCell>*/}
-                {/*            <TableCell>Data</TableCell>*/}
-                {/*            <TableCell align="right">Rsp Time (msec)</TableCell>*/}
-                {/*            <TableCell>Last Heard</TableCell>*/}
-                {/*        </TableRow>*/}
-                {/*    </TableHead>*/}
-                {/*    <TableBody>*/}
-                {/*        {services.services.map((service) => (*/}
-                {/*            <TableRow key={service.name}>*/}
-                {/*                <TableCell align="center">{service.availability ?*/}
-                {/*                    <CheckCircleIcon style={{color: green[500]}}/>*/}
-                {/*                    : <CancelIcon  style={{color: red[500]}}/>*/}
-                {/*                }</TableCell>*/}
-                {/*                <TableCell >{service.name}</TableCell>*/}
-                {/*                <TableCell >{service.type}</TableCell>*/}
-                {/*                <TableCell >{service.target}</TableCell>*/}
-                {/*                <TableCell >{service.data}</TableCell>*/}
-                {/*                <TableCell align="right">{service.response_time}</TableCell>*/}
-                {/*                <TableCell>{service.last_heard}</TableCell>*/}
-                {/*            </TableRow>*/}
-                {/*        ))}*/}
-                {/*    </TableBody>*/}
-                {/*</Table>*/}
             </div>
         );
     }
