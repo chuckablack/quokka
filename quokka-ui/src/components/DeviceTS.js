@@ -18,6 +18,11 @@ class DeviceTS extends Component {
 
     componentDidMount() {
         this.fetchDeviceTsData()
+        this.interval = setInterval(() => this.fetchDeviceTsData(), 60000)
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.interval)
     }
 
     fetchDeviceTsData() {

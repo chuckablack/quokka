@@ -74,7 +74,7 @@ class HostTS extends Component {
         const maxYAvailability = data.maxY;
         return (
             <div className="container">
-                <h2>Host Time Series Data: Response Time</h2>
+                <h5>Response Time</h5>
                 <FlexibleXYPlot
                     height={300}
                     xType="time"
@@ -85,7 +85,7 @@ class HostTS extends Component {
                     <XAxis title="Time of Day"/>
                     <YAxis title="Response Time"/>
                 </FlexibleXYPlot>
-                <h2>Host Time Series Data: Availability</h2>
+                <h5>Availability</h5>
                 <FlexibleXYPlot
                     height={300}
                     xType="time"
