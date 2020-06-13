@@ -12,9 +12,9 @@ import Devices from "./Devices";
 import Hosts from "./Hosts";
 import Compliance from "./Compliance"
 import Services from "./Services"
-import HostTS from "./HostTS"
-import DeviceTS from "./DeviceTS"
-import ServiceTS from "./ServiceTS";
+import HostStatus from "./HostStatus"
+import DeviceStatus from "./DeviceStatus"
+import ServiceStatus from "./ServiceStatus";
 
 class Dashboard extends Component {
 
@@ -48,11 +48,11 @@ class Dashboard extends Component {
         } else if (show === "services") {
             info = <Services dashboard={this}/>;
         } else if (show === "hostTS") {
-            info = <HostTS hostId={hostId} dashboard={this}/>;
+            info = <HostStatus hostId={hostId} dashboard={this}/>;
         } else if (show === "serviceTS") {
-            info = <ServiceTS serviceId={serviceId} dashboard={this}/>;
+            info = <ServiceStatus serviceId={serviceId} dashboard={this}/>;
         } else if (show === "deviceTS") {
-            info = <DeviceTS deviceName={deviceName} dashboard={this}/>;
+            info = <DeviceStatus deviceName={deviceName} dashboard={this}/>;
         }
 
 
@@ -60,7 +60,7 @@ class Dashboard extends Component {
             <Grid container direction="column">
                 <DashboardAppBar dashboard={this}/>
                 <Grid container direction="row" style={{paddingTop: "10px"}}>
-                    {(show !== "devices" && show !== "hosts" && show !== "compliance"&& show !== "services") &&
+                    {["facts", "arp", "counters", "config", "deviceTS"].includes(show) &&
                         <Grid item style={{width: '10%'}}>
                             <Grid container direction="column">
                                 <Button color="primary" onClick={() => {
@@ -82,7 +82,7 @@ class Dashboard extends Component {
                             </Grid>
                         </Grid>
                     }
-                    {(show !== "devices" && show !== "hosts" && show !== "compliance" && show !== "services") ?
+                    {["facts", "arp", "counters", "config", "deviceTS"].includes(show) ?
                         <Grid item style={{width: '90%', paddingTop: "10px"}}>
                             {info}
                         </Grid>

@@ -96,6 +96,7 @@ class ServiceMonitorTask:
                 availability, response_time = get_avail_and_rsp_time(service)
                 service["availability"] = availability
                 if not availability:
+                    record_service_status(service)
                     set_service(service)
                     continue
 

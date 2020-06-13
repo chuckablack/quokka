@@ -3,14 +3,17 @@ from flask import request
 
 from quokka.controller.device_info import get_device_info
 from quokka.models.apis import (
+    get_device,
     get_all_devices,
     import_devices,
     export_devices,
-    get_all_hosts,
-    get_all_services,
-    get_host_ts_data,
-    get_service_ts_data,
     get_device_ts_data,
+    get_host,
+    get_all_hosts,
+    get_host_ts_data,
+    get_service,
+    get_all_services,
+    get_service_ts_data,
 )
 
 
@@ -101,7 +104,8 @@ def host_ts():
         if not host_id or not num_datapoints:
             return "Must provide hostid and datapoints", 400
 
-        return {"host_data": get_host_ts_data(host_id, num_datapoints)}
+        return {"host_data": get_host_ts_data(host_id, num_datapoints),
+                "host": get_host(host_id)}
 
     else:
         return "Invalid request method"
@@ -118,7 +122,8 @@ def service_ts():
         if not service_id or not num_datapoints:
             return "Must provide serviceid and datapoints", 400
 
-        return {"service_data": get_service_ts_data(service_id, num_datapoints)}
+        return {"service_data": get_service_ts_data(service_id, num_datapoints),
+                "service": get_service(service_id)}
 
     else:
         return "Invalid request method"
@@ -135,7 +140,8 @@ def device_ts():
         if not device_name or not num_datapoints:
             return "Must provide deviceid and datapoints", 400
 
-        return {"device_data": get_device_ts_data(device_name, num_datapoints)}
+        return {"device_data": get_device_ts_data(device_name, num_datapoints),
+                "device": get_device(device_name=device_name)}
 
     else:
         return "Invalid request method"

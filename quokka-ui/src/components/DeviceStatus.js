@@ -1,14 +1,14 @@
-import {FlexibleXYPlot, HorizontalGridLines, LineSeries, XAxis, YAxis} from 'react-vis'
+import {FlexibleXYPlot, HorizontalGridLines, LineMarkSeries, LineSeries, XAxis, YAxis} from 'react-vis'
 import React, {Component} from "react";
 import Grid from "@material-ui/core/Grid";
 
-class DeviceTS extends Component {
+class DeviceStatus extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
             deviceName: props.deviceName,
-            deviceData: {device_data: []},
+            deviceData: {device_data: [], device: null},
             data: [],
             isLoading: false,
             dashboard: props.dashboard,
@@ -47,12 +47,12 @@ class DeviceTS extends Component {
         let maxY = 0;
         let yValue = 0;
         const deviceData = this.state.deviceData.device_data;
-        console.log(deviceData);
+        // console.log(deviceData);
 
         for (let i = 0; i < deviceData.length; i++) {
 
             if (measurement === "RSP_TIME") {
-                yValue = deviceData[i].response_time;
+                yValue = (deviceData[i].response_time)/1000;
             } else if (measurement === "AVAILABILITY") {
                 yValue = deviceData[i].availability ? 100 : 0;
             } else if (measurement === "CPU") {
@@ -91,6 +91,7 @@ class DeviceTS extends Component {
         const maxYMemory = data.maxY;
         return (
             <div className="container">
+                <h4 align="right">Device Status: <b>{this.state.deviceName}</b></h4>
                 <Grid container direction="row" style={{paddingTop: "10px"}}>
                     <Grid item style={{width: '50%'}}>
                         <Grid item>
@@ -113,7 +114,8 @@ class DeviceTS extends Component {
                                 xType="time"
                                 yDomain={[0,maxYAvailability]}>
                                 <HorizontalGridLines />
-                                <LineSeries
+                                <LineMarkSeries
+                                    color="green"
                                     data = {tsAvailabilityData} />
                                 <XAxis title="Time of Day"/>
                                 <YAxis title="Availability"/>
@@ -131,7 +133,7 @@ class DeviceTS extends Component {
                                 <LineSeries
                                     data = {tsCpuData} />
                                 <XAxis title="Time of Day"/>
-                                <YAxis title="Cpu"/>
+                                <YAxis title="CPU"/>
                             </FlexibleXYPlot>
                         </Grid>
                         <Grid item>
@@ -154,5 +156,5 @@ class DeviceTS extends Component {
     }
 }
 
-export default DeviceTS
+export default DeviceStatus
 

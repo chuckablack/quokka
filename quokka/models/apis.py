@@ -34,8 +34,7 @@ def get_device(device_id=None, device_name=None):
     if not device_obj:
         return "failed", "Could not find device in DB"
 
-    # return "success", dict(device_obj)
-    return "success", device_obj.__dict__
+    return "success", get_model_as_dict(device_obj)
 
 
 def get_all_devices():
@@ -206,9 +205,9 @@ def import_services(filename=None):
     return
 
 
-def get_host(hostname):
+def get_host(host_id):
 
-    search = {"name": hostname}
+    search = {"id": host_id}
     host_obj = Host.query.filter_by(**search).one_or_none()
     if not host_obj:
         return None
@@ -248,6 +247,16 @@ def set_host(host):
             host_obj.last_heard = host["last_heard"]
 
     db.session.commit()
+
+
+def get_service(service_id):
+
+    search = {"id": service_id}
+    service_obj = Service.query.filter_by(**search).one_or_none()
+    if not service_obj:
+        return None
+    else:
+        return get_model_as_dict(service_obj)
 
 
 def get_all_services():
