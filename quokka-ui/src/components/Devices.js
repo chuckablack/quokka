@@ -42,9 +42,6 @@ class Devices extends Component {
         clearInterval(this.interval)
     }
 
-    renderDashboardFacts(deviceName) {
-        this.state.dashboard.setState({deviceName: deviceName, show: "facts"})
-    }
     renderDashboardStatus(deviceName) {
         this.state.dashboard.setState({deviceName: deviceName, show: "deviceTS"})
     }

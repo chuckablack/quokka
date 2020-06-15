@@ -55,42 +55,13 @@ class Dashboard extends Component {
             info = <DeviceStatus deviceName={deviceName} dashboard={this}/>;
         }
 
-
         return (
             <Grid container direction="column">
                 <DashboardAppBar dashboard={this}/>
                 <Grid container direction="row" style={{paddingTop: "10px"}}>
-                    {["facts", "arp", "counters", "config", "deviceTS"].includes(show) &&
-                        <Grid item style={{width: '10%'}}>
-                            <Grid container direction="column">
-                                <Button color="primary" onClick={() => {
-                                    this.setState({show: "facts"})
-                                }}>Facts</Button>
-                                <Button color="primary" onClick={() => {
-                                    this.setState({show: "arp"})
-                                }}>Arp</Button>
-                                <Button color="primary" onClick={() => {
-                                    this.setState({show: "counters"})
-                                }}>Counters</Button>
-                                <Button color="primary" onClick={() => {
-                                    this.setState({show: "config"})
-                                }}>Config</Button>
-                                <Button color="primary" onClick={() => {
-                                    this.setState({show: "deviceTS"})
-                                }}>Status</Button>
-
-                            </Grid>
-                        </Grid>
-                    }
-                    {["facts", "arp", "counters", "config", "deviceTS"].includes(show) ?
-                        <Grid item style={{width: '90%', paddingTop: "10px"}}>
-                            {info}
-                        </Grid>
-                        :
-                        <Grid item style={{width: '100%'}}>
-                            {info}
-                        </Grid>
-                    }
+                    <Grid item style={{width: '100%'}}>
+                        {info}
+                    </Grid>
                 </Grid>
             </Grid>
         );

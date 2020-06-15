@@ -9,6 +9,8 @@ import {
 } from 'react-vis'
 import React, {Component} from "react";
 import Grid from "@material-ui/core/Grid";
+import Button from "@material-ui/core/Button";
+import Toolbar from "@material-ui/core/Toolbar";
 
 class ServiceStatus extends Component {
 
@@ -78,6 +80,10 @@ class ServiceStatus extends Component {
         return {tsData: tsData, maxY: maxY};
     }
 
+    renderServices(dashboard) {
+        dashboard.setState({show: "services"})
+    }
+
     render() {
 
         let data = this.getTSData("RSP_TIME");
@@ -88,17 +94,19 @@ class ServiceStatus extends Component {
         const maxYAvailability = data.maxY;
         return (
             <Grid container direction="column">
-                <Grid container direction="row" style={{padding: "10px"}}>
-                    <Grid item style={{width: '25%'}}>
-                        <b>Service name</b>:<br />{this.state.serviceData.service.name}
+                <Grid container direction="row" style={{paddingTop: '10px'}}>
+                    <Grid item style={{width: '25%', paddingLeft: '10px'}}>
+                        <b>SERVICE NAME</b>:<br />{this.state.serviceData.service.name}
                         <br /><br />
-                        <b>Target</b>:<br />{this.state.serviceData.service.target}
+                        <b>TARGET</b>:<br />{this.state.serviceData.service.target}
                         <br /><br />
-                        <b>Data</b>:<br />{this.state.serviceData.service.data}
+                        <b>DATA</b>:<br />{this.state.serviceData.service.data}
                         <br /><br />
-                        <b>Last heard</b>:<br />{this.state.serviceData.service.last_heard}
+                        <b>LAST HEARD</b>:<br />{this.state.serviceData.service.last_heard}
+                        <br /><br />  <br /><br />
+                        <Button variant="contained" onClick={() => this.renderServices(this.state.dashboard)}>Return to Services</Button>
                     </Grid>
-                    <Grid item style={{width: '75%'}}>
+                    <Grid item style={{width: '75%', paddingRight: '10px'}}>
                         <h5>Response Time</h5>
                         <Grid item>
                             <FlexibleXYPlot

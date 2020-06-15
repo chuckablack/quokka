@@ -78,6 +78,10 @@ class HostStatus extends Component {
         return {tsData: tsData, maxY: maxY};
     }
 
+    renderHosts(dashboard) {
+        dashboard.setState({show: "hosts"})
+    }
+
     render() {
 
         let data = this.getTSData("RSP_TIME");
@@ -87,18 +91,19 @@ class HostStatus extends Component {
         const tsAvailabilityData = data.tsData;
         const maxYAvailability = data.maxY;
         return (
-            <Grid container direction="column">
-                <Grid container direction="row" style={{padding: "10px"}}>
-                    <Grid item style={{width: '25%'}}>
-                        <b>Host name</b>:<br />{this.state.hostData.host.name}
+                <Grid container direction="row">
+                    <Grid item style={{width: '20%', padding: '10px'}}>
+                        <b>HOST NAME</b>:<br />{this.state.hostData.host.name}
                         <br /><br />
                         <b>IP address</b>:<br />{this.state.hostData.host.ip_address}
                         <br /><br />
                         <b>MAC address</b>:<br />{this.state.hostData.host.mac_address}
                         <br /><br />
                         <b>Last heard</b>:<br />{this.state.hostData.host.last_heard}
+                        <br /><br />  <br /><br />
+                        <Button variant="contained" onClick={() => this.renderHosts(this.state.dashboard)}>Return to Hosts</Button>
                     </Grid>
-                    <Grid item style={{width: '75%'}}>
+                    <Grid item style={{width: '80%', padding: '10px'}}>
                         <h5>Response Time</h5>
                         <Grid item>
                             <FlexibleXYPlot
@@ -128,7 +133,6 @@ class HostStatus extends Component {
                         </Grid>
                     </Grid>
                 </Grid>
-            </Grid>
         );
     }
 }

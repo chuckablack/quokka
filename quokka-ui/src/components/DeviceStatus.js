@@ -1,6 +1,7 @@
 import {FlexibleXYPlot, HorizontalGridLines, LineMarkSeries, LineSeries, XAxis, YAxis} from 'react-vis'
 import React, {Component} from "react";
 import Grid from "@material-ui/core/Grid";
+import Button from "@material-ui/core/Button";
 
 class DeviceStatus extends Component {
 
@@ -75,6 +76,10 @@ class DeviceStatus extends Component {
         return {tsData: tsData, maxY: maxY};
     }
 
+    renderDevices(dashboard) {
+        dashboard.setState({show: "devices"})
+    }
+
     render() {
 
         let data = this.getTSData("RSP_TIME");
@@ -90,68 +95,90 @@ class DeviceStatus extends Component {
         const tsMemoryData = data.tsData;
         const maxYMemory = data.maxY;
         return (
-            <div className="container">
-                <h4 align="right">Device Status: <b>{this.state.deviceName}</b></h4>
-                <Grid container direction="row" style={{paddingTop: "10px"}}>
-                    <Grid item style={{width: '50%'}}>
-                        <Grid item>
-                            <h5>Response Time</h5>
-                            <FlexibleXYPlot
-                                height={300}
-                                xType="time"
-                                yDomain={[0,maxYRspTime+(maxYRspTime/5)]}>
-                                <HorizontalGridLines />
-                                <LineSeries
-                                    data = {tsRspTimeData} />
-                                <XAxis title="Time of Day"/>
-                                <YAxis title="Response Time"/>
-                            </FlexibleXYPlot>
-                        </Grid>
-                        <Grid item>
-                            <h5>Availability</h5>
-                            <FlexibleXYPlot
-                                height={300}
-                                xType="time"
-                                yDomain={[0,maxYAvailability]}>
-                                <HorizontalGridLines />
-                                <LineMarkSeries
-                                    color="green"
-                                    data = {tsAvailabilityData} />
-                                <XAxis title="Time of Day"/>
-                                <YAxis title="Availability"/>
-                            </FlexibleXYPlot>
+                <Grid container direction="row">
+                    <Grid item style={{width: '10%', padding: '10px'}}>
+                        <Grid container direction="column">
+                            <Button color="primary" onClick={() => {
+                                this.setState({show: "facts"})
+                            }}>Facts</Button>
+                            <Button color="primary" onClick={() => {
+                                this.setState({show: "arp"})
+                            }}>Arp</Button>
+                            <Button color="primary" onClick={() => {
+                                this.setState({show: "counters"})
+                            }}>Counters</Button>
+                            <Button color="primary" onClick={() => {
+                                this.setState({show: "config"})
+                            }}>Config</Button>
+                            <Button color="primary" onClick={() => {
+                                this.setState({show: "deviceTS"})
+                            }}>Status</Button>
+                            <br /><br />  <br /><br />
+                            <Button variant="contained" onClick={() => this.renderDevices(this.state.dashboard)}>Return to Devices</Button>
                         </Grid>
                     </Grid>
-                    <Grid item style={{width: '50%'}}>
-                        <Grid item>
-                            <h5>CPU Utilization</h5>
-                            <FlexibleXYPlot
-                                height={300}
-                                xType="time"
-                                yDomain={[0,maxYCpu+(maxYCpu/5)]}>
-                                <HorizontalGridLines />
-                                <LineSeries
-                                    data = {tsCpuData} />
-                                <XAxis title="Time of Day"/>
-                                <YAxis title="CPU"/>
-                            </FlexibleXYPlot>
-                        </Grid>
-                        <Grid item>
-                            <h5>Memory Utilization</h5>
-                            <FlexibleXYPlot
-                                height={300}
-                                xType="time"
-                                yDomain={[0,maxYMemory+(maxYMemory/5)]}>
-                                <HorizontalGridLines />
-                                <LineSeries
-                                    data = {tsMemoryData} />
-                                <XAxis title="Time of Day"/>
-                                <YAxis title="Memory"/>
-                            </FlexibleXYPlot>
+                    <Grid item style={{width: '90%', padding: '10px'}}>
+                        <Grid container direction="row">
+                            <Grid item style={{width: '50%'}}>
+                                <Grid item>
+                                    <h5>Response Time</h5>
+                                    <FlexibleXYPlot
+                                        height={300}
+                                        xType="time"
+                                        yDomain={[0,maxYRspTime+(maxYRspTime/5)]}>
+                                        <HorizontalGridLines />
+                                        <LineSeries
+                                            data = {tsRspTimeData} />
+                                        <XAxis title="Time of Day"/>
+                                        <YAxis title="Response Time"/>
+                                    </FlexibleXYPlot>
+                                </Grid>
+                                <Grid item>
+                                    <h5>Availability</h5>
+                                    <FlexibleXYPlot
+                                        height={300}
+                                        xType="time"
+                                        yDomain={[0,maxYAvailability]}>
+                                        <HorizontalGridLines />
+                                        <LineMarkSeries
+                                            color="green"
+                                            data = {tsAvailabilityData} />
+                                        <XAxis title="Time of Day"/>
+                                        <YAxis title="Availability"/>
+                                    </FlexibleXYPlot>
+                                </Grid>
+                            </Grid>
+                            <Grid item style={{width: '50%'}}>
+                                <Grid item>
+                                    <h5>CPU Utilization</h5>
+                                    <FlexibleXYPlot
+                                        height={300}
+                                        xType="time"
+                                        yDomain={[0,maxYCpu+(maxYCpu/5)]}>
+                                        <HorizontalGridLines />
+                                        <LineSeries
+                                            data = {tsCpuData} />
+                                        <XAxis title="Time of Day"/>
+                                        <YAxis title="CPU"/>
+                                    </FlexibleXYPlot>
+                                </Grid>
+                                <Grid item>
+                                    <h5>Memory Utilization</h5>
+                                    <FlexibleXYPlot
+                                        height={300}
+                                        xType="time"
+                                        yDomain={[0,maxYMemory+(maxYMemory/5)]}>
+                                        <HorizontalGridLines />
+                                        <LineSeries
+                                            data = {tsMemoryData} />
+                                        <XAxis title="Time of Day"/>
+                                        <YAxis title="Memory"/>
+                                    </FlexibleXYPlot>
+                                </Grid>
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
-            </div>
         );
     }
 }
