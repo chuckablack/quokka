@@ -13,7 +13,7 @@ import Hosts from "./Hosts";
 import Compliance from "./Compliance"
 import Services from "./Services"
 import HostStatus from "./HostStatus"
-import DeviceStatus from "./DeviceStatus"
+import DeviceDashboard from "./DeviceDashboard"
 import ServiceStatus from "./ServiceStatus";
 
 class Dashboard extends Component {
@@ -31,15 +31,8 @@ class Dashboard extends Component {
         const {deviceName, show, hostId, serviceId} = this.state
 
         let info;
-        if (show === "facts") {
-            info = <Facts deviceName={deviceName}/>;
-        } else if (show === "arp") {
-            info = <Arp deviceName={deviceName}/>;
-        } else if (show === "counters") {
-            info = <Counters deviceName={deviceName}/>;
-        } else if (show === "config") {
-            info = <Config deviceName={deviceName}/>;
-        } else if (show === "devices") {
+
+        if (show === "devices") {
             info = <Devices dashboard={this}/>;
         } else if (show === "hosts") {
             info = <Hosts dashboard={this}/>;
@@ -47,12 +40,12 @@ class Dashboard extends Component {
             info = <Compliance dashboard={this}/>;
         } else if (show === "services") {
             info = <Services dashboard={this}/>;
-        } else if (show === "hostTS") {
+        } else if (show === "hoststatus") {
             info = <HostStatus hostId={hostId} dashboard={this}/>;
-        } else if (show === "serviceTS") {
+        } else if (show === "servicestatus") {
             info = <ServiceStatus serviceId={serviceId} dashboard={this}/>;
-        } else if (show === "deviceTS") {
-            info = <DeviceStatus deviceName={deviceName} dashboard={this}/>;
+        } else if (show === "devicestatus") {
+            info = <DeviceDashboard deviceName={deviceName} dashboard={this}/>;
         }
 
         return (

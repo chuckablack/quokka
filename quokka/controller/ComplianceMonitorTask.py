@@ -19,6 +19,7 @@ def check_os_compliance(device):
         result, facts = get_device_info(device["name"], "facts", get_live_info=True)
     except BaseException as e:
         print(f"!!! Exception getting device info in compliance monitoring for {device['name']}")
+        result = "failed"
 
     if result == "success":
         if standard.standard_version == facts["facts"]["os_version"]:
@@ -76,7 +77,7 @@ class ComplianceMonitorTask:
         while True and not self.terminate:
 
             devices = get_all_devices()
-            print(f"Monitor: Beginning monitoring for {len(devices)} devices")
+            print(f"Monitor: Beginning compliance monitoring for {len(devices)} devices")
             for device in devices:
 
                 if self.terminate:

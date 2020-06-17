@@ -17,3 +17,26 @@
   ssh_port: 8181
   ssh_username: admin
   vendor: cisco
+
+- id: 3
+  ip_address: 192.168.254.200
+  name: CML-iosv-0
+  os: ios
+  ssh_hostname: 192.168.254.200
+  ssh_password: cisco
+  ssh_port: 22
+  ssh_username: cisco
+  vendor: cisco
+
+- id: 4
+  ip_address: 192.168.254.201
+  name: CML-csr1000v-0
+  os: iosxe
+  ssh_hostname: 192.168.254.201
+  ssh_password: cisco
+  ssh_port: 22
+  ssh_username: cisco
+  vendor: cisco
+
+
+

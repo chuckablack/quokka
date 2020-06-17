@@ -1,1 +1,0 @@
-[{"id": 1, "name": "devnet-csr-always-on-sandbox", "ip_address": "10.0.0.1", "ssh_hostname": "ios-xe-mgmt-latest.cisco.com", "ssh_port": 8181, "ssh_username": "developer", "ssh_password": "C1sco12345", "vendor": "cisco", "os": "iosxe"}]

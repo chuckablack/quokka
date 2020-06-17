@@ -80,7 +80,7 @@ def set_device(device):
             device_obj.ip_address = device["ip_address"]
         if "mac_address" in device and device["mac_address"]:
             device_obj.mac_address = device["mac_address"]
-        if "availability" in device and device["availability"]:
+        if "availability" in device and device["availability"] is not None:
             device_obj.availability = device["availability"]
         if "response_time" in device and device["response_time"]:
             device_obj.response_time = device["response_time"]
@@ -229,7 +229,7 @@ def get_all_hosts():
 
 def set_host(host):
 
-    search = {"name": host["name"]}
+    search = {"name": host["name"], "ip_address": host["ip_address"]}
     host_obj = Host.query.filter_by(**search).one_or_none()
     if not host_obj:
         host_obj = Host(**host)

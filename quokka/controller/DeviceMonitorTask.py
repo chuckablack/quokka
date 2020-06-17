@@ -56,11 +56,11 @@ class DeviceMonitorTask:
                 time_start = time.time()
                 try:
                     result, env = get_device_info(device["name"], "environment")
+                    response_time = time.time() - time_start
+
                 except BaseException as e:
                     print(f"!!! Exception in monitoring device: {repr(e)}")
-                    continue
-
-                response_time = time.time() - time_start
+                    result = "failed"
 
                 if result != "success":
                     device["availability"] = False

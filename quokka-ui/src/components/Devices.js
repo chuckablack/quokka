@@ -35,15 +35,15 @@ class Devices extends Component {
 
     componentDidMount() {
         this.fetchDevices(false)
-        this.interval = setInterval(() => this.fetchDevices(), 300000)
+        this.interval = setInterval(() => this.fetchDevices(), 60000)
     }
 
     componentWillUnmount() {
         clearInterval(this.interval)
     }
 
-    renderDashboardStatus(deviceName) {
-        this.state.dashboard.setState({deviceName: deviceName, show: "deviceTS"})
+    renderDeviceStatus(deviceName) {
+        this.state.dashboard.setState({deviceName: deviceName, show: "devicestatus"})
     }
 
     render() {
@@ -83,7 +83,7 @@ class Devices extends Component {
                         { title: 'IP Address', field: 'ip_address' },
                         { title: 'CPU%', field: 'cpu' },
                         { title: 'Memory%', field: 'memory' },
-                        { title: 'Rsp Time (msec)', field: 'response_time' },
+                        { title: 'Rsp Time', render: rowData => (rowData.response_time)/1000 },
                         { title: 'Last Checked', field: 'last_heard' },
                     ]}
                     data={ devices.devices }
@@ -97,7 +97,7 @@ class Devices extends Component {
                             icon: 'dns',
                             tooltip: 'Display Device Status',
                             onClick: (event, rowData) => {
-                                this.renderDashboardStatus(rowData.name)
+                                this.renderDeviceStatus(rowData.name)
                             }
                         }
                     ]}

@@ -25,7 +25,7 @@ class HostStatus extends Component {
 
     componentDidMount() {
         this.fetchHostTsData()
-        this.interval = setInterval(() => this.fetchHostTsData(), 60000)
+        this.interval = setInterval(() => this.fetchHostTsData(), 6000)
     }
 
     componentWillUnmount() {
@@ -92,7 +92,7 @@ class HostStatus extends Component {
         const maxYAvailability = data.maxY;
         return (
                 <Grid container direction="row">
-                    <Grid item style={{width: '20%', padding: '10px'}}>
+                    <Grid item style={{width: '15%', padding: '10px'}}>
                         <b>HOST NAME</b>:<br />{this.state.hostData.host.name}
                         <br /><br />
                         <b>IP address</b>:<br />{this.state.hostData.host.ip_address}
@@ -103,7 +103,7 @@ class HostStatus extends Component {
                         <br /><br />  <br /><br />
                         <Button variant="contained" onClick={() => this.renderHosts(this.state.dashboard)}>Return to Hosts</Button>
                     </Grid>
-                    <Grid item style={{width: '80%', padding: '10px'}}>
+                    <Grid item style={{width: '85%', padding: '10px'}}>
                         <h5>Response Time</h5>
                         <Grid item>
                             <FlexibleXYPlot

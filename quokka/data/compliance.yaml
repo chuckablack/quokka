@@ -1,9 +1,14 @@
 - os: iosxe
   vendor: cisco
-  standard_version: Virtual XE Software (X86_64_LINUX_IOSD-UNIVERSALK9-M), Version 16.11.1a, RELEASE SOFTWARE (fc1)
+  standard_version: Virtual XE Software (X86_64_LINUX_IOSD-UNIVERSALK9-M), Version 16.11.1b, RELEASE SOFTWARE (fc2)
   standard_config_file: cisco.iosxe.standard.config
 
 - os: nxos
   vendor: cisco
   standard_version: 9.3(3)
   standard_config_file: cisco.nxos.standard.config
+
+- os: ios
+  vendor: cisco
+  standard_version: IOSv Software (VIOS-ADVENTERPRISEK9-M), Version 15.8(3)M2, RELEASE SOFTWARE (fc2)
+  standard_config_file: cisco.ios.standard.config

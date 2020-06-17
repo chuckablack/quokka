@@ -46,7 +46,7 @@ def devices():
 
 
 @app.route("/device", methods=["GET"])
-def device():
+def device_info():
 
     if request.method == "GET":
 
@@ -140,8 +140,13 @@ def device_ts():
         if not device_name or not num_datapoints:
             return "Must provide deviceid and datapoints", 400
 
+        result, info = get_device(device_name=device_name)
+        if result != "success":
+            return "Could not find device in DB", 404
+
+        device = info
         return {"device_data": get_device_ts_data(device_name, num_datapoints),
-                "device": get_device(device_name=device_name)}
+                "device": device}
 
     else:
         return "Invalid request method"

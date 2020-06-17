@@ -30,24 +30,30 @@ def get_device_info(device_name, requested_info, get_live_info=False):
         optional_args={"port": device["ssh_port"]},
     )
 
-    napalm_device.open()
+    try:
+        napalm_device.open()
 
-    if requested_info == "facts":
-        facts = napalm_device.get_facts()
-        set_facts(device, {"facts": facts})
-        return "success", {"facts": napalm_device.get_facts()}
-    elif requested_info == "environment":
-        return "success", {"environment": napalm_device.get_environment()}
-    elif requested_info == "interfaces":
-        return "success", {"interfaces": napalm_device.get_interfaces()}
-    elif requested_info == "arp":
-        return "success", {"arp": napalm_device.get_arp_table()}
-    elif requested_info == "mac":
-        return "success", {"mac": napalm_device.get_mac_address_table()}
-    elif requested_info == "config":
-        return "success", {"config": napalm_device.get_config()}
-    elif requested_info == "counters":
-        return "success", {"counters": napalm_device.get_interfaces_counters()}
+        if requested_info == "facts":
+            facts = napalm_device.get_facts()
+            set_facts(device, {"facts": facts})
+            return "success", {"facts": napalm_device.get_facts()}
+        elif requested_info == "environment":
+            return "success", {"environment": napalm_device.get_environment()}
+        elif requested_info == "interfaces":
+            return "success", {"interfaces": napalm_device.get_interfaces()}
+        elif requested_info == "arp":
+            return "success", {"arp": napalm_device.get_arp_table()}
+        elif requested_info == "mac":
+            return "success", {"mac": napalm_device.get_mac_address_table()}
+        elif requested_info == "config":
+            return "success", {"config": napalm_device.get_config()}
+        elif requested_info == "counters":
+            return "success", {"counters": napalm_device.get_interfaces_counters()}
 
-    else:
-        return "failure", "Unknown requested info"
+        else:
+            return "failure", "Unknown requested info"
+
+    except BaseException as e:
+        print(f"!!! Exception in monitoring device: {repr(e)}")
+        return "failure", repr(e)
+

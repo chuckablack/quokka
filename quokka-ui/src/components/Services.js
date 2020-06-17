@@ -43,7 +43,7 @@ class Services extends Component {
     }
 
     renderServiceTS(serviceId) {
-        this.state.dashboard.setState({serviceId: serviceId, show: "serviceTS"})
+        this.state.dashboard.setState({serviceId: serviceId, show: "servicestatus"})
     }
 
     render() {

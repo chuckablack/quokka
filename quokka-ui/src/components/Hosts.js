@@ -43,7 +43,7 @@ class Hosts extends Component {
     }
 
     renderHostTS(hostId) {
-        this.state.dashboard.setState({hostId: hostId, show: "hostTS"})
+        this.state.dashboard.setState({hostId: hostId, show: "hoststatus"})
     }
 
     render() {

@@ -19,11 +19,13 @@ db.create_all()
 
 from quokka.models.apis import import_devices, import_compliance, import_services
 from quokka.models.apis import get_all_devices, set_facts
+from quokka.models.Host import Host
 from quokka.controller.device_info import get_device_info
 
 import_devices(filename="devices.yaml", filetype="yaml")
 import_compliance(filename="compliance.yaml")
 import_services(filename="services.yaml")
+Host.query.delete()
 
 # Reset time-series data
 from quokka.models.DeviceStatusTS import DeviceStatusTS
