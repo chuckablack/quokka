@@ -1,8 +1,8 @@
 from datetime import datetime
 from time import sleep
-import filecmp
 
-from quokka.controller.device_info import get_device_info
+from quokka.controller.device.device_info import get_device_info
+from quokka.controller.device.config_diff import config_diff
 from quokka.models.Compliance import Compliance
 from quokka.models.apis import get_all_devices
 from quokka.models.apis import set_device
@@ -39,26 +39,36 @@ def check_config_compliance(device):
         return False
 
     standard_filename = "quokka/data/" + standard.standard_config_file
+    result, diff = config_diff(device, standard_filename)
 
-    result, config = get_device_info(device["name"], "config")
-    if result != "success" or "config" not in config or "running" not in config["config"]:
-        print(f"!!! Error retrieving running config for this device {device['name']}")
+    if result != "success":
+        return False
+    if len(diff) > 0:
+        with open(standard_filename + ".diff." + device["name"], "w") as config_out:
+            config_out.write(diff)
         return False
 
-    config_running = config["config"]["running"]
+    return True
 
-    try:
-        # standard_filename = "quokka/data/" + device["vendor"] + "." + device["os"] + "." + "standard.config"
-        with open(standard_filename, "r") as config_out:
-            config_standard = config_out.read()
-    except (FileExistsError, FileNotFoundError) as e:
-        print(f"!!! Error retrieving compliance standard file {standard_filename} for device {device['name']}")
-        return False
+    # result, config = get_device_info(device["name"], "config")
+    # if result != "success" or "config" not in config or "running" not in config["config"]:
+    #     print(f"!!! Error retrieving running config for this device {device['name']}")
+    #     return False
+    #
+    # config_running = config["config"]["running"]
+    #
+    # try:
+    #     # standard_filename = "quokka/data/" + device["vendor"] + "." + device["os"] + "." + "standard.config"
+    #     with open(standard_filename, "r") as config_out:
+    #         config_standard = config_out.read()
+    # except (FileExistsError, FileNotFoundError) as e:
+    #     print(f"!!! Error retrieving compliance standard file {standard_filename} for device {device['name']}")
+    #     return False
 
-    if config_running != config_standard:
-        with open(standard_filename.replace("standard", "running" + "." + device["name"]), "w") as config_out:
-            config_out.write(config_running)
-        return False
+    # if config_running != config_standard:
+    #     with open(standard_filename.replace("standard", "running" + "." + device["name"]), "w") as config_out:
+    #         config_out.write(config_running)
+    #     return False
 
     return True
 

@@ -1,7 +1,7 @@
 from quokka import app
 from flask import request
 
-from quokka.controller.device_info import get_device_info
+from quokka.controller.device.device_info import get_device_info
 from quokka.models.apis import (
     get_device,
     get_all_devices,
@@ -15,6 +15,8 @@ from quokka.models.apis import (
     get_all_services,
     get_service_ts_data,
 )
+import quokka.models.reset
+from quokka.controller.ThreadManager import ThreadManager
 
 
 @app.route("/devices", methods=["GET", "POST"])
@@ -96,57 +98,66 @@ def services():
 @app.route("/host/ts", methods=["GET"])
 def host_ts():
 
-    if request.method == "GET":
+    host_id = request.args.get("hostid")
+    num_datapoints = request.args.get("datapoints")
 
-        host_id = request.args.get("hostid")
-        num_datapoints = request.args.get("datapoints")
+    if not host_id or not num_datapoints:
+        return "Must provide hostid and datapoints", 400
 
-        if not host_id or not num_datapoints:
-            return "Must provide hostid and datapoints", 400
-
-        return {"host_data": get_host_ts_data(host_id, num_datapoints),
-                "host": get_host(host_id)}
-
-    else:
-        return "Invalid request method"
+    return {"host_data": get_host_ts_data(host_id, num_datapoints),
+            "host": get_host(host_id)}
 
 
 @app.route("/service/ts", methods=["GET"])
 def service_ts():
 
-    if request.method == "GET":
+    service_id = request.args.get("serviceid")
+    num_datapoints = request.args.get("datapoints")
 
-        service_id = request.args.get("serviceid")
-        num_datapoints = request.args.get("datapoints")
+    if not service_id or not num_datapoints:
+        return "Must provide serviceid and datapoints", 400
 
-        if not service_id or not num_datapoints:
-            return "Must provide serviceid and datapoints", 400
-
-        return {"service_data": get_service_ts_data(service_id, num_datapoints),
-                "service": get_service(service_id)}
-
-    else:
-        return "Invalid request method"
+    return {"service_data": get_service_ts_data(service_id, num_datapoints),
+            "service": get_service(service_id)}
 
 
 @app.route("/device/ts", methods=["GET"])
 def device_ts():
 
-    if request.method == "GET":
+    device_name = request.args.get("device")
+    num_datapoints = request.args.get("datapoints")
 
-        device_name = request.args.get("device")
-        num_datapoints = request.args.get("datapoints")
+    if not device_name or not num_datapoints:
+        return "Must provide deviceid and datapoints", 400
 
-        if not device_name or not num_datapoints:
-            return "Must provide deviceid and datapoints", 400
+    result, info = get_device(device_name=device_name)
+    if result != "success":
+        return "Could not find device in DB", 404
 
-        result, info = get_device(device_name=device_name)
-        if result != "success":
-            return "Could not find device in DB", 404
+    device = info
+    return {"device_data": get_device_ts_data(device_name, num_datapoints),
+            "device": device}
 
-        device = info
-        return {"device_data": get_device_ts_data(device_name, num_datapoints),
-                "device": device}
 
-    else:
-        return "Invalid request method"
+@app.route("/reset/devices", methods=["POST"])
+def reset_devices():
+    ThreadManager.stop_device_threads()
+    quokka.models.reset.reset_devices()
+    ThreadManager.start_device_threads()
+    return "Devices reset"
+
+
+@app.route("/reset/hosts", methods=["POST"])
+def reset_hosts():
+    ThreadManager.stop_host_thread()
+    quokka.models.reset.reset_hosts()
+    ThreadManager.start_host_thread()
+    return "Hosts reset"
+
+
+@app.route("/reset/services", methods=["POST"])
+def reset_services():
+    ThreadManager.stop_service_thread()
+    quokka.models.reset.reset_services()
+    ThreadManager.start_service_thread()
+    return "Services reset"

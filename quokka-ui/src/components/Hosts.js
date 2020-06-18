@@ -35,7 +35,7 @@ class Hosts extends Component {
 
     componentDidMount() {
         this.fetchHosts()
-        this.interval = setInterval(() => this.fetchHosts(), 300000)
+        this.interval = setInterval(() => this.fetchHosts(), 60000)
     }
 
     componentWillUnmount() {

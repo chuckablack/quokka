@@ -6,6 +6,8 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
+import MenuItem from "@material-ui/core/MenuItem";
+import Menu from "@material-ui/core/Menu";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -32,20 +34,45 @@ function renderServices(dashboard) {
     dashboard.setState({show: "services"})
 }
 
-
 export default function DashboardAppBar(props) {
     const classes = useStyles();
     const dashboard = props.dashboard;
+    const [anchorE1, setAnchorEl] = React.useState(null);
+
+    const handleMenuItem = () => {
+        setAnchorEl(null);
+    }
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
 
     return (
         <div className={classes.root}>
             <AppBar position="static">
                 <Toolbar>
-                    <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+                    <IconButton aria-controls="dash-menu" aria-haspopup="true" onClick={handleClick}>
                         <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" className={classes.title}>
-                        Dashboard {props.deviceName}
+                    <Menu
+                        id = "dash-menu"
+                        anchorEl={anchorE1}
+                        keepMounted
+                        open={Boolean(anchorE1)}
+                        onClose={handleClose}
+                    >
+                        <MenuItem onClick={handleMenuItem}>Import Devices</MenuItem>
+                        <MenuItem onClick={handleMenuItem}>Export Devices</MenuItem>
+                        <MenuItem onClick={handleMenuItem}>Delete Device Status Data</MenuItem>
+                        <MenuItem onClick={handleMenuItem}>Delete Host Status Data</MenuItem>
+                        <MenuItem onClick={handleMenuItem}>Delete Service Status Data</MenuItem>
+                        <MenuItem onClick={handleMenuItem}>Delete Hosts</MenuItem>
+                        <MenuItem onClick={handleMenuItem}>Import Services</MenuItem>
+                    </Menu>
+                    <Typography variant="h6" className={classes.title} style={{paddingLeft: '20px'}}>
+                        <b>QUOKKA</b> Dashboard
                     </Typography>
                     <Button color="inherit" onClick={() => renderDevices(dashboard)}>Devices</Button>
                     <Button color="inherit" onClick={() => renderCompliance(dashboard)}>Compliance</Button>

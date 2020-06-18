@@ -38,5 +38,15 @@
   ssh_username: cisco
   vendor: cisco
 
+#- id: 5
+#  ip_address: 192.168.254.202
+#  name: CML-iosv-1
+#  os: ios
+#  ssh_hostname: 192.168.254.202
+#  ssh_password: cisco
+#  ssh_port: 22
+#  ssh_username: cisco
+#  vendor: cisco
+
 
 

@@ -4,7 +4,7 @@ import time
 
 from time import sleep
 
-from quokka.controller.device_info import get_device_info
+from quokka.controller.device.device_info import get_device_info
 from quokka.models.apis import get_all_devices
 from quokka.models.apis import set_device
 from quokka.models.apis import record_device_status
