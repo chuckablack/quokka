@@ -42,7 +42,7 @@ class Counters extends Component {
 
     render() {
 
-        const {counters, isLoading} = this.state;
+        const {counters} = this.state;
 
         return (
             <div className="container" style={{maxWidth: "100%"}}>
@@ -52,21 +52,11 @@ class Counters extends Component {
                 />
                 <Grid container direction="row" justify="space-between" alignItems="center">
                     <h2>Counters Table</h2>
-                    {/*{isLoading ?*/}
-                    {/*    <Backdrop open={true}>*/}
-                    {/*        <CircularProgress color="inherit" />*/}
-                    {/*    </Backdrop>*/}
-                    {/*    : ""}*/}
                     <Button variant="contained" onClick={() => {
                         this.fetchCounters()
                     }}>Refresh Counters</Button>
                 </Grid>
                 <Grid item>
-                    {/*{isLoading ?*/}
-                    {/*    <Backdrop open={true}>*/}
-                    {/*        <CircularProgress color="inherit" />*/}
-                    {/*    </Backdrop>*/}
-                    {/*    : ""}*/}
                     <MaterialTable
                         isLoading={!!this.state.isLoading}
                         title={"Counters: " + this.state.deviceName}
@@ -84,28 +74,6 @@ class Counters extends Component {
                             pageSize: 10,
                         }}
                     />
-                    {/*<Table size="small">*/}
-                    {/*    <TableHead>*/}
-                    {/*        <TableRow>*/}
-                    {/*            <TableCell>Interface</TableCell>*/}
-                    {/*            <TableCell align="right">Rx Octets</TableCell>*/}
-                    {/*            <TableCell align="right">Tx Octets</TableCell>*/}
-                    {/*            <TableCell align="right">Rx Packets</TableCell>*/}
-                    {/*            <TableCell align="right">Tx Packets</TableCell>*/}
-                    {/*        </TableRow>*/}
-                    {/*    </TableHead>*/}
-                    {/*    <TableBody>*/}
-                    {/*        {Object.keys(counters.counters).map((key, index) => (*/}
-                    {/*            <TableRow key={index}>*/}
-                    {/*                <TableCell>{key}</TableCell>*/}
-                    {/*                <TableCell align="right">{counters.counters[key].rx_octets}</TableCell>*/}
-                    {/*                <TableCell align="right">{counters.counters[key].tx_octets}</TableCell>*/}
-                    {/*                <TableCell align="right">{counters.counters[key].rx_unicast_packets}</TableCell>*/}
-                    {/*                <TableCell align="right">{counters.counters[key].tx_unicast_packets}</TableCell>*/}
-                    {/*            </TableRow>*/}
-                    {/*        ))}*/}
-                    {/*    </TableBody>*/}
-                    {/*</Table>*/}
                 </Grid>
             </div>
         );

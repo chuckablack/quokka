@@ -1,7 +1,6 @@
 import {FlexibleXYPlot, HorizontalGridLines, LineMarkSeries, LineSeries, XAxis, YAxis} from 'react-vis'
 import React, {Component} from "react";
 import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
 
 class DeviceDashboard extends Component {
 
@@ -98,7 +97,7 @@ class DeviceDashboard extends Component {
                                 yDomain={[0,maxYRspTime+(maxYRspTime/5)]}>
                                 <HorizontalGridLines />
                                 <LineSeries
-                                    data = {tsRspTimeData} />
+                                    data={tsRspTimeData} />
                                 <XAxis title="Time of Day"/>
                                 <YAxis title="Response Time"/>
                             </FlexibleXYPlot>
@@ -112,7 +111,7 @@ class DeviceDashboard extends Component {
                                 <HorizontalGridLines />
                                 <LineMarkSeries
                                     color="green"
-                                    data = {tsAvailabilityData} />
+                                    data={tsAvailabilityData} />
                                 <XAxis title="Time of Day"/>
                                 <YAxis title="Availability"/>
                             </FlexibleXYPlot>
@@ -127,7 +126,7 @@ class DeviceDashboard extends Component {
                                 yDomain={[0,maxYCpu+(maxYCpu/5)]}>
                                 <HorizontalGridLines />
                                 <LineSeries
-                                    data = {tsCpuData} />
+                                    data={tsCpuData} />
                                 <XAxis title="Time of Day"/>
                                 <YAxis title="CPU"/>
                             </FlexibleXYPlot>
@@ -140,7 +139,7 @@ class DeviceDashboard extends Component {
                                 yDomain={[0,maxYMemory+(maxYMemory/5)]}>
                                 <HorizontalGridLines />
                                 <LineSeries
-                                    data = {tsMemoryData} />
+                                    data={tsMemoryData} />
                                 <XAxis title="Time of Day"/>
                                 <YAxis title="Memory"/>
                             </FlexibleXYPlot>

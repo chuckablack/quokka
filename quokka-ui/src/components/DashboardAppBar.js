@@ -8,6 +8,9 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
+import Backdrop from "@material-ui/core/Backdrop";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import Grid from "@material-ui/core/Grid";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -38,6 +41,7 @@ export default function DashboardAppBar(props) {
     const classes = useStyles();
     const dashboard = props.dashboard;
     const [anchorE1, setAnchorEl] = React.useState(null);
+    const [isLoading, setIsLoading] = React.useState(null)
 
     const handleMenuItem = () => {
         setAnchorEl(null);
@@ -45,6 +49,33 @@ export default function DashboardAppBar(props) {
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
+
+    const fetchReset= (target) => {
+        let requestUrl = 'http://127.0.0.1:5000/reset/' + target
+        console.log('performing reset:' + requestUrl)
+        fetch(requestUrl, {method: 'POST', mode: 'cors'})
+            .then(response => {
+                console.log(response)
+                setIsLoading(false)
+                renderDevices(dashboard);
+            })
+    }
+    const handleResetDevices = (event) => {
+        setIsLoading(true);
+        fetchReset("devices");
+        setAnchorEl(null);
+    };
+    const handleResetHosts = (event) => {
+        setIsLoading(true);
+        fetchReset("hosts");
+        setAnchorEl(null);
+    };
+    const handleResetServices = (event) => {
+        setIsLoading(true);
+        fetchReset("services");
+        setAnchorEl(null);
+    };
+
     const handleClose = () => {
         setAnchorEl(null);
     };
@@ -53,23 +84,21 @@ export default function DashboardAppBar(props) {
         <div className={classes.root}>
             <AppBar position="static">
                 <Toolbar>
-                    <IconButton aria-controls="dash-menu" aria-haspopup="true" onClick={handleClick}>
+                    <IconButton aria-controls="dash-menu" aria-haspopup="true" color="inherit" onClick={handleClick}>
                         <MenuIcon />
                     </IconButton>
                     <Menu
-                        id = "dash-menu"
+                        id="dash-menu"
                         anchorEl={anchorE1}
                         keepMounted
                         open={Boolean(anchorE1)}
                         onClose={handleClose}
                     >
-                        <MenuItem onClick={handleMenuItem}>Import Devices</MenuItem>
-                        <MenuItem onClick={handleMenuItem}>Export Devices</MenuItem>
-                        <MenuItem onClick={handleMenuItem}>Delete Device Status Data</MenuItem>
-                        <MenuItem onClick={handleMenuItem}>Delete Host Status Data</MenuItem>
-                        <MenuItem onClick={handleMenuItem}>Delete Service Status Data</MenuItem>
-                        <MenuItem onClick={handleMenuItem}>Delete Hosts</MenuItem>
-                        <MenuItem onClick={handleMenuItem}>Import Services</MenuItem>
+                        <MenuItem onClick={handleResetDevices}>
+                            Reset Devices
+                        </MenuItem>
+                        <MenuItem onClick={handleResetHosts}>Reset Hosts</MenuItem>
+                        <MenuItem onClick={handleResetServices}>Reset Services</MenuItem>
                     </Menu>
                     <Typography variant="h6" className={classes.title} style={{paddingLeft: '20px'}}>
                         <b>QUOKKA</b> Dashboard
@@ -80,6 +109,12 @@ export default function DashboardAppBar(props) {
                     <Button color="inherit" onClick={() => renderServices(dashboard)}>Services</Button>
                 </Toolbar>
             </AppBar>
+            {isLoading ?
+                <Backdrop open={true}>
+                    <CircularProgress color="inherit"/>
+                </Backdrop>
+                : ""
+            }
         </div>
     );
 }

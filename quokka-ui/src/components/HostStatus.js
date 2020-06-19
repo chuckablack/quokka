@@ -64,7 +64,7 @@ class HostStatus extends Component {
                 yValue = hostData[i].availability ? 100 : 0;
             }
             else {
-                const yValue = 0;
+                yValue = 0;
             }
 
             const tsDataItem = {x: new Date(hostData[i].timestamp), y: yValue};
@@ -112,7 +112,7 @@ class HostStatus extends Component {
                                 yDomain={[0,maxYRspTime+(maxYRspTime/5)]}>
                                 <HorizontalGridLines />
                                 <LineSeries
-                                    data = {tsRspTimeData} />
+                                    data={tsRspTimeData} />
                                 <XAxis title="Time of Day"/>
                                 <YAxis title="Response Time"/>
                             </FlexibleXYPlot>
@@ -126,7 +126,7 @@ class HostStatus extends Component {
                                 <HorizontalGridLines />
                                 <LineMarkSeries
                                     color="green"
-                                    data = {tsAvailabilityData} />
+                                    data={tsAvailabilityData} />
                                 <XAxis title="Time of Day"/>
                                 <YAxis title="Availability"/>
                             </FlexibleXYPlot>

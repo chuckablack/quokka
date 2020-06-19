@@ -1,16 +1,7 @@
-import {
-    FlexibleXYPlot,
-    HorizontalGridLines,
-    LineMarkSeries,
-    LineSeries,
-    VerticalBarSeries,
-    XAxis,
-    YAxis
-} from 'react-vis'
+import {FlexibleXYPlot, HorizontalGridLines, LineMarkSeries, LineSeries, XAxis, YAxis} from 'react-vis'
 import React, {Component} from "react";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
-import Toolbar from "@material-ui/core/Toolbar";
 
 class ServiceStatus extends Component {
 
@@ -66,7 +57,7 @@ class ServiceStatus extends Component {
                 yValue = serviceData[i].availability ? 100 : 0;
             }
             else {
-                const yValue = 0;
+                yValue = 0;
             }
 
             const tsDataItem = {x: new Date(serviceData[i].timestamp), y: yValue};
@@ -115,7 +106,7 @@ class ServiceStatus extends Component {
                                 yDomain={[0,maxYRspTime+(maxYRspTime/5)]}>
                                 <HorizontalGridLines />
                                 <LineSeries
-                                    data = {tsRspTimeData} />
+                                    data={tsRspTimeData} />
                                 <XAxis title="Time of Day"/>
                                 <YAxis title="Response Time"/>
                             </FlexibleXYPlot>
@@ -129,7 +120,7 @@ class ServiceStatus extends Component {
                                 <HorizontalGridLines />
                                 <LineMarkSeries
                                     color="green"
-                                    data = {tsAvailabilityData} />
+                                    data={tsAvailabilityData} />
                                 <XAxis title="Time of Day"/>
                                 <YAxis title="Availability"/>
                             </FlexibleXYPlot>

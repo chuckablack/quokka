@@ -1,4 +1,3 @@
-import {FlexibleXYPlot, HorizontalGridLines, LineMarkSeries, LineSeries, XAxis, YAxis} from 'react-vis'
 import React, {Component} from "react";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";

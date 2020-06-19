@@ -1,13 +1,8 @@
 import React, {Component} from 'react';
 import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
 import 'typeface-roboto'
 
 import DashboardAppBar from "./DashboardAppBar";
-import Facts from "./Facts";
-import Arp from "./Arp";
-import Counters from "./Counters";
-import Config from "./Config";
 import Devices from "./Devices";
 import Hosts from "./Hosts";
 import Compliance from "./Compliance"
