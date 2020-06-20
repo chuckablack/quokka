@@ -5,9 +5,7 @@ import time
 from time import sleep
 
 from quokka.controller.device.device_info import get_device_info
-from quokka.models.apis import get_all_devices
-from quokka.models.apis import set_device
-from quokka.models.apis import record_device_status
+from quokka.models.apis import get_all_devices, set_device, record_device_status, log_event
 
 
 def calculate_cpu(cpu):
@@ -46,7 +44,9 @@ class DeviceMonitorTask:
                 try:
                     ip_address = socket.gethostbyname(device["ssh_hostname"])
                 except (socket.error, socket.gaierror) as e:
-                    print(f"!!! Caught socket error {repr(e)}, continuing to next device")
+                    info = f"!!! Caught socket error {repr(e)}, continuing to next device"
+                    print(info)
+                    log_event(time.time(), "device", device['name'], "SEVERE", info)
                     ip_address = None
 
                 if self.terminate:
@@ -59,7 +59,9 @@ class DeviceMonitorTask:
                     response_time = time.time() - time_start
 
                 except BaseException as e:
-                    print(f"!!! Exception in monitoring device: {repr(e)}")
+                    info = f"!!! Exception in monitoring device: {repr(e)}"
+                    print(info)
+                    log_event(time.time(), "device", device['name'], "SEVERE", info)
                     result = "failed"
 
                 if result != "success":
@@ -67,6 +69,8 @@ class DeviceMonitorTask:
                     device["response_time"] = None
                     device["cpu"] = None
                     device["memory"] = None
+                    log_event(time.time(), "device", device['name'], "SEVERE", "Availability failed")
+
 
                 else:
                     if ip_address:

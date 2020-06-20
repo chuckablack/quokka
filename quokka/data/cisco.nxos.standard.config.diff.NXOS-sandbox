@@ -1,8 +1,6 @@
 cfs eth distribute
 feature vpc
 feature telemetry
-vlan 1-9,100-105
-  name LL_VLAN_DEMO1
 vpc domain 10
 telemetry
   sensor-group 1

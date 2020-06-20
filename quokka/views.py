@@ -14,6 +14,7 @@ from quokka.models.apis import (
     get_service,
     get_all_services,
     get_service_ts_data,
+    get_all_events,
 )
 import quokka.models.reset
 from quokka.controller.ThreadManager import ThreadManager
@@ -80,6 +81,16 @@ def hosts():
 
     if request.method == "GET":
         return {"hosts": get_all_hosts()}
+
+    else:
+        return "Invalid request method"
+
+
+@app.route("/events", methods=["GET"])
+def events():
+
+    if request.method == "GET":
+        return {"events": get_all_events()}
 
     else:
         return "Invalid request method"
@@ -160,4 +171,10 @@ def reset_services():
     ThreadManager.stop_service_thread()
     quokka.models.reset.reset_services()
     ThreadManager.start_service_thread()
+    return "Services reset"
+
+
+@app.route("/reset/events", methods=["GET"])
+def reset_events():
+    quokka.models.reset.reset_events()
     return "Services reset"

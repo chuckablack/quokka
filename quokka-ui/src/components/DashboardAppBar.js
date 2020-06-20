@@ -10,7 +10,6 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Grid from "@material-ui/core/Grid";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -56,8 +55,14 @@ export default function DashboardAppBar(props) {
         fetch(requestUrl, {method: 'POST', mode: 'cors'})
             .then(response => {
                 console.log(response)
+                if (target==="devices") {
+                    renderDevices(dashboard);
+                } else if (target==="hosts") {
+                    renderHosts(dashboard)
+                } else if (target==="services") {
+                    renderServices(dashboard)
+                }
                 setIsLoading(false)
-                renderDevices(dashboard);
             })
     }
     const handleResetDevices = (event) => {

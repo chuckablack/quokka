@@ -68,6 +68,7 @@ class Hosts extends Component {
                     }}>Refresh Hosts</Button>
                 </Grid>
                 <MaterialTable
+                    isLoading={this.state.isLoading}
                     title="Discovered Hosts with Availability and Response Time"
                     columns={[
                         {

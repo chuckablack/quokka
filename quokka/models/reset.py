@@ -8,6 +8,7 @@ from quokka.models.Host import Host
 from quokka.models.HostStatusTS import HostStatusTS
 from quokka.models.Service import Service
 from quokka.models.ServiceStatusTS import ServiceStatusTS
+from quokka.models.Event import Event
 from quokka.models.apis import import_devices, import_services, import_compliance
 
 
@@ -35,6 +36,13 @@ def reset_services():
     Service.query.delete()
     ServiceStatusTS.query.delete()
     import_services(filename="services.yaml")
+    db.session.commit()
+
+    return
+
+
+def reset_events():
+    Event.query.delete()
     db.session.commit()
 
     return

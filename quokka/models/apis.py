@@ -10,6 +10,7 @@ from quokka.models.DeviceFacts import DeviceFacts
 from quokka.models.Compliance import Compliance
 from quokka.models.Host import Host
 from quokka.models.Service import Service
+from quokka.models.Event import Event
 
 from quokka.models.DeviceStatusTS import DeviceStatusTS
 from quokka.models.HostStatusTS import HostStatusTS
@@ -393,3 +394,29 @@ def get_device_ts_data(device_name, num_datapoints):
 
     return device_ts_data
 
+
+def log_event(time, source_type, source, severity, info):
+
+    event = dict()
+    event['time'] = time
+    event['source_type'] = source_type
+    event['source'] = source
+    event['severity'] = severity
+    event['info'] = info
+
+    event_obj = Event(**event)
+    db.session.add(event_obj)
+
+    db.session.commit()
+
+
+def get_all_events():
+
+    event_objs = Event.query.all()
+
+    events = list()
+    for event_obj in event_objs:
+        event = get_model_as_dict(event_obj)
+        events.append(event)
+
+    return events

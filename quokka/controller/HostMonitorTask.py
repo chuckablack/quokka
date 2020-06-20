@@ -1,10 +1,10 @@
 import subprocess
 from datetime import datetime
 
-from time import sleep
+import time
 
 from quokka.controller.utils import get_response_time
-from quokka.models.apis import get_all_hosts, set_host, record_host_status
+from quokka.models.apis import get_all_hosts, set_host, record_host_status, log_event
 
 
 class HostMonitorTask:
@@ -37,12 +37,13 @@ class HostMonitorTask:
 
                 except subprocess.CalledProcessError:
                     host["availability"] = False
+                    log_event(time.time(), "host", host['ip_address'], "INFO", "Availability failed")
 
                 record_host_status(host)
                 set_host(host)
 
             for _ in range(0, int(interval / 10)):
-                sleep(10)
+                time.sleep(10)
                 if self.terminate:
                     break
 
