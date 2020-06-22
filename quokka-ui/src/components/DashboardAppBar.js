@@ -65,7 +65,10 @@ export default function DashboardAppBar(props) {
                     renderHosts(dashboard)
                 } else if (target === "services") {
                     renderServices(dashboard)
+                } else if (target === "events") {
+                    renderEvents(dashboard)
                 }
+
                 setIsLoading(false)
             })
     }
