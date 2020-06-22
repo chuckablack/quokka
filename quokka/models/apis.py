@@ -398,11 +398,11 @@ def get_device_ts_data(device_name, num_datapoints):
 def log_event(time, source_type, source, severity, info):
 
     event = dict()
-    event['time'] = time
-    event['source_type'] = source_type
-    event['source'] = source
-    event['severity'] = severity
-    event['info'] = info
+    event["time"] = time
+    event["source_type"] = source_type
+    event["source"] = source
+    event["severity"] = severity
+    event["info"] = info
 
     event_obj = Event(**event)
     db.session.add(event_obj)
@@ -410,9 +410,9 @@ def log_event(time, source_type, source, severity, info):
     db.session.commit()
 
 
-def get_all_events():
+def get_all_events(num_events):
 
-    event_objs = Event.query.all()
+    event_objs = Event.query.order_by(desc(Event.time)).limit(num_events).all()
 
     events = list()
     for event_obj in event_objs:

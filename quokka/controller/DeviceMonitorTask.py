@@ -46,7 +46,7 @@ class DeviceMonitorTask:
                 except (socket.error, socket.gaierror) as e:
                     info = f"!!! Caught socket error {repr(e)}, continuing to next device"
                     print(info)
-                    log_event(time.time(), "device", device['name'], "SEVERE", info)
+                    log_event(str(datetime.now())[:-3], "device", device['name'], "SEVERE", info)
                     ip_address = None
 
                 if self.terminate:
@@ -61,7 +61,7 @@ class DeviceMonitorTask:
                 except BaseException as e:
                     info = f"!!! Exception in monitoring device: {repr(e)}"
                     print(info)
-                    log_event(time.time(), "device", device['name'], "SEVERE", info)
+                    log_event(str(datetime.now())[:-3], "device", device['name'], "SEVERE", info)
                     result = "failed"
 
                 if result != "success":
@@ -69,7 +69,7 @@ class DeviceMonitorTask:
                     device["response_time"] = None
                     device["cpu"] = None
                     device["memory"] = None
-                    log_event(time.time(), "device", device['name'], "SEVERE", "Availability failed")
+                    log_event(str(datetime.now())[:-3], "device", device['name'], "SEVERE", "Availability failed")
 
 
                 else:

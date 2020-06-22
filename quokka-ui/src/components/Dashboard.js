@@ -10,6 +10,7 @@ import Services from "./Services"
 import HostStatus from "./HostStatus"
 import DeviceDashboard from "./DeviceDashboard"
 import ServiceStatus from "./ServiceStatus";
+import Events from "./Events";
 
 class Dashboard extends Component {
 
@@ -41,6 +42,8 @@ class Dashboard extends Component {
             info = <ServiceStatus serviceId={serviceId} dashboard={this}/>;
         } else if (show === "devicestatus") {
             info = <DeviceDashboard deviceName={deviceName} dashboard={this}/>;
+        }else if (show === "events") {
+            info = <Events dashboard={this}/>;
         }
 
         return (

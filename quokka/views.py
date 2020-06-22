@@ -89,8 +89,10 @@ def hosts():
 @app.route("/events", methods=["GET"])
 def events():
 
+    num_events = request.args.get("num_events", default=1000)
+
     if request.method == "GET":
-        return {"events": get_all_events()}
+        return {"events": get_all_events(num_events)}
 
     else:
         return "Invalid request method"
@@ -174,7 +176,7 @@ def reset_services():
     return "Services reset"
 
 
-@app.route("/reset/events", methods=["GET"])
+@app.route("/reset/events", methods=["POST"])
 def reset_events():
     quokka.models.reset.reset_events()
     return "Services reset"

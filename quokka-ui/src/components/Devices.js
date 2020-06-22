@@ -69,7 +69,7 @@ class Devices extends Component {
                                     <CheckCircleIcon style={{color: green[500]}}/>
                                     : <CancelIcon style={{color: red[500]}}/>,
                         },
-                        { title: 'Name', field: 'name' },
+                        { title: 'Name', field: 'name', defaultSort: 'asc' },
                         { title: 'Vendor:OS', render: rowData => rowData.vendor + ":" + rowData.os},
                         { title: 'IP Address', field: 'ip_address' },
                         { title: 'CPU%', field: 'cpu' },

@@ -79,7 +79,7 @@ class Services extends Component {
                                     : <CancelIcon style={{color: red[500]}}/>
 
                         },
-                        { title: 'Name', field: 'name' },
+                        { title: 'Name', field: 'name', defaultSort: 'asc' },
                         { title: 'Type', field: 'type' },
                         { title: 'Target', field: 'target' },
                         { title: 'Data', field: 'data' },

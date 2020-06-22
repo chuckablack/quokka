@@ -32,9 +32,11 @@ db.session.commit()
 from quokka.models.DeviceStatusTS import DeviceStatusTS
 from quokka.models.HostStatusTS import HostStatusTS
 from quokka.models.ServiceStatusTS import ServiceStatusTS
+from quokka.models.Event import Event
 DeviceStatusTS.query.delete()
 HostStatusTS.query.delete()
 ServiceStatusTS.query.delete()
+Event.query.delete()
 
 # Pre-populate the DB with device facts
 devices = get_all_devices()

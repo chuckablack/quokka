@@ -98,7 +98,7 @@ class ServiceMonitorTask:
                 if not availability:
                     record_service_status(service)
                     set_service(service)
-                    log_event(time.time(), "service", service['name'], "WARNING", "Availability failed")
+                    log_event(str(datetime.now())[:-3], "service", service['name'], "WARNING", "Availability failed")
                     continue
 
                 service["response_time"] = int(response_time * 1000)

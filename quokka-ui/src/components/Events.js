@@ -9,46 +9,42 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import {green, red} from '@material-ui/core/colors';
 import MaterialTable from "material-table";
 
-class Hosts extends Component {
+class Events extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            hosts: {hosts: []},
+            events: {events: []},
             isLoading: false,
             dashboard: props.dashboard,
         };
     }
 
-    fetchHosts() {
+    fetchEvents() {
 
         this.setState({isLoading: true});
-        let requestUrl = 'http://127.0.0.1:5000/hosts'
+        let requestUrl = 'http://127.0.0.1:5000/events'
         fetch(requestUrl)
             .then(res => res.json())
             .then((data) => {
-                this.setState({hosts: data, isLoading: false})
-                console.log(this.state.hosts)
+                this.setState({events: data, isLoading: false})
+                console.log(this.state.events)
             })
             .catch(console.log)
     }
 
     componentDidMount() {
-        this.fetchHosts()
-        this.interval = setInterval(() => this.fetchHosts(), 60000)
+        this.fetchEvents()
+        this.interval = setInterval(() => this.fetchEvents(), 60000)
     }
 
     componentWillUnmount() {
         clearInterval(this.interval)
     }
 
-    renderHostTS(hostId) {
-        this.state.dashboard.setState({hostId: hostId, show: "hoststatus"})
-    }
-
     render() {
 
-        const {hosts, isLoading} = this.state;
+        const {events, isLoading} = this.state;
 
         return (
             <div className="container" style={{maxWidth: "100%"}}>
@@ -57,53 +53,36 @@ class Hosts extends Component {
                     href="https://fonts.googleapis.com/icon?family=Material+Icons"
                 />
                 <Grid container direction="row" justify="space-between" alignItems="center">
-                    <h2>Hosts Table</h2>
+                    <h2>Events Table</h2>
                     {isLoading ?
                         <Backdrop open={true}>
                             <CircularProgress color="inherit" />
                         </Backdrop>
                         : ""}
                     <Button variant="contained" onClick={() => {
-                        this.fetchHosts()
-                    }}>Refresh Hosts</Button>
+                        this.fetchEvents()
+                    }}>Refresh Events</Button>
                 </Grid>
                 <MaterialTable
                     isLoading={this.state.isLoading}
-                    title="Discovered Hosts with Availability and Response Time"
+                    title="Events Log"
                     columns={[
-                        {
-                            title: 'Status',
-                            render: rowData =>
-                                rowData.availability ?
-                                    <CheckCircleIcon style={{color: green[500]}}/>
-                                    : <CancelIcon style={{color: red[500]}}/>,
-                        },
-                        { title: 'Name', field: 'name' },
-                        { title: 'IP Address', field: 'ip_address', defaultSort: 'asc' },
-                        { title: 'MAC Address', field: 'mac_address' },
-                        { title: 'Rsp Time', field: 'response_time' },
-                        { title: 'Last Heard', field: 'last_heard' },
+                        { title: 'Time', field: 'time', defaultSort: 'desc' },
+                        { title: 'Severity', field: 'severity' },
+                        { title: 'Source Type', field: 'source_type' },
+                        { title: 'Source', field: 'source' },
+                        { title: 'Info', field: 'info' },
                     ]}
-                    data={ hosts.hosts }
+                    data={ events.events }
                     options={{
                         sorting: true,
                         padding: "dense",
                         pageSize: 10,
                     }}
-                    actions={[
-                        {
-                            icon: 'poll',
-                            tooltip: 'Display Time-Series for Host',
-                            onClick: (event, rowData) => {
-                                this.renderHostTS(rowData.id)
-                            }
-                        }
-                    ]}
-
                 />
             </div>
         );
     }
 }
 
-export default Hosts;
+export default Events;

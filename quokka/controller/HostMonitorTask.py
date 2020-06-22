@@ -37,7 +37,7 @@ class HostMonitorTask:
 
                 except subprocess.CalledProcessError:
                     host["availability"] = False
-                    log_event(time.time(), "host", host['ip_address'], "INFO", "Availability failed")
+                    log_event(str(datetime.now())[:-3], "host", host['ip_address'], "INFO", "Availability failed")
 
                 record_host_status(host)
                 set_host(host)

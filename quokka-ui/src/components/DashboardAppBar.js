@@ -26,14 +26,21 @@ const useStyles = makeStyles((theme) => ({
 function renderHosts(dashboard) {
     dashboard.setState({show: "hosts"})
 }
+
 function renderDevices(dashboard) {
     dashboard.setState({show: "devices"})
 }
+
 function renderCompliance(dashboard) {
     dashboard.setState({show: "compliance"})
 }
+
 function renderServices(dashboard) {
     dashboard.setState({show: "services"})
+}
+
+function renderEvents(dashboard) {
+    dashboard.setState({show: "events"})
 }
 
 export default function DashboardAppBar(props) {
@@ -42,24 +49,21 @@ export default function DashboardAppBar(props) {
     const [anchorE1, setAnchorEl] = React.useState(null);
     const [isLoading, setIsLoading] = React.useState(null)
 
-    const handleMenuItem = () => {
-        setAnchorEl(null);
-    }
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
 
-    const fetchReset= (target) => {
+    const fetchReset = (target) => {
         let requestUrl = 'http://127.0.0.1:5000/reset/' + target
         console.log('performing reset:' + requestUrl)
         fetch(requestUrl, {method: 'POST', mode: 'cors'})
             .then(response => {
                 console.log(response)
-                if (target==="devices") {
+                if (target === "devices") {
                     renderDevices(dashboard);
-                } else if (target==="hosts") {
+                } else if (target === "hosts") {
                     renderHosts(dashboard)
-                } else if (target==="services") {
+                } else if (target === "services") {
                     renderServices(dashboard)
                 }
                 setIsLoading(false)
@@ -80,6 +84,11 @@ export default function DashboardAppBar(props) {
         fetchReset("services");
         setAnchorEl(null);
     };
+    const handleResetEvents = (event) => {
+        setIsLoading(true);
+        fetchReset("events");
+        setAnchorEl(null);
+    };
 
     const handleClose = () => {
         setAnchorEl(null);
@@ -90,7 +99,7 @@ export default function DashboardAppBar(props) {
             <AppBar position="static">
                 <Toolbar>
                     <IconButton aria-controls="dash-menu" aria-haspopup="true" color="inherit" onClick={handleClick}>
-                        <MenuIcon />
+                        <MenuIcon/>
                     </IconButton>
                     <Menu
                         id="dash-menu"
@@ -99,11 +108,10 @@ export default function DashboardAppBar(props) {
                         open={Boolean(anchorE1)}
                         onClose={handleClose}
                     >
-                        <MenuItem onClick={handleResetDevices}>
-                            Reset Devices
-                        </MenuItem>
+                        <MenuItem onClick={handleResetDevices}>Reset Devices</MenuItem>
                         <MenuItem onClick={handleResetHosts}>Reset Hosts</MenuItem>
                         <MenuItem onClick={handleResetServices}>Reset Services</MenuItem>
+                        <MenuItem onClick={handleResetEvents}>Reset Events</MenuItem>
                     </Menu>
                     <Typography variant="h6" className={classes.title} style={{paddingLeft: '20px'}}>
                         <b>QUOKKA</b> Dashboard
@@ -112,6 +120,7 @@ export default function DashboardAppBar(props) {
                     <Button color="inherit" onClick={() => renderCompliance(dashboard)}>Compliance</Button>
                     <Button color="inherit" onClick={() => renderHosts(dashboard)}>Hosts</Button>
                     <Button color="inherit" onClick={() => renderServices(dashboard)}>Services</Button>
+                    <Button color="inherit" onClick={() => renderEvents(dashboard)}>Events</Button>
                 </Toolbar>
             </AppBar>
             {isLoading ?
