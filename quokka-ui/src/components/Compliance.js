@@ -82,7 +82,9 @@ class Compliance extends Component {
                         { title: 'Vendor : OS', render: rowData => rowData.vendor + " : " + rowData.os},
                         { title: 'IP Address', field: 'ip_address' },
                         {
-                            title: 'OS',
+                            title: 'Software Version',
+                            headerStyle: {textAlign: 'right'},
+                            cellStyle: {textAlign: 'center'},
                             render: rowData =>
                                 rowData.os_compliance ?
                                     <CheckCircleIcon style={{color: green[500]}}/>
@@ -90,6 +92,8 @@ class Compliance extends Component {
                         },
                         {
                             title: 'Config',
+                            headerStyle: {textAlign: 'right'},
+                            cellStyle: {textAlign: 'center'},
                             render: rowData =>
                                 rowData.config_compliance ?
                                     <CheckCircleIcon style={{color: green[500]}}/>
