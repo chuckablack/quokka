@@ -14,7 +14,7 @@ class Dash extends Component {
     fetchDash() {
 
         this.setState({isLoading: true});
-        let requestUrl = 'http://127.0.0.1:8050/'
+        let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':8050/'
         fetch(requestUrl)
             .then(res => res.text())
             .then((data) => {

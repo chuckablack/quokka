@@ -14,24 +14,33 @@ class Devices extends Component {
         this.state = {
             devices: {devices: []},
             dashboard: props.dashboard,
+            countdownValue: process.env.REACT_APP_REFRESH_RATE,
         };
+    }
+
+    countdown() {
+        this.setState({countdownValue: this.state.countdownValue-1})
+        if (this.state.countdownValue <= 0) {
+            this.fetchDevices()
+        }
     }
 
     fetchDevices() {
 
-        let requestUrl = 'http://127.0.0.1:5000/devices'
+        let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/devices'
         fetch(requestUrl)
             .then(res => res.json())
             .then((data) => {
                 this.setState({devices: data})
                 console.log(this.state.devices)
+                this.setState({countdownValue: process.env.REACT_APP_REFRESH_RATE})
             })
             .catch(console.log)
     }
 
     componentDidMount() {
         this.fetchDevices(false)
-        this.interval = setInterval(() => this.fetchDevices(), 60000)
+        this.interval = setInterval(() => this.countdown(), 1000)
     }
 
     componentWillUnmount() {
@@ -54,6 +63,7 @@ class Devices extends Component {
                 />
                 <Grid container direction="row" justify="space-between" alignItems="center">
                     <h2>Devices Table</h2>
+                    <h6>Time until refresh: {this.state.countdownValue} seconds</h6>
                     <Button variant="contained" onClick={() => {
                         this.fetchDevices()
                     }}>Refresh Devices</Button>

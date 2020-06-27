@@ -24,7 +24,7 @@ class Facts extends Component {
         const deviceName = this.state.deviceName
 
         this.setState({isLoading: true});
-        let requestUrl = 'http://127.0.0.1:5000/device?device=' + deviceName + '&info=facts'
+        let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/device?device=' + deviceName + '&info=facts'
         if (getLive) {
             requestUrl += '&live=true'
         }

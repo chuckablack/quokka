@@ -23,7 +23,7 @@ class Events extends Component {
     fetchEvents() {
 
         this.setState({isLoading: true});
-        let requestUrl = 'http://127.0.0.1:5000/events'
+        let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/events'
         fetch(requestUrl)
             .then(res => res.json())
             .then((data) => {

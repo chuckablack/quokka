@@ -17,25 +17,34 @@ class Services extends Component {
             services: {services: []},
             isLoading: false,
             dashboard: props.dashboard,
+            countdownValue: process.env.REACT_APP_REFRESH_RATE,
         };
+    }
+
+    countdown() {
+        this.setState({countdownValue: this.state.countdownValue-1})
+        if (this.state.countdownValue <= 0) {
+            this.fetchServices()
+        }
     }
 
     fetchServices() {
 
         this.setState({isLoading: true});
-        let requestUrl = 'http://127.0.0.1:5000/services'
+        let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/services'
         fetch(requestUrl)
             .then(res => res.json())
             .then((data) => {
                 this.setState({services: data, isLoading: false})
                 console.log(this.state.services)
+                this.setState({countdownValue: process.env.REACT_APP_REFRESH_RATE})
             })
             .catch(console.log)
     }
 
     componentDidMount() {
         this.fetchServices()
-        this.interval = setInterval(() => this.fetchServices(), 300000)
+        this.interval = setInterval(() => this.countdown(), 1000)
     }
 
     componentWillUnmount() {
@@ -63,6 +72,7 @@ class Services extends Component {
                             <CircularProgress color="inherit" />
                         </Backdrop>
                         : ""}
+                    <h6>Time until refresh: {this.state.countdownValue} seconds</h6>
                     <Button variant="contained" onClick={() => {
                         this.fetchServices()
                     }}>Refresh Services</Button>

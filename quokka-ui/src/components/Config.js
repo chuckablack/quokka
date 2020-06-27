@@ -19,7 +19,7 @@ class Config extends Component {
     fetchConfig() {
         this.setState({isLoading: true});
         const deviceName = this.state.deviceName
-        fetch('http://127.0.0.1:5000/device?device=' + deviceName + '&info=config')
+        fetch('http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/device?device=' + deviceName + '&info=config')
             .then(res => res.json())
             .then((data) => {
                 this.setState({
