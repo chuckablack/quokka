@@ -1,5 +1,6 @@
 import napalm
 from quokka.models.apis import get_device, get_facts, set_facts
+from quokka.controller.utils import log_console
 
 
 def get_device_info(device_name, requested_info, get_live_info=False):
@@ -54,6 +55,6 @@ def get_device_info(device_name, requested_info, get_live_info=False):
             return "failure", "Unknown requested info"
 
     except BaseException as e:
-        print(f"!!! Exception in monitoring device: {repr(e)}")
+        log_console(f"!!! Exception in monitoring device: {repr(e)}")
         return "failure", repr(e)
 

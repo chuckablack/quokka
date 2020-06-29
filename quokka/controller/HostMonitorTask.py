@@ -5,6 +5,7 @@ import time
 
 from quokka.controller.utils import get_response_time
 from quokka.models.apis import get_all_hosts, set_host, record_host_status, log_event
+from quokka.controller.utils import log_console
 
 
 class HostMonitorTask:
@@ -14,20 +15,20 @@ class HostMonitorTask:
 
     def set_terminate(self):
         self.terminate = True
-        print(self.__class__.__name__, "monitor:host Terminate pending")
+        log_console(f"{self.__class__.__name__}: monitor:host Terminate pending")
 
     def monitor(self, interval):
 
         while True and not self.terminate:
 
             hosts = get_all_hosts()
-            print(f"monitor:host Beginning monitoring for {len(hosts)} hosts")
+            log_console(f"monitor:host Beginning monitoring for {len(hosts)} hosts")
             for host in hosts:
 
                 if self.terminate:
                     break
 
-                print(f"--- monitor:host pinging {host['ip_address']}")
+                log_console(f"--- monitor:host pinging {host['ip_address']}")
                 try:
                     ping_output = subprocess.check_output(
                         ["ping", "-c3", "-n", "-i0.5", "-W2", str(host["ip_address"])])
@@ -47,4 +48,4 @@ class HostMonitorTask:
                 if self.terminate:
                     break
 
-        print("...gracefully exiting monitor:host")
+        log_console("...gracefully exiting monitor:host")

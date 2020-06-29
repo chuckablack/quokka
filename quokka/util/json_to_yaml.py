@@ -1,6 +1,8 @@
 import yaml
 import json
 
+from quokka.controller.utils import log_console
+
 with open("../data/devices.json", "r") as json_in:
     json_devices = json_in.read()
 

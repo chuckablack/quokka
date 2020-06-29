@@ -6,6 +6,7 @@ from time import sleep
 
 from quokka.models.apis import set_host
 from quokka.controller.utils import get_response_time
+from quokka.controller.utils import log_console
 
 from python_arptable import get_arp_table
 from pprint import pprint
@@ -31,7 +32,7 @@ class DiscoverTask:
 
     def set_terminate(self):
         self.terminate = True
-        print(self.__class__.__name__, "Terminate pending")
+        log_console(f"{self.__class__.__name__}: Terminate pending")
 
     def discover(self, interval):
 
@@ -42,7 +43,7 @@ class DiscoverTask:
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             s.connect(("8.8.8.8", 80))
             my_ip_addr = s.getsockname()[0]
-            print(f"My IP address is {my_ip_addr}")
+            log_console(f"My IP address is {my_ip_addr}")
 
             found_hosts = []
             subnet = ip_network(my_ip_addr + "/24", False)
@@ -51,20 +52,20 @@ class DiscoverTask:
                 if self.terminate:
                     break
 
-                print(f"--- discovery pinging {str(ip_addr)}")
+                log_console(f"--- discovery pinging {str(ip_addr)}")
                 try:
                     ping_output = subprocess.check_output(["ping", "-c3", "-n", "-i0.5", "-W2", str(ip_addr)])
                 except subprocess.CalledProcessError:
                     continue
 
-                print(f"--- found one: {str(ip_addr)}")
+                log_console(f"--- found one: {str(ip_addr)}")
                 try:
                     hostname = socket.gethostbyaddr(str(ip_addr))
                 except (socket.error, socket.gaierror) as e:
                     hostname = (str(ip_addr), [], [str(ip_addr)])
 
                 if hostname:
-                    print(f"--- found its hostname: {hostname}")
+                    log_console(f"--- found its hostname: {hostname}")
 
                 host = dict()
                 host["name"] = hostname[0]
@@ -78,11 +79,11 @@ class DiscoverTask:
                 found_hosts.append({"hostname": hostname, "ip": str(ip_addr)})
 
             for active_host in found_hosts:
-                print(f"host: {active_host['hostname'][0]:30}   ip: {str(active_host['ip']):16}")
+                log_console(f"host: {active_host['hostname'][0]:30}   ip: {str(active_host['ip']):16}")
 
             for _ in range(0, int(interval/10)):
                 sleep(10)
                 if self.terminate:
                     break
 
-        print("...gracefully exiting discovery")
+        log_console("...gracefully exiting discovery")

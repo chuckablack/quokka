@@ -6,19 +6,20 @@ from quokka.controller.device.config_diff import config_diff
 from quokka.models.Compliance import Compliance
 from quokka.models.apis import get_all_devices
 from quokka.models.apis import set_device
+from quokka.controller.utils import log_console
 
 
 def check_os_compliance(device):
 
     standard = Compliance.query.filter_by(**{"vendor": device["vendor"], "os": device["os"]}).one_or_none()
     if standard is None:
-        print(f"!!! Error retrieving compliance record for this device {device['name']}")
+        log_console(f"!!! Error retrieving compliance record for this device {device['name']}")
         return False
 
     try:
         result, facts = get_device_info(device["name"], "facts", get_live_info=True)
     except BaseException as e:
-        print(f"!!! Exception getting device info in compliance monitoring for {device['name']}")
+        log_console(f"!!! Exception getting device info in compliance monitoring for {device['name']}")
         result = "failed"
 
     if result == "success":
@@ -27,7 +28,7 @@ def check_os_compliance(device):
         else:
             return False  # Just a normal incorrect version
     else:
-        print(f"!!! Error retrieving version info for this device {device['name']}")
+        log_console(f"!!! Error retrieving version info for this device {device['name']}")
         return False
 
 
@@ -35,7 +36,7 @@ def check_config_compliance(device):
 
     standard = Compliance.query.filter_by(**{"vendor": device["vendor"], "os": device["os"]}).one_or_none()
     if standard is None:
-        print(f"!!! Error retrieving compliance record for this device {device['name']}")
+        log_console(f"!!! Error retrieving compliance record for this device {device['name']}")
         return False
 
     standard_filename = "quokka/data/" + standard.standard_config_file
@@ -52,7 +53,7 @@ def check_config_compliance(device):
 
     # result, config = get_device_info(device["name"], "config")
     # if result != "success" or "config" not in config or "running" not in config["config"]:
-    #     print(f"!!! Error retrieving running config for this device {device['name']}")
+    #     log_console(f"!!! Error retrieving running config for this device {device['name']}")
     #     return False
     #
     # config_running = config["config"]["running"]
@@ -62,7 +63,7 @@ def check_config_compliance(device):
     #     with open(standard_filename, "r") as config_out:
     #         config_standard = config_out.read()
     # except (FileExistsError, FileNotFoundError) as e:
-    #     print(f"!!! Error retrieving compliance standard file {standard_filename} for device {device['name']}")
+    #     log_console(f"!!! Error retrieving compliance standard file {standard_filename} for device {device['name']}")
     #     return False
 
     # if config_running != config_standard:
@@ -80,24 +81,24 @@ class ComplianceMonitorTask:
 
     def set_terminate(self):
         self.terminate = True
-        print(self.__class__.__name__, "monitor:compliance Terminate pending")
+        log_console(f"{self.__class__.__name__}: monitor:compliance Terminate pending")
 
     def monitor(self, interval):
 
         while True and not self.terminate:
 
             devices = get_all_devices()
-            print(f"Monitor: Beginning compliance monitoring for {len(devices)} devices")
+            log_console(f"Monitor: Beginning compliance monitoring for {len(devices)} devices")
             for device in devices:
 
                 if self.terminate:
                     break
 
-                print(f"--- monitor:compliance get environment {device['name']}")
+                log_console(f"--- monitor:compliance get environment {device['name']}")
                 try:
                     result, env = get_device_info(device["name"], "environment")
                 except BaseException as e:
-                    print(f"!!! Exception in monitoring compliance: {repr(e)}")
+                    log_console(f"!!! Exception in monitoring compliance: {repr(e)}")
                     continue
 
                 if result != "success":
@@ -115,4 +116,4 @@ class ComplianceMonitorTask:
                 if self.terminate:
                     break
 
-        print("...gracefully exiting monitor:compliance")
+        log_console("...gracefully exiting monitor:compliance")

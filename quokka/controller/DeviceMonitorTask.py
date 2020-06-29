@@ -6,6 +6,7 @@ from time import sleep
 
 from quokka.controller.device.device_info import get_device_info
 from quokka.models.apis import get_all_devices, set_device, record_device_status, log_event
+from quokka.controller.utils import log_console
 
 
 def calculate_cpu(cpu):
@@ -31,28 +32,28 @@ class DeviceMonitorTask:
 
     def set_terminate(self):
         self.terminate = True
-        print(self.__class__.__name__, "monitor:device Terminate pending")
+        log_console(f"{self.__class__.__name__}: monitor:device Terminate pending")
 
     def monitor(self, interval):
 
         while True and not self.terminate:
 
             devices = get_all_devices()
-            print(f"Monitor: Beginning monitoring for {len(devices)} devices")
+            log_console(f"Monitor: Beginning monitoring for {len(devices)} devices")
             for device in devices:
 
                 try:
                     ip_address = socket.gethostbyname(device["ssh_hostname"])
                 except (socket.error, socket.gaierror) as e:
                     info = f"!!! Caught socket error {repr(e)}, continuing to next device"
-                    print(info)
+                    log_console(info)
                     log_event(str(datetime.now())[:-3], "device", device['name'], "SEVERE", info)
                     ip_address = None
 
                 if self.terminate:
                     break
 
-                print(f"--- monitor:device get environment {device['name']}")
+                log_console(f"--- monitor:device get environment {device['name']}")
                 time_start = time.time()
                 try:
                     result, env = get_device_info(device["name"], "environment")
@@ -60,7 +61,7 @@ class DeviceMonitorTask:
 
                 except BaseException as e:
                     info = f"!!! Exception in monitoring device: {repr(e)}"
-                    print(info)
+                    log_console(info)
                     log_event(str(datetime.now())[:-3], "device", device['name'], "SEVERE", info)
                     result = "failed"
 
@@ -91,4 +92,4 @@ class DeviceMonitorTask:
                 if self.terminate:
                     break
 
-        print("...gracefully exiting monitor:device")
+        log_console("...gracefully exiting monitor:device")

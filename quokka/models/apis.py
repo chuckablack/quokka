@@ -17,6 +17,7 @@ from quokka.models.HostStatusTS import HostStatusTS
 from quokka.models.ServiceStatusTS import ServiceStatusTS
 
 from quokka.models.util import get_model_as_dict
+from quokka.controller.utils import log_console
 
 
 def get_device(device_id=None, device_name=None):
@@ -178,7 +179,7 @@ def import_compliance(filename=None):
         with open("quokka/data/" + filename, "r") as import_file:
             standards = yaml.safe_load(import_file.read())
     except FileNotFoundError as e:
-        print(f"Could not import compliance file: {repr(e)}")
+        log_console(f"Could not import compliance file: {repr(e)}")
 
     for standard in standards:
         standard_obj = Compliance(**standard)
@@ -196,7 +197,7 @@ def import_services(filename=None):
         with open("quokka/data/" + filename, "r") as import_file:
             services = yaml.safe_load(import_file.read())
     except FileNotFoundError as e:
-        print(f"Could not import services file: {repr(e)}")
+        log_console(f"Could not import services file: {repr(e)}")
 
     for service in services:
         service_obj = Service(**service)
@@ -358,12 +359,42 @@ def get_host_ts_data(host_id, num_datapoints):
     return host_ts_data
 
 
+def get_host_ts_data_for_hour(host_id, hour):
+
+    host_ts_objs = (
+        HostStatusTS.query.filter_by(**{"host_id": host_id})
+        .filter(HostStatusTS.timestamp.startswith(hour))
+        .all()
+    )
+
+    host_ts_data = list()
+    for host_ts_obj in host_ts_objs:
+        host_ts_data.append(get_model_as_dict(host_ts_obj))
+
+    return host_ts_data
+
+
 def get_service_ts_data(service_id, num_datapoints):
 
     service_ts_objs = (
         ServiceStatusTS.query.filter_by(**{"service_id": service_id})
         .order_by(desc(ServiceStatusTS.timestamp))
         .limit(num_datapoints)
+        .all()
+    )
+
+    service_ts_data = list()
+    for service_ts_obj in service_ts_objs:
+        service_ts_data.append(get_model_as_dict(service_ts_obj))
+
+    return service_ts_data
+
+
+def get_service_ts_data_for_hour(service_id, hour):
+
+    service_ts_objs = (
+        ServiceStatusTS.query.filter_by(**{"service_id": service_id})
+        .filter(ServiceStatusTS.timestamp.startswith(hour))
         .all()
     )
 

@@ -1,6 +1,8 @@
 from flask import Flask
 from flask_cors import CORS
 
+from quokka.controller.utils import log_console
+
 
 app = Flask(__name__)
 CORS(app)
@@ -25,7 +27,7 @@ import_devices(filename="devices.yaml", filetype="yaml")
 import_compliance(filename="compliance.yaml")
 import_services(filename="services.yaml")
 
-Host.query.delete()
+# Host.query.delete()
 db.session.commit()
 
 # Reset time-series data
@@ -34,7 +36,7 @@ from quokka.models.HostStatusTS import HostStatusTS
 from quokka.models.ServiceStatusTS import ServiceStatusTS
 from quokka.models.Event import Event
 DeviceStatusTS.query.delete()
-HostStatusTS.query.delete()
+# HostStatusTS.query.delete()
 ServiceStatusTS.query.delete()
 Event.query.delete()
 
@@ -50,16 +52,18 @@ ThreadManager.start_device_threads()
 ThreadManager.start_service_thread()
 ThreadManager.start_discovery_thread()
 ThreadManager.start_host_thread()
+ThreadManager.start_summaries_thread()
 
 
 def shutdown():
 
-    print("\n\n\n---> Entering shutdown sequence")
+    log_console("\n\n\n---> Entering shutdown sequence")
     ThreadManager.stop_discovery_thread()
     ThreadManager.stop_device_threads()
     ThreadManager.stop_host_thread()
     ThreadManager.stop_service_thread()
-    print("\n---> all threads shut down, terminating.")
+    ThreadManager.stop_summaries_thread()
+    log_console("\n---> all threads shut down, terminating.")
 
 
 import atexit

@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 
 
 def get_response_time(ping_output):
@@ -8,3 +9,5 @@ def get_response_time(ping_output):
         return int(m.group(1))
 
 
+def log_console(output):
+    print(f"{str(datetime.now())[:-3]}: {output}")

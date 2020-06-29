@@ -1,5 +1,6 @@
 import napalm
 from quokka.models.apis import get_device, get_facts, set_facts
+from quokka.controller.utils import log_console
 
 
 def config_diff(device, config_to_diff):
@@ -25,6 +26,6 @@ def config_diff(device, config_to_diff):
         return "success", napalm_device.compare_config()
 
     except BaseException as e:
-        print(f"!!! Exception in doing load_merge_candidate: {repr(e)}")
+        log_console(f"!!! Exception in doing load_merge_candidate: {repr(e)}")
         return "failure", repr(e)
 

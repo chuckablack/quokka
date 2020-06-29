@@ -6,6 +6,7 @@ from dns.resolver import Resolver, Timeout, NXDOMAIN
 from ntplib import NTPClient, NTPException
 
 from quokka.models.apis import get_all_services, set_service, record_service_status, log_event
+from quokka.controller.utils import log_console
 
 
 def get_avail_and_rsp_time(service):
@@ -15,7 +16,7 @@ def get_avail_and_rsp_time(service):
         try:
             response = requests.get(service["target"])
         except BaseException as e:
-            print(f"!!! Exception in HTTP service monitoring: {repr(e)}")
+            log_console(f"!!! Exception in HTTP service monitoring: {repr(e)}")
             return False, None
 
         if response.status_code == requests.codes.ok:
@@ -32,13 +33,13 @@ def get_avail_and_rsp_time(service):
         try:
             response = target_resolver.query(service["data"])
         except NXDOMAIN as e:
-            print(f'!!! DNS monitor: nonexistent domain name {service["data"]}')
+            log_console(f'!!! DNS monitor: nonexistent domain name {service["data"]}')
             return False, None
         except Timeout as e:
-            print(f'!!! DNS monitor: DNS request timed out for {service["target"]}')
+            log_console(f'!!! DNS monitor: DNS request timed out for {service["target"]}')
             return False, None
         except BaseException as e:
-            print(f"!!! DNS monitor: Exception occurred: {repr(e)}")
+            log_console(f"!!! DNS monitor: Exception occurred: {repr(e)}")
             return False, None
 
         if (
@@ -58,7 +59,7 @@ def get_avail_and_rsp_time(service):
         try:
             result = c.request(server, version=3)
         except NTPException as e:
-            print(
+            log_console(
                 f"!!! NTP error encountered for {service['target']}, error: {repr(e)}"
             )
             return False, None
@@ -67,7 +68,7 @@ def get_avail_and_rsp_time(service):
         response_time = time.time() - time_start
 
     else:
-        print(f"!!! Unknown service type: {service['type']}")
+        log_console(f"!!! Unknown service type: {service['type']}")
         return False, None
 
     return availability, response_time
@@ -79,20 +80,20 @@ class ServiceMonitorTask:
 
     def set_terminate(self):
         self.terminate = True
-        print(self.__class__.__name__, "Terminate pending")
+        log_console(f"{self.__class__.__name__}: Terminate pending")
 
     def monitor(self, interval):
 
         while True and not self.terminate:
 
             services = get_all_services()
-            print(f"Monitor: Beginning monitoring for {len(services)} services")
+            log_console(f"Monitor: Beginning monitoring for {len(services)} services")
             for service in services:
 
                 if self.terminate:
                     break
 
-                print(f"--- service monitor for {service['name']}")
+                log_console(f"--- service monitor for {service['name']}")
                 availability, response_time = get_avail_and_rsp_time(service)
                 service["availability"] = availability
                 if not availability:
@@ -112,4 +113,4 @@ class ServiceMonitorTask:
                 if self.terminate:
                     break
 
-        print("...gracefully exiting monitor:service")
+        log_console("...gracefully exiting monitor:service")

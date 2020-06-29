@@ -5,6 +5,8 @@ from quokka.controller.ComplianceMonitorTask import ComplianceMonitorTask
 from quokka.controller.HostMonitorTask import HostMonitorTask
 from quokka.controller.ServiceMonitorTask import ServiceMonitorTask
 from quokka.controller.DiscoverTask import DiscoverTask
+from quokka.controller.SummariesTask import SummariesTask
+from quokka.controller.utils import log_console
 
 
 class ThreadManager:
@@ -23,7 +25,7 @@ class ThreadManager:
     @staticmethod
     def stop_device_threads():
 
-        print("--- ---> Shutting down device monitoring threads (device and compliance)")
+        log_console("--- ---> Shutting down device monitoring threads (device and compliance)")
 
         if ThreadManager.device_monitor_task and ThreadManager.device_monitor_thread:
             ThreadManager.device_monitor_task.set_terminate()
@@ -53,7 +55,7 @@ class ThreadManager:
     @staticmethod
     def stop_host_thread():
 
-        print("--- ---> Shutting down host monitoring thread")
+        log_console("--- ---> Shutting down host monitoring thread")
 
         if ThreadManager.host_monitor_task and ThreadManager.host_monitor_thread:
             ThreadManager.host_monitor_task.set_terminate()
@@ -73,7 +75,7 @@ class ThreadManager:
     @staticmethod
     def stop_service_thread():
 
-        print("--- ---> Shutting down service monitoring thread")
+        log_console("--- ---> Shutting down service monitoring thread")
 
         if ThreadManager.service_monitor_task and ThreadManager.service_monitor_thread:
             ThreadManager.service_monitor_task.set_terminate()
@@ -93,7 +95,7 @@ class ThreadManager:
     @staticmethod
     def stop_discovery_thread():
 
-        print("--- ---> Shutting down discovery monitoring thread")
+        log_console("--- ---> Shutting down discovery monitoring thread")
 
         if ThreadManager.discovery_task and ThreadManager.discovery_thread:
             ThreadManager.discovery_task.set_terminate()
@@ -106,6 +108,24 @@ class ThreadManager:
     def start_discovery_thread():
 
         ThreadManager.discovery_task = DiscoverTask()
-        ThreadManager.discovery_thread = threading.Thread(target=ThreadManager.discovery_task.discover,
-                                                          args=(60,))
+        ThreadManager.discovery_thread = threading.Thread(target=ThreadManager.discovery_task.discover, args=(60,))
         ThreadManager.discovery_thread.start()
+
+    @staticmethod
+    def stop_summaries_thread():
+
+        log_console("--- ---> Shutting down summaries thread")
+
+        if ThreadManager.summaries_task and ThreadManager.summaries_thread:
+            ThreadManager.summaries_task.set_terminate()
+            ThreadManager.summaries_thread.join()
+
+        ThreadManager.summaries_task = None
+        ThreadManager.summaries_thread = None
+
+    @staticmethod
+    def start_summaries_thread():
+
+        ThreadManager.summaries_task = SummariesTask()
+        ThreadManager.summaries_thread = threading.Thread(target=ThreadManager.summaries_task.start, args=(60,))
+        ThreadManager.summaries_thread.start()
