@@ -16,7 +16,7 @@ class DeviceDashboard extends Component {
 
     componentDidMount() {
         this.fetchDeviceTsData()
-        this.interval = setInterval(() => this.fetchDeviceTsData(), 6000)
+        this.interval = setInterval(() => this.fetchDeviceTsData(), 60000)
     }
 
     componentWillUnmount() {

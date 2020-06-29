@@ -25,7 +25,7 @@ class HostStatus extends Component {
 
     componentDidMount() {
         this.fetchHostTsData()
-        this.interval = setInterval(() => this.fetchHostTsData(), 6000)
+        this.interval = setInterval(() => this.fetchHostTsData(), 60000)
     }
 
     componentWillUnmount() {

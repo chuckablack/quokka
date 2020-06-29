@@ -18,7 +18,7 @@ class ServiceStatus extends Component {
 
     componentDidMount() {
         this.fetchServiceTsData()
-        this.interval = setInterval(() => this.fetchServiceTsData(), 6000)
+        this.interval = setInterval(() => this.fetchServiceTsData(), 60000)
     }
 
     componentWillUnmount() {

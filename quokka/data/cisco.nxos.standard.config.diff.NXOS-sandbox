@@ -1,6 +1,7 @@
 cfs eth distribute
 feature vpc
 feature telemetry
+ntp server 172.16.0.1 use-vrf default
 vpc domain 10
 telemetry
   sensor-group 1
