@@ -13,10 +13,10 @@ from quokka.models.apis import import_devices, import_services, import_complianc
 
 
 def reset_devices():
-    Device.query.delete()
-    DeviceFacts.query.delete()
-    DeviceStatusTS.query.delete()
-    Compliance.query.delete()
+    db.session.query(Device).delete()
+    db.session.query(DeviceFacts).delete()
+    db.session.query(DeviceStatusTS).delete()
+    db.session.query(Compliance).delete()
     db.session.commit()
 
     import_devices(filename="devices.yaml", filetype="yaml")
@@ -25,16 +25,16 @@ def reset_devices():
 
 
 def reset_hosts():
-    Host.query.delete()
-    HostStatusTS.query.delete()
+    db.session.query(Host).delete()
+    db.session.query(HostStatusTS).delete()
     db.session.commit()
 
     return
 
 
 def reset_services():
-    Service.query.delete()
-    ServiceStatusTS.query.delete()
+    db.session.query(Service).delete()
+    db.session.query(ServiceStatusTS).delete()
     import_services(filename="services.yaml")
     db.session.commit()
 
@@ -42,7 +42,7 @@ def reset_services():
 
 
 def reset_events():
-    Event.query.delete()
+    db.session.query(Event).delete()
     db.session.commit()
 
     return

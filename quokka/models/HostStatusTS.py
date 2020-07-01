@@ -3,7 +3,9 @@ from quokka import db
 
 class HostStatusTS(db.Model):
 
-    host_id = db.Column(db.Text, primary_key=True)
+    __tablename__ = "host_status"
+
+    host_id = db.Column(db.Integer, primary_key=True)
     timestamp = db.Column(db.Text, primary_key=True)
 
     availability = db.Column(db.Boolean)

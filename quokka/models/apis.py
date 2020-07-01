@@ -32,7 +32,7 @@ def get_device(device_id=None, device_name=None):
     else:
         return "failed", "Must provide either device_id or device_name"
 
-    device_obj = Device.query.filter_by(**search).one_or_none()
+    device_obj = db.session.query(Device).filter_by(**search).one_or_none()
     if not device_obj:
         return "failed", "Could not find device in DB"
 
@@ -41,7 +41,8 @@ def get_device(device_id=None, device_name=None):
 
 def get_all_devices():
 
-    device_objs = Device.query.all()
+    # device_objs = Device.query.all()
+    device_objs = db.session.query(Device).all()
 
     devices = list()
     for device_obj in device_objs:
@@ -52,7 +53,7 @@ def get_all_devices():
 
 def get_facts(device_name):
 
-    facts_obj = DeviceFacts.query.filter_by(
+    facts_obj = db.session.query(DeviceFacts).filter_by(
         **{"device_name": device_name}
     ).one_or_none()
     if not facts_obj:
@@ -73,7 +74,7 @@ def set_devices(devices):
 def set_device(device):
 
     search = {"name": device["name"]}
-    device_obj = Device.query.filter_by(**search).one_or_none()
+    device_obj = db.session.query(Device).filter_by(**search).one_or_none()
     if not device_obj:
         device_obj = Device(**device)
         db.session.add(device_obj)
@@ -116,7 +117,7 @@ def set_facts(device, facts):
     device_facts["device_name"] = device["name"]
     device_facts_obj = DeviceFacts(**device_facts)
 
-    facts_obj = DeviceFacts.query.filter_by(
+    facts_obj = db.session.query(DeviceFacts).filter_by(
         **{"device_name": device_facts["device_name"]}
     ).one_or_none()
     if not facts_obj:
@@ -140,7 +141,7 @@ def import_devices(filename=None, filetype=None):
     if not filename or not filetype:
         return None
 
-    Device.query.delete()
+    db.session.query(Device).delete()
     with open("quokka/data/" + filename, "r") as import_file:
 
         if filetype.lower() == "json":
@@ -173,7 +174,7 @@ def export_devices(filename=None, filetype=None):
 
 def import_compliance(filename=None):
 
-    Compliance.query.delete()
+    db.session.query(Compliance).delete()
 
     try:
         with open("quokka/data/" + filename, "r") as import_file:
@@ -191,7 +192,7 @@ def import_compliance(filename=None):
 
 def import_services(filename=None):
 
-    Service.query.delete()
+    db.session.query(Service).delete()
 
     try:
         with open("quokka/data/" + filename, "r") as import_file:
@@ -210,7 +211,7 @@ def import_services(filename=None):
 def get_host(host_id):
 
     search = {"id": host_id}
-    host_obj = Host.query.filter_by(**search).one_or_none()
+    host_obj = db.session.query(Host).filter_by(**search).one_or_none()
     if not host_obj:
         return None
     else:
@@ -219,7 +220,7 @@ def get_host(host_id):
 
 def get_all_hosts():
 
-    host_objs = Host.query.all()
+    host_objs = db.session.query(Host).all()
 
     hosts = list()
     for host_obj in host_objs:
@@ -232,7 +233,7 @@ def get_all_hosts():
 def set_host(host):
 
     search = {"name": host["name"], "ip_address": host["ip_address"]}
-    host_obj = Host.query.filter_by(**search).one_or_none()
+    host_obj = db.session.query(Host).filter_by(**search).one_or_none()
     if not host_obj:
         host_obj = Host(**host)
         db.session.add(host_obj)
@@ -254,7 +255,7 @@ def set_host(host):
 def get_service(service_id):
 
     search = {"id": service_id}
-    service_obj = Service.query.filter_by(**search).one_or_none()
+    service_obj = db.session.query(Service).filter_by(**search).one_or_none()
     if not service_obj:
         return None
     else:
@@ -263,7 +264,7 @@ def get_service(service_id):
 
 def get_all_services():
 
-    service_objs = Service.query.all()
+    service_objs = db.session.query(Service).all()
 
     services = list()
     for service_obj in service_objs:
@@ -276,7 +277,7 @@ def get_all_services():
 def set_service(service):
 
     search = {"name": service["name"]}
-    service_obj = Service.query.filter_by(**search).one_or_none()
+    service_obj = db.session.query(Service).filter_by(**search).one_or_none()
     if not service_obj:
         service_obj = Service(**service)
         db.session.add(service_obj)
@@ -346,7 +347,7 @@ def record_service_status(service):
 def get_host_ts_data(host_id, num_datapoints):
 
     host_ts_objs = (
-        HostStatusTS.query.filter_by(**{"host_id": host_id})
+        db.session.query(HostStatusTS).filter_by(**{"host_id": host_id})
         .order_by(desc(HostStatusTS.timestamp))
         .limit(num_datapoints)
         .all()
@@ -362,7 +363,7 @@ def get_host_ts_data(host_id, num_datapoints):
 def get_host_ts_data_for_hour(host_id, hour):
 
     host_ts_objs = (
-        HostStatusTS.query.filter_by(**{"host_id": host_id})
+        db.session.query(HostStatusTS).filter_by(**{"host_id": host_id})
         .filter(HostStatusTS.timestamp.startswith(hour))
         .all()
     )
@@ -377,7 +378,7 @@ def get_host_ts_data_for_hour(host_id, hour):
 def get_service_ts_data(service_id, num_datapoints):
 
     service_ts_objs = (
-        ServiceStatusTS.query.filter_by(**{"service_id": service_id})
+        db.session.query(ServiceStatusTS).filter_by(**{"service_id": service_id})
         .order_by(desc(ServiceStatusTS.timestamp))
         .limit(num_datapoints)
         .all()
@@ -393,7 +394,7 @@ def get_service_ts_data(service_id, num_datapoints):
 def get_service_ts_data_for_hour(service_id, hour):
 
     service_ts_objs = (
-        ServiceStatusTS.query.filter_by(**{"service_id": service_id})
+        db.session.query(ServiceStatusTS).filter_by(**{"service_id": service_id})
         .filter(ServiceStatusTS.timestamp.startswith(hour))
         .all()
     )
@@ -413,7 +414,7 @@ def get_device_ts_data(device_name, num_datapoints):
 
     device_id = info["id"]
     device_ts_objs = (
-        DeviceStatusTS.query.filter_by(**{"device_id": device_id})
+        db.session.query(DeviceStatusTS).filter_by(**{"device_id": device_id})
         .order_by(desc(DeviceStatusTS.timestamp))
         .limit(num_datapoints)
         .all()
@@ -443,7 +444,7 @@ def log_event(time, source_type, source, severity, info):
 
 def get_all_events(num_events):
 
-    event_objs = Event.query.order_by(desc(Event.time)).limit(num_events).all()
+    event_objs = db.session.query(Event).order_by(desc(Event.time)).limit(num_events).all()
 
     events = list()
     for event_obj in event_objs:

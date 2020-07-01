@@ -3,6 +3,8 @@ from quokka import db
 
 class DeviceStatusTS(db.Model):
 
+    __tablename__ = "device_status"
+
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     device_id = db.Column(db.Integer)
 

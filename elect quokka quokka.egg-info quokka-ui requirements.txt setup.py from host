@@ -1,0 +1,8 @@
+ id |      name      |   ip_address    | mac_address | vendor |  os   | availability | response_time |       last_heard        | cpu | memory | os_compliance | config_compliance | last_compliance_check |         ssh_hostname         | ssh_port | ssh_username | ssh_password 
+----+----------------+-----------------+-------------+--------+-------+--------------+---------------+-------------------------+-----+--------+---------------+-------------------+-----------------------+------------------------------+----------+--------------+--------------
+  2 | NXOS-sandbox   | 10.0.0.2        |             | cisco  | nxos  |              |               |                         |     |        |               |                   |                       | sbx-nxos-mgmt.cisco.com      |     8181 | admin        | Admin_1234!
+  3 | CML-iosv-0     | 192.168.254.200 |             | cisco  | ios   |              |               |                         |     |        |               |                   |                       | 192.168.254.200              |       22 | cisco        | cisco
+  4 | CML-csr1000v-0 | 192.168.254.201 |             | cisco  | iosxe |              |               |                         |     |        |               |                   |                       | 192.168.254.201              |       22 | cisco        | cisco
+  1 | CSR-sandbox    | 64.103.37.8     |             | cisco  | iosxe | t            |         17948 | 2020-06-30 17:14:20.838 |     |     12 |               |                   |                       | ios-xe-mgmt-latest.cisco.com |     8181 | developer    | C1sco12345
+(4 rows)
+

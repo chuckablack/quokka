@@ -3,6 +3,8 @@ from quokka import db
 
 class Device(db.Model):
 
+    __tablename__ = "device"
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text, unique=True, nullable=False)
     ip_address = db.Column(db.Text)

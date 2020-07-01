@@ -3,6 +3,8 @@ from quokka import db
 
 class Service(db.Model):
 
+    __tablename__ = "service"
+
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.Text, nullable=False)
     type = db.Column(db.Text)

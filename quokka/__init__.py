@@ -10,7 +10,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 from flask_sqlalchemy import SQLAlchemy
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////tmp/test.db"
+# app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////tmp/test.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = 'postgres:///quokka'
 db = SQLAlchemy(app)
 
 import quokka.views
@@ -27,7 +28,7 @@ import_devices(filename="devices.yaml", filetype="yaml")
 import_compliance(filename="compliance.yaml")
 import_services(filename="services.yaml")
 
-# Host.query.delete()
+Host.query.delete()
 db.session.commit()
 
 # Reset time-series data
@@ -36,19 +37,19 @@ from quokka.models.HostStatusTS import HostStatusTS
 from quokka.models.ServiceStatusTS import ServiceStatusTS
 from quokka.models.Event import Event
 DeviceStatusTS.query.delete()
-# HostStatusTS.query.delete()
+HostStatusTS.query.delete()
 ServiceStatusTS.query.delete()
 Event.query.delete()
 
 # Pre-populate the DB with device facts
-devices = get_all_devices()
-for device in devices:
-    result, facts = get_device_info(device_name=device["name"], requested_info="facts")
-    if result == "success":
-        set_facts(device, facts)
+# devices = get_all_devices()
+# for device in devices:
+#     result, facts = get_device_info(device_name=device["name"], requested_info="facts")
+#     if result == "success":
+#         set_facts(device, facts)
 
 from quokka.controller.ThreadManager import ThreadManager
-ThreadManager.start_device_threads()
+# ThreadManager.start_device_threads()
 ThreadManager.start_service_thread()
 ThreadManager.start_discovery_thread()
 ThreadManager.start_host_thread()
@@ -59,7 +60,7 @@ def shutdown():
 
     log_console("\n\n\n---> Entering shutdown sequence")
     ThreadManager.stop_discovery_thread()
-    ThreadManager.stop_device_threads()
+    # ThreadManager.stop_device_threads()
     ThreadManager.stop_host_thread()
     ThreadManager.stop_service_thread()
     ThreadManager.stop_summaries_thread()

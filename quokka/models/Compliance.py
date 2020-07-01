@@ -3,6 +3,8 @@ from quokka import db
 
 class Compliance(db.Model):
 
+    __tablename__ = "compliance"
+
     vendor = db.Column(db.Text, primary_key=True)
     os = db.Column(db.Text, primary_key=True)
 

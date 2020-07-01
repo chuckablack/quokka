@@ -3,7 +3,9 @@ from quokka import db
 
 class ServiceStatusTS(db.Model):
 
-    service_id = db.Column(db.Text, primary_key=True)
+    __tablename__ = "service_status"
+
+    service_id = db.Column(db.Integer, primary_key=True)
     timestamp = db.Column(db.Text, primary_key=True)
 
     availability = db.Column(db.Boolean)

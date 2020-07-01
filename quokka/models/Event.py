@@ -3,6 +3,8 @@ from quokka import db
 
 class Event(db.Model):
 
+    __tablename__ = "event"
+
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     time = db.Column(db.Text)
     source_type = db.Column(db.Text)
