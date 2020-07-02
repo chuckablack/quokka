@@ -49,7 +49,7 @@ Event.query.delete()
 #         set_facts(device, facts)
 
 from quokka.controller.ThreadManager import ThreadManager
-# ThreadManager.start_device_threads()
+ThreadManager.start_device_threads()
 ThreadManager.start_service_thread()
 ThreadManager.start_discovery_thread()
 ThreadManager.start_host_thread()
@@ -60,7 +60,7 @@ def shutdown():
 
     log_console("\n\n\n---> Entering shutdown sequence")
     ThreadManager.stop_discovery_thread()
-    # ThreadManager.stop_device_threads()
+    ThreadManager.stop_device_threads()
     ThreadManager.stop_host_thread()
     ThreadManager.stop_service_thread()
     ThreadManager.stop_summaries_thread()

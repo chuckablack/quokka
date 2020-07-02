@@ -2,3 +2,4 @@
 quokka/__pycache__/
 quokka/controller/__pycache__/
 quokka/models/__pycache__/
+quokka/controller/device/__pycache__/
