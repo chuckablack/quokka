@@ -7,6 +7,9 @@ from quokka.models.apis import (
     get_host_ts_data_for_hour,
     get_all_services,
     get_service_ts_data_for_hour,
+    get_all_devices,
+    get_device_ts_data_for_hour,
+    record_service_hourly_summaries,
 )
 
 
@@ -94,10 +97,13 @@ class SummariesTask:
     def get_summaries(self, items, item_type, get_hour_data_function):
 
         log_console(f"Calculating {item_type} summaries for {self.current_hour}")
+        hourly_summaries = dict()
+
         for item in items:
             service_ts_data = get_hour_data_function(item["id"], self.current_hour)
 
             hourly_summary = dict()
+            hourly_summary["id"] = item["id"]
             hourly_summary["hour"] = str(datetime.fromisoformat(self.current_hour))
             hourly_summary["availability"] = 0
             hourly_summary["response_time"] = 0
@@ -122,6 +128,9 @@ class SummariesTask:
                 )
 
             log_console(f"Summary: {item_type} hourly summary for {item['name']}: {hourly_summary}")
+            hourly_summaries[item["id"]] = hourly_summary
+
+        return hourly_summaries
 
     def start(self, interval):
 
@@ -132,9 +141,10 @@ class SummariesTask:
                 time.sleep(60)
                 continue
 
-            self.get_summaries(get_all_services(), "services", get_service_ts_data_for_hour)
+            service_hourly_summaries = self.get_summaries(get_all_services(), "services", get_service_ts_data_for_hour)
+            record_service_hourly_summaries(service_hourly_summaries)
             self.get_summaries(get_all_hosts(), "hosts", get_host_ts_data_for_hour)
-            # self.get_summaries(get_all_devices(), "services", get_device_ts_data_for_hour)
+            self.get_summaries(get_all_devices(), "devices", get_device_ts_data_for_hour)
 
             self.current_hour = this_hour
 

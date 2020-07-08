@@ -8,7 +8,7 @@ class ServiceStatus extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            serviceData: {service_data: [], service: {},},
+            serviceData: {service_data: [], service_summary: [], service: {},},
             isLoading: false,
             dashboard: props.dashboard,
             serviceId: props.serviceId,
@@ -17,15 +17,15 @@ class ServiceStatus extends Component {
     }
 
     componentDidMount() {
-        this.fetchServiceTsData()
-        this.interval = setInterval(() => this.fetchServiceTsData(), 60000)
+        this.fetchServiceStatusData()
+        this.interval = setInterval(() => this.fetchServiceStatusData(), 60000)
     }
 
     componentWillUnmount() {
         clearInterval(this.interval)
     }
 
-    fetchServiceTsData() {
+    fetchServiceStatusData() {
 
         const serviceId = this.state.serviceId;
 
@@ -41,12 +41,12 @@ class ServiceStatus extends Component {
 
     }
 
-    getTSData(measurement) {
+    getStatusData(measurement, serviceData) {
 
         let tsData = [];
         let maxY = 0;
         let yValue = 0;
-        const serviceData = this.state.serviceData.service_data;
+        // const serviceData = this.state.serviceData.service_data;
         console.log(serviceData);
 
         for (let i = 0; i < serviceData.length; i++) {
@@ -55,6 +55,8 @@ class ServiceStatus extends Component {
                 yValue = (serviceData[i].response_time)/1000;
             } else if (measurement === "AVAILABILITY") {
                 yValue = serviceData[i].availability ? 100 : 0;
+            } else if (measurement === "AVAILABILITY_SUMMARY") {
+                yValue = serviceData[i].availability;
             }
             else {
                 yValue = 0;
@@ -77,16 +79,22 @@ class ServiceStatus extends Component {
 
     render() {
 
-        let data = this.getTSData("RSP_TIME");
+        let data = this.getStatusData("RSP_TIME", this.state.serviceData.service_data);
         const tsRspTimeData = data.tsData;
         const maxYRspTime = data.maxY;
-        data = this.getTSData("AVAILABILITY");
+        data = this.getStatusData("AVAILABILITY", this.state.serviceData.service_data);
         const tsAvailabilityData = data.tsData;
         const maxYAvailability = data.maxY;
+        let summaryData = this.getStatusData("RSP_TIME", this.state.serviceData.service_summary);
+        const summaryRspTimeData = summaryData.tsData;
+        const summaryMaxYRspTime = summaryData.maxY;
+        summaryData = this.getStatusData("AVAILABILITY_SUMMARY", this.state.serviceData.service_summary);
+        const summaryAvailabilityData = summaryData.tsData;
+        const summaryMaxYAvailability = summaryData.maxY;
         return (
             <Grid container direction="column">
                 <Grid container direction="row" style={{paddingTop: '10px'}}>
-                    <Grid item style={{width: '25%', paddingLeft: '10px'}}>
+                    <Grid item style={{width: '15%', paddingLeft: '10px'}}>
                         <b>SERVICE NAME</b>:<br />{this.state.serviceData.service.name}
                         <br /><br />
                         <b>TARGET</b>:<br />{this.state.serviceData.service.target}
@@ -97,35 +105,69 @@ class ServiceStatus extends Component {
                         <br /><br />  <br /><br />
                         <Button variant="contained" onClick={() => this.renderServices(this.state.dashboard)}>Return to Services</Button>
                     </Grid>
-                    <Grid item style={{width: '75%', paddingRight: '10px'}}>
-                        <h5>Response Time</h5>
-                        <Grid item>
-                            <FlexibleXYPlot
-                                height={300}
-                                xType="time"
-                                yDomain={[0,maxYRspTime+(maxYRspTime/5)]}>
-                                <HorizontalGridLines />
-                                <LineSeries
-                                    data={tsRspTimeData} />
-                                <XAxis title="Time of Day"/>
-                                <YAxis title="Response Time"/>
-                            </FlexibleXYPlot>
+                    <Grid item style={{width: '85%', paddingRight: '10px'}}>
+
+                    <Grid container direction="row">
+                        <Grid item style={{width: '50%', padding: '10px'}}>
+                                <Grid item>
+                                    <h5>Response Time</h5>
+                                    <FlexibleXYPlot
+                                        height={300}
+                                        xType="time"
+                                        yDomain={[0,maxYRspTime+(maxYRspTime/5)]}>
+                                        <HorizontalGridLines />
+                                        <LineSeries
+                                            data={tsRspTimeData} />
+                                        <XAxis title="Time of Day"/>
+                                        <YAxis title="Response Time"/>
+                                    </FlexibleXYPlot>
+                                </Grid>
+                                <Grid item>
+                                    <h5>Availability</h5>
+                                    <FlexibleXYPlot
+                                        height={300}
+                                        xType="time"
+                                        yDomain={[0,maxYAvailability]}>
+                                        <HorizontalGridLines />
+                                        <LineMarkSeries
+                                            color="green"
+                                            data={tsAvailabilityData} />
+                                        <XAxis title="Time of Day"/>
+                                        <YAxis title="Availability"/>
+                                    </FlexibleXYPlot>
+                                </Grid>
                         </Grid>
-                        <Grid item>
-                            <h5>Availability</h5>
-                            <FlexibleXYPlot
-                                height={300}
-                                xType="time"
-                                yDomain={[0,maxYAvailability]}>
-                                <HorizontalGridLines />
-                                <LineMarkSeries
-                                    color="green"
-                                    data={tsAvailabilityData} />
-                                <XAxis title="Time of Day"/>
-                                <YAxis title="Availability"/>
-                            </FlexibleXYPlot>
+                        <Grid item style={{width: '50%', padding: '10px'}}>
+                            <Grid item>
+                                <h5>Response Time: Summary</h5>
+                                <FlexibleXYPlot
+                                    height={300}
+                                    xType="time"
+                                    yDomain={[0,summaryMaxYRspTime+(summaryMaxYRspTime/5)]}>
+                                    <HorizontalGridLines />
+                                    <LineSeries
+                                        data={summaryRspTimeData} />
+                                    <XAxis title="Time of Day"/>
+                                    <YAxis title="Response Time"/>
+                                </FlexibleXYPlot>
+                            </Grid>
+                            <Grid item>
+                                <h5>Availability: Summary</h5>
+                                <FlexibleXYPlot
+                                    height={300}
+                                    xType="time"
+                                    yDomain={[0,summaryMaxYAvailability]}>
+                                    <HorizontalGridLines />
+                                    <LineMarkSeries
+                                        color="green"
+                                        data={summaryAvailabilityData} />
+                                    <XAxis title="Time of Day"/>
+                                    <YAxis title="Availability"/>
+                                </FlexibleXYPlot>
+                            </Grid>
                         </Grid>
                     </Grid>
+                </Grid>
                 </Grid>
             </Grid>
         );

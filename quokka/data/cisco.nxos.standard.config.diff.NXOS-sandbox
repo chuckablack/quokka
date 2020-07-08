@@ -2,6 +2,9 @@ cfs eth distribute
 feature vpc
 feature telemetry
 vpc domain 10
+interface loopback99
+  description Full intf config via NETCONF
+  ip address 10.99.99.1/24
 telemetry
   sensor-group 1
     path sys/intf/phys-[eth1/11] depth 0

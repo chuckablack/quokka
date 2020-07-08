@@ -15,6 +15,7 @@ from quokka.models.apis import (
     get_all_services,
     get_service_ts_data,
     get_all_events,
+    get_service_summary_data,
 )
 import quokka.models.reset
 from quokka.controller.ThreadManager import ThreadManager
@@ -131,6 +132,7 @@ def service_ts():
         return "Must provide serviceid and datapoints", 400
 
     return {"service_data": get_service_ts_data(service_id, num_datapoints),
+            "service_summary": get_service_summary_data(service_id, num_datapoints),
             "service": get_service(service_id)}
 
 
@@ -150,6 +152,19 @@ def device_ts():
     device = info
     return {"device_data": get_device_ts_data(device_name, num_datapoints),
             "device": device}
+
+
+@app.route("/service/summary", methods=["GET"])
+def service_summary():
+
+    service_id = request.args.get("serviceid")
+    num_datapoints = request.args.get("datapoints")
+
+    if not service_id or not num_datapoints:
+        return "Must provide serviceid and datapoints", 400
+
+    return {"service_summary_data": get_service_summary_data(service_id, num_datapoints),
+            "service": get_service(service_id)}
 
 
 @app.route("/reset/devices", methods=["POST"])

@@ -15,6 +15,8 @@ from quokka.models.Event import Event
 from quokka.models.DeviceStatusTS import DeviceStatusTS
 from quokka.models.HostStatusTS import HostStatusTS
 from quokka.models.ServiceStatusTS import ServiceStatusTS
+from quokka.models.HostStatusSummary import HostStatusSummary
+from quokka.models.ServiceStatusSummary import ServiceStatusSummary
 
 from quokka.models.util import get_model_as_dict
 from quokka.controller.utils import log_console
@@ -344,6 +346,22 @@ def record_service_status(service):
     db.session.commit()
 
 
+def record_service_hourly_summaries(hourly_summaries):
+
+    for id, summary in hourly_summaries.items():
+
+        service_hourly_summary = dict()
+        service_hourly_summary["service_id"] = id
+        service_hourly_summary["timestamp"] = summary["hour"]
+        service_hourly_summary["availability"] = summary["availability"]
+        service_hourly_summary["response_time"] = summary["response_time"]
+
+        service_status_obj = ServiceStatusSummary(**service_hourly_summary)
+        db.session.add(service_status_obj)
+
+    db.session.commit()
+
+
 def get_host_ts_data(host_id, num_datapoints):
 
     host_ts_objs = (
@@ -391,6 +409,22 @@ def get_service_ts_data(service_id, num_datapoints):
     return service_ts_data
 
 
+def get_service_summary_data(service_id, num_datapoints):
+
+    service_summary_objs = (
+        db.session.query(ServiceStatusSummary).filter_by(**{"service_id": service_id})
+        .order_by(desc(ServiceStatusSummary.timestamp))
+        .limit(num_datapoints)
+        .all()
+    )
+
+    service_summary_data = list()
+    for service_ts_obj in service_summary_objs:
+        service_summary_data.append(get_model_as_dict(service_ts_obj))
+
+    return service_summary_data
+
+
 def get_service_ts_data_for_hour(service_id, hour):
 
     service_ts_objs = (
@@ -417,6 +451,21 @@ def get_device_ts_data(device_name, num_datapoints):
         db.session.query(DeviceStatusTS).filter_by(**{"device_id": device_id})
         .order_by(desc(DeviceStatusTS.timestamp))
         .limit(num_datapoints)
+        .all()
+    )
+
+    device_ts_data = list()
+    for device_ts_obj in device_ts_objs:
+        device_ts_data.append(get_model_as_dict(device_ts_obj))
+
+    return device_ts_data
+
+
+def get_device_ts_data_for_hour(device_id, hour):
+
+    device_ts_objs = (
+        db.session.query(DeviceStatusTS).filter_by(**{"device_id": device_id})
+        .filter(DeviceStatusTS.timestamp.startswith(hour))
         .all()
     )
 
