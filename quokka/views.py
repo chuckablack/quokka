@@ -16,6 +16,7 @@ from quokka.models.apis import (
     get_service_ts_data,
     get_all_events,
     get_service_summary_data,
+    get_host_summary_data,
 )
 import quokka.models.reset
 from quokka.controller.ThreadManager import ThreadManager
@@ -119,6 +120,7 @@ def host_ts():
         return "Must provide hostid and datapoints", 400
 
     return {"host_data": get_host_ts_data(host_id, num_datapoints),
+            "host_summary": get_host_summary_data(host_id, num_datapoints),
             "host": get_host(host_id)}
 
 

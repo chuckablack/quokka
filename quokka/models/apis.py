@@ -332,6 +332,22 @@ def record_host_status(host):
     db.session.commit()
 
 
+def record_host_hourly_summaries(hourly_summaries):
+
+    for host_id, summary in hourly_summaries.items():
+
+        host_hourly_summary = dict()
+        host_hourly_summary["host_id"] = host_id
+        host_hourly_summary["timestamp"] = summary["hour"]
+        host_hourly_summary["availability"] = summary["availability"]
+        host_hourly_summary["response_time"] = summary["response_time"]
+
+        host_status_obj = HostStatusSummary(**host_hourly_summary)
+        db.session.add(host_status_obj)
+
+    db.session.commit()
+
+
 def record_service_status(service):
 
     service_status = dict()
@@ -348,10 +364,10 @@ def record_service_status(service):
 
 def record_service_hourly_summaries(hourly_summaries):
 
-    for id, summary in hourly_summaries.items():
+    for service_id, summary in hourly_summaries.items():
 
         service_hourly_summary = dict()
-        service_hourly_summary["service_id"] = id
+        service_hourly_summary["service_id"] = service_id
         service_hourly_summary["timestamp"] = summary["hour"]
         service_hourly_summary["availability"] = summary["availability"]
         service_hourly_summary["response_time"] = summary["response_time"]
@@ -376,6 +392,22 @@ def get_host_ts_data(host_id, num_datapoints):
         host_ts_data.append(get_model_as_dict(host_ts_obj))
 
     return host_ts_data
+
+
+def get_host_summary_data(host_id, num_datapoints):
+
+    host_summary_objs = (
+        db.session.query(HostStatusSummary).filter_by(**{"host_id": host_id})
+        .order_by(desc(HostStatusSummary.timestamp))
+        .limit(num_datapoints)
+        .all()
+    )
+
+    host_summary_data = list()
+    for host_ts_obj in host_summary_objs:
+        host_summary_data.append(get_model_as_dict(host_ts_obj))
+
+    return host_summary_data
 
 
 def get_host_ts_data_for_hour(host_id, hour):

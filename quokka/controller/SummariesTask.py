@@ -10,6 +10,7 @@ from quokka.models.apis import (
     get_all_devices,
     get_device_ts_data_for_hour,
     record_service_hourly_summaries,
+    record_host_hourly_summaries,
 )
 
 
@@ -143,7 +144,8 @@ class SummariesTask:
 
             service_hourly_summaries = self.get_summaries(get_all_services(), "services", get_service_ts_data_for_hour)
             record_service_hourly_summaries(service_hourly_summaries)
-            self.get_summaries(get_all_hosts(), "hosts", get_host_ts_data_for_hour)
+            host_hourly_summaries = self.get_summaries(get_all_hosts(), "hosts", get_host_ts_data_for_hour)
+            record_host_hourly_summaries(host_hourly_summaries)
             self.get_summaries(get_all_devices(), "devices", get_device_ts_data_for_hour)
 
             self.current_hour = this_hour

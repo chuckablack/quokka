@@ -59,11 +59,15 @@ ThreadManager.start_summaries_thread()
 def shutdown():
 
     log_console("\n\n\n---> Entering shutdown sequence")
+
+    ThreadManager.initiate_terminate_all_threads()
+    
     ThreadManager.stop_discovery_thread()
-    ThreadManager.stop_device_threads()
     ThreadManager.stop_host_thread()
     ThreadManager.stop_service_thread()
     ThreadManager.stop_summaries_thread()
+    ThreadManager.stop_device_threads()
+
     log_console("\n---> all threads shut down, terminating.")
 
 

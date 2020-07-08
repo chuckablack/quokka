@@ -2,6 +2,7 @@ import {FlexibleXYPlot, HorizontalGridLines, LineMarkSeries, LineSeries, XAxis, 
 import React, {Component} from "react";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
+import getStatusData from "./util"
 
 class ServiceStatus extends Component {
 
@@ -41,56 +42,22 @@ class ServiceStatus extends Component {
 
     }
 
-    getStatusData(measurement, serviceData) {
-
-        let tsData = [];
-        let maxY = 0;
-        let yValue = 0;
-        // const serviceData = this.state.serviceData.service_data;
-        console.log(serviceData);
-
-        for (let i = 0; i < serviceData.length; i++) {
-
-            if (measurement === "RSP_TIME") {
-                yValue = (serviceData[i].response_time)/1000;
-            } else if (measurement === "AVAILABILITY") {
-                yValue = serviceData[i].availability ? 100 : 0;
-            } else if (measurement === "AVAILABILITY_SUMMARY") {
-                yValue = serviceData[i].availability;
-            }
-            else {
-                yValue = 0;
-            }
-
-            const tsDataItem = {x: new Date(serviceData[i].timestamp), y: yValue};
-            tsData.push(tsDataItem);
-            if (tsDataItem.y > maxY) {
-                maxY = tsDataItem.y;
-            }
-        }
-
-        console.log(tsData)
-        return {tsData: tsData, maxY: maxY};
-    }
-
     renderServices(dashboard) {
         dashboard.setState({show: "services"})
     }
 
     render() {
 
-        let data = this.getStatusData("RSP_TIME", this.state.serviceData.service_data);
+        let data = getStatusData("RSP_TIME", this.state.serviceData.service_data);
         const tsRspTimeData = data.tsData;
         const maxYRspTime = data.maxY;
-        data = this.getStatusData("AVAILABILITY", this.state.serviceData.service_data);
+        data = getStatusData("AVAILABILITY", this.state.serviceData.service_data);
         const tsAvailabilityData = data.tsData;
-        const maxYAvailability = data.maxY;
-        let summaryData = this.getStatusData("RSP_TIME", this.state.serviceData.service_summary);
+        let summaryData = getStatusData("RSP_TIME", this.state.serviceData.service_summary);
         const summaryRspTimeData = summaryData.tsData;
         const summaryMaxYRspTime = summaryData.maxY;
-        summaryData = this.getStatusData("AVAILABILITY_SUMMARY", this.state.serviceData.service_summary);
+        summaryData = getStatusData("AVAILABILITY_SUMMARY", this.state.serviceData.service_summary);
         const summaryAvailabilityData = summaryData.tsData;
-        const summaryMaxYAvailability = summaryData.maxY;
         return (
             <Grid container direction="column">
                 <Grid container direction="row" style={{paddingTop: '10px'}}>
@@ -127,7 +94,7 @@ class ServiceStatus extends Component {
                                     <FlexibleXYPlot
                                         height={300}
                                         xType="time"
-                                        yDomain={[0,maxYAvailability]}>
+                                        yDomain={[0,100]}>
                                         <HorizontalGridLines />
                                         <LineMarkSeries
                                             color="green"
@@ -156,7 +123,7 @@ class ServiceStatus extends Component {
                                 <FlexibleXYPlot
                                     height={300}
                                     xType="time"
-                                    yDomain={[0,summaryMaxYAvailability]}>
+                                    yDomain={[0,100]}>
                                     <HorizontalGridLines />
                                     <LineMarkSeries
                                         color="green"

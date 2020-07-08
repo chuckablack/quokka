@@ -21,6 +21,8 @@ class ThreadManager:
     service_monitor_thread = None
     discovery_task = None
     discovery_thread = None
+    summaries_task = None
+    summaries_thread = None
 
     @staticmethod
     def stop_device_threads():
@@ -129,3 +131,19 @@ class ThreadManager:
         ThreadManager.summaries_task = SummariesTask()
         ThreadManager.summaries_thread = threading.Thread(target=ThreadManager.summaries_task.start, args=(60,))
         ThreadManager.summaries_thread.start()
+
+    @staticmethod
+    def initiate_terminate_all_threads():
+
+        if ThreadManager.device_monitor_task and ThreadManager.device_monitor_thread:
+            ThreadManager.device_monitor_task.set_terminate()
+        if ThreadManager.compliance_monitor_task and ThreadManager.compliance_monitor_thread:
+            ThreadManager.compliance_monitor_task.set_terminate()
+        if ThreadManager.host_monitor_task and ThreadManager.host_monitor_thread:
+            ThreadManager.host_monitor_task.set_terminate()
+        if ThreadManager.service_monitor_task and ThreadManager.service_monitor_thread:
+            ThreadManager.service_monitor_task.set_terminate()
+        if ThreadManager.discovery_task and ThreadManager.discovery_thread:
+            ThreadManager.discovery_task.set_terminate()
+        if ThreadManager.summaries_task and ThreadManager.summaries_thread:
+            ThreadManager.summaries_task.set_terminate()

@@ -3,7 +3,6 @@
 +vrf definition Mgmt-intf
 + address-family ipv4
 +enable password cisco
--no aaa new-model
 -no ip domain lookup
 +ip domain name virl.info
 +crypto pki trustpoint TP-self-signed-2849329672
@@ -54,8 +53,6 @@
 + description to
 +interface GigabitEthernet3
 + description to
-- no ip address
-+ shutdown
 +interface GigabitEthernet4
 + description to
 - no ip address
@@ -71,5 +68,4 @@
 +line vty 0 4
 + exec-timeout 720 0
 + password cisco
-+ login local
 + transport input telnet ssh
