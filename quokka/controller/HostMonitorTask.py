@@ -14,8 +14,9 @@ class HostMonitorTask:
         self.terminate = False
 
     def set_terminate(self):
-        self.terminate = True
-        log_console(f"{self.__class__.__name__}: monitor:host Terminate pending")
+        if not self.terminate:
+            self.terminate = True
+            log_console(f"{self.__class__.__name__}: monitor:host Terminate pending")
 
     def monitor(self, interval):
 

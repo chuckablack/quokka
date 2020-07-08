@@ -97,7 +97,7 @@ class ThreadManager:
     @staticmethod
     def stop_discovery_thread():
 
-        log_console("--- ---> Shutting down discovery monitoring thread")
+        log_console("--- ---> Shutting down discovery thread")
 
         if ThreadManager.discovery_task and ThreadManager.discovery_thread:
             ThreadManager.discovery_task.set_terminate()

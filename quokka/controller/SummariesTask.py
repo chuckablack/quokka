@@ -20,8 +20,9 @@ class SummariesTask:
         self.current_hour = str(datetime.now())[:-13]
 
     def set_terminate(self):
-        self.terminate = True
-        log_console(f"{self.__class__.__name__}: Terminate pending")
+        if not self.terminate:
+            self.terminate = True
+            log_console(f"{self.__class__.__name__}: Terminate pending")
 
     # def get_device_summaries(self):
     #     log_console(f"Calculating device summaries for {self.current_hour}")
