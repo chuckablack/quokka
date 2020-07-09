@@ -2,7 +2,6 @@ cfs eth distribute
 feature vpc
 feature telemetry
 vpc domain 10
-    remote-as 65535
 telemetry
   sensor-group 1
     path sys/intf/phys-[eth1/11] depth 0
