@@ -30,7 +30,7 @@ class StatusGraphsGrid extends Component {
             <Grid container direction="row">
                 <Grid item style={{width: '50%', padding: '10px'}}>
                         <Grid item>
-                            <h5>Response Time</h5>
+                            <h5 align='center'>Response Time</h5>
                             <FlexibleXYPlot
                                 height={300}
                                 xType="time"
@@ -43,7 +43,7 @@ class StatusGraphsGrid extends Component {
                             </FlexibleXYPlot>
                         </Grid>
                         <Grid item>
-                            <h5>Availability</h5>
+                            <h5 align='center'>Availability</h5>
                             <FlexibleXYPlot
                                 height={300}
                                 xType="time"
@@ -59,7 +59,7 @@ class StatusGraphsGrid extends Component {
                 </Grid>
                 <Grid item style={{width: '50%', padding: '10px'}}>
                     <Grid item>
-                        <h5>Response Time: Summary</h5>
+                        <h5 align='center'>Response Time: Summary</h5>
                         <FlexibleXYPlot
                             height={300}
                             xType="time"
@@ -72,7 +72,7 @@ class StatusGraphsGrid extends Component {
                         </FlexibleXYPlot>
                     </Grid>
                     <Grid item>
-                        <h5>Availability: Summary</h5>
+                        <h5 align='center'>Availability: Summary</h5>
                         <FlexibleXYPlot
                             height={300}
                             xType="time"
