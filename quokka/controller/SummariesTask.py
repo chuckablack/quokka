@@ -11,6 +11,7 @@ from quokka.models.apis import (
     get_device_ts_data_for_hour,
     record_service_hourly_summaries,
     record_host_hourly_summaries,
+    log_event,
 )
 
 
@@ -23,78 +24,6 @@ class SummariesTask:
         if not self.terminate:
             self.terminate = True
             log_console(f"{self.__class__.__name__}: Terminate pending")
-
-    # def get_device_summaries(self):
-    #     log_console(f"Calculating device summaries for {self.current_hour}")
-    #     return
-    #
-    # def get_host_summaries(self):
-    #
-    #     log_console(f"Calculating host summaries for {self.current_hour}")
-    #     hosts = get_all_hosts()
-    #     for host in hosts:
-    #         host_ts_data = get_host_ts_data_for_hour(host["id"], self.current_hour)
-    #
-    #         host_hourly_summary = dict()
-    #         host_hourly_summary["hour"] = str(datetime.fromisoformat(self.current_hour))
-    #         host_hourly_summary["availability"] = 0
-    #         host_hourly_summary["response_time"] = 0
-    #
-    #         num_availability_records = 0
-    #         num_response_time_records = 0
-    #
-    #         for host_ts_data_item in host_ts_data:
-    #             num_availability_records += 1
-    #             if host_ts_data_item["availability"]:
-    #                 host_hourly_summary["availability"] += 100
-    #                 host_hourly_summary["response_time"] += host_ts_data_item["response_time"]
-    #                 num_response_time_records += 1
-    #
-    #         if num_response_time_records > 0:
-    #             host_hourly_summary["response_time"] = (
-    #                 host_hourly_summary["response_time"] / num_response_time_records
-    #             )
-    #         if num_availability_records > 0:
-    #             host_hourly_summary["availability"] = (
-    #                 host_hourly_summary["availability"] / num_response_time_records
-    #             )
-    #
-    #         log_console(f"Host hourly summary for {host['name']}: {host_hourly_summary}")
-    #
-    #     return
-    #
-    # def get_service_summaries(self):
-    #
-    #     log_console(f"Calculating service summaries for {self.current_hour}")
-    #     services = get_all_services()
-    #     for service in services:
-    #         service_ts_data = get_service_ts_data_for_hour(service["id"], self.current_hour)
-    #
-    #         service_hourly_summary = dict()
-    #         service_hourly_summary["hour"] = str(datetime.fromisoformat(self.current_hour))
-    #         service_hourly_summary["availability"] = 0
-    #         service_hourly_summary["response_time"] = 0
-    #
-    #         num_availability_records = 0
-    #         num_response_time_records = 0
-    #
-    #         for service_ts_data_item in service_ts_data:
-    #             num_availability_records += 1
-    #             if service_ts_data_item["availability"]:
-    #                 service_hourly_summary["availability"] += 100
-    #                 service_hourly_summary["response_time"] += service_ts_data_item["response_time"]
-    #                 num_response_time_records += 1
-    #
-    #         if num_response_time_records > 0:
-    #             service_hourly_summary["response_time"] = (
-    #                 service_hourly_summary["response_time"] / num_response_time_records
-    #             )
-    #         if num_availability_records > 0:
-    #             service_hourly_summary["availability"] = (
-    #                 service_hourly_summary["availability"] / num_availability_records
-    #             )
-    #
-    #         log_console(f"Service hourly summary for {service['name']}: {service_hourly_summary}")
 
     def get_summaries(self, items, item_type, get_hour_data_function):
 
@@ -131,6 +60,14 @@ class SummariesTask:
 
             log_console(f"Summary: {item_type} hourly summary for {item['name']}: {hourly_summary}")
             hourly_summaries[item["id"]] = hourly_summary
+
+            rsp_time_in_seconds = hourly_summary["response_time"] / 1000
+            if "sla_response_time" in item and rsp_time_in_seconds > item["sla_response_time"]:
+                info = f"SLA response time violation, {rsp_time_in_seconds} > {item['sla_response_time']}"
+                log_event(str(datetime.now())[:-3], item_type, item['name'], "WARNING", info)
+            if "sla_availability" in item and hourly_summary["availability"] < item["sla_availability"]:
+                info = f"SLA availability violation, {hourly_summary['availability']} < {item['sla_availability']}"
+                log_event(str(datetime.now())[:-3], item_type, item['name'], "WARNING", info)
 
         return hourly_summaries
 

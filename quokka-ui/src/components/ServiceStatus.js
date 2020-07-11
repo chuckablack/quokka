@@ -29,7 +29,8 @@ class ServiceStatus extends Component {
         const serviceId = this.state.serviceId;
 
         this.setState({isLoading: true});
-        let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/service/ts?serviceid=' + serviceId + '&datapoints=24'
+        let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/service/ts?serviceid='
+                                   + serviceId + '&datapoints=' + process.env.REACT_APP_NUM_DATAPOINTS
 
         fetch(requestUrl)
             .then(res => res.json())

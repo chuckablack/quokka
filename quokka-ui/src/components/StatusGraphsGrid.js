@@ -1,7 +1,6 @@
 import {FlexibleXYPlot, HorizontalGridLines, LineMarkSeries, LineSeries, XAxis, YAxis} from 'react-vis'
 import React, {Component} from "react";
 import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
 import getStatusData from "./util";
 import _ from "lodash";
 
@@ -61,7 +60,7 @@ class StatusGraphsGrid extends Component {
                             <HorizontalGridLines/>
                             <LineSeries
                                 data={tsRspTimeData}/>
-                            <XAxis title="Time of Day"/>
+                            <XAxis title="Time of Day" tickTotal={6}/>
                             <YAxis title="Response Time"/>
                         </FlexibleXYPlot>
                     </Grid>
@@ -75,7 +74,7 @@ class StatusGraphsGrid extends Component {
                             <LineMarkSeries
                                 color="green"
                                 data={tsAvailabilityData}/>
-                            <XAxis title="Time of Day"/>
+                            <XAxis title="Time of Day" tickTotal={6}/>
                             <YAxis title="Availability"/>
                         </FlexibleXYPlot>
                     </Grid>
@@ -91,7 +90,7 @@ class StatusGraphsGrid extends Component {
                             <LineSeries
                                 data={summaryRspTimeData}/>
                             {this.generateSLA(_.cloneDeep(summaryRspTimeData), slaResponseTime)}
-                            <XAxis title="Time of Day"/>
+                            <XAxis title="Time of Day" tickTotal={6}/>
                             <YAxis title="Response Time"/>
                         </FlexibleXYPlot>
                     </Grid>
@@ -106,7 +105,7 @@ class StatusGraphsGrid extends Component {
                                 color="green"
                                 data={summaryAvailabilityData}/>
                             {this.generateSLA(_.cloneDeep(summaryAvailabilityData), slaAvailability)}
-                            <XAxis title="Time of Day"/>
+                            <XAxis title="Time of Day" tickTotal={6}/>
                             <YAxis title="Availability"/>
                         </FlexibleXYPlot>
                     </Grid>

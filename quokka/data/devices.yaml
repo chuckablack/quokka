@@ -8,7 +8,7 @@
   ssh_username: developer
   vendor: cisco
   sla_availability: 95
-  sla_response_time: 3
+  sla_response_time: 15
 
 - id: 2
   ip_address: 10.0.0.2
@@ -20,7 +20,7 @@
   ssh_username: admin
   vendor: cisco
   sla_availability: 95
-  sla_response_time: 3
+  sla_response_time: 15
 
 #- id: 3
 #  ip_address: 192.168.254.200

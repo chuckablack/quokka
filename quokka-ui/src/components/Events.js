@@ -4,9 +4,6 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import Grid from "@material-ui/core/Grid";
 import 'typeface-roboto'
 import Backdrop from "@material-ui/core/Backdrop";
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import CancelIcon from '@material-ui/icons/Cancel';
-import {green, red} from '@material-ui/core/colors';
 import MaterialTable from "material-table";
 
 class Events extends Component {

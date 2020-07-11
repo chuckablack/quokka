@@ -14,8 +14,8 @@ class Device(db.Model):
 
     availability = db.Column(db.Boolean)
     response_time = db.Column(db.Integer)
-    sla_availability = db.Column(db.Integer)
-    sla_response_time = db.Column(db.Integer)
+    sla_availability = db.Column(db.Integer, default=0)
+    sla_response_time = db.Column(db.Integer, default=99999)
 
     last_heard = db.Column(db.Text)
 
