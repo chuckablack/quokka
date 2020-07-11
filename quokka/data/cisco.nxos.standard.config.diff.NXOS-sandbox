@@ -1,11 +1,7 @@
 cfs eth distribute
 feature vpc
 feature telemetry
-vlan 1-9,100-105
 vpc domain 10
-interface loopback98
-  description Configured using OpenConfig Model
-  ip address 10.98.98.1/24
 telemetry
   sensor-group 1
     path sys/intf/phys-[eth1/11] depth 0

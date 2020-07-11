@@ -12,6 +12,7 @@ class Host(db.Model):
 
     availability = db.Column(db.Boolean)
     response_time = db.Column(db.Integer)
+
     last_heard = db.Column(db.Text)
 
     def __repr__(self):

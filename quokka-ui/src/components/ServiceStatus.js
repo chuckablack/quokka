@@ -65,7 +65,9 @@ class ServiceStatus extends Component {
                     <Grid item style={{width: '85%', paddingRight: '10px'}}>
                         <StatusGraphsGrid
                             data={this.state.serviceData.service_data}
-                            summary={this.state.serviceData.service_summary}>
+                            summary={this.state.serviceData.service_summary}
+                            sla={{availability: this.state.serviceData.service.sla_availability,
+                                  response_time: this.state.serviceData.service.sla_response_time}}>
                         </StatusGraphsGrid>
                     </Grid>
 

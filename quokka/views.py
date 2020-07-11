@@ -156,19 +156,6 @@ def device_ts():
             "device": device}
 
 
-@app.route("/service/summary", methods=["GET"])
-def service_summary():
-
-    service_id = request.args.get("serviceid")
-    num_datapoints = request.args.get("datapoints")
-
-    if not service_id or not num_datapoints:
-        return "Must provide serviceid and datapoints", 400
-
-    return {"service_summary_data": get_service_summary_data(service_id, num_datapoints),
-            "service": get_service(service_id)}
-
-
 @app.route("/reset/devices", methods=["POST"])
 def reset_devices():
     ThreadManager.stop_device_threads()
