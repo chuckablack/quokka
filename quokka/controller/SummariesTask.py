@@ -63,10 +63,10 @@ class SummariesTask:
 
             rsp_time_in_seconds = hourly_summary["response_time"] / 1000
             if "sla_response_time" in item and rsp_time_in_seconds > item["sla_response_time"]:
-                info = f"SLA response time violation, {rsp_time_in_seconds} > {item['sla_response_time']}"
+                info = f"SLA response time violation, {rsp_time_in_seconds:.2f} > {item['sla_response_time']}"
                 log_event(str(datetime.now())[:-3], item_type, item['name'], "WARNING", info)
             if "sla_availability" in item and hourly_summary["availability"] < item["sla_availability"]:
-                info = f"SLA availability violation, {hourly_summary['availability']} < {item['sla_availability']}"
+                info = f"SLA availability violation, {hourly_summary['availability']:.2f} < {item['sla_availability']}"
                 log_event(str(datetime.now())[:-3], item_type, item['name'], "WARNING", info)
 
         return hourly_summaries
