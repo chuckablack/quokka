@@ -11,6 +11,7 @@ class Device(db.Model):
     mac_address = db.Column(db.Text)
     vendor = db.Column(db.Text)
     os = db.Column(db.Text)
+    transport = db.Column(db.Text)
 
     availability = db.Column(db.Boolean)
     response_time = db.Column(db.Integer)
@@ -26,10 +27,11 @@ class Device(db.Model):
     config_compliance = db.Column(db.Boolean)
     last_compliance_check = db.Column(db.Text)
 
-    ssh_hostname = db.Column(db.Text)
     ssh_port = db.Column(db.Integer)
-    ssh_username = db.Column(db.Text)
-    ssh_password = db.Column(db.Text)
+
+    hostname = db.Column(db.Text)
+    username = db.Column(db.Text)
+    password = db.Column(db.Text)
 
     def __repr__(self):
         return f"Device: {self.name}"

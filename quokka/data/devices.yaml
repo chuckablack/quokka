@@ -2,22 +2,36 @@
   ip_address: 10.0.0.1
   name: CSR-sandbox
   os: iosxe
-  ssh_hostname: ios-xe-mgmt-latest.cisco.com
-  ssh_password: C1sco12345
+  transport: SSH
+  hostname: ios-xe-mgmt-latest.cisco.com
+  password: C1sco12345
   ssh_port: 8181
-  ssh_username: developer
+  username: developer
   vendor: cisco
   sla_availability: 95
   sla_response_time: 15
 
 - id: 2
   ip_address: 10.0.0.2
-  name: NXOS-sandbox
-  os: nxos
-  ssh_hostname: sbx-nxos-mgmt.cisco.com
-  ssh_password: Admin_1234!
+  name: NXOS-sandbox (SSH)
+  os: nxos-ssh
+  transport: SSH
+  hostname: sbx-nxos-mgmt.cisco.com
+  password: Admin_1234!
   ssh_port: 8181
-  ssh_username: admin
+  username: admin
+  vendor: cisco
+  sla_availability: 95
+  sla_response_time: 15
+
+- id: 3
+  ip_address: 10.0.0.2
+  name: NXOS-sandbox (NX-API)
+  os: nxos
+  transport: NX-API
+  hostname: sbx-nxos-mgmt.cisco.com
+  password: Admin_1234!
+  username: admin
   vendor: cisco
   sla_availability: 95
   sla_response_time: 15

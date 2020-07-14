@@ -2,6 +2,7 @@ from datetime import datetime
 from time import sleep
 
 from quokka.controller.device.device_info import get_device_info
+from quokka.controller.device.device_status import get_device_status
 from quokka.controller.device.config_diff import config_diff
 from quokka.models.Compliance import Compliance
 from quokka.models.apis import get_all_devices
@@ -95,17 +96,8 @@ class ComplianceMonitorTask:
                 if self.terminate:
                     break
 
-                log_console(f"--- monitor:compliance get environment {device['name']}")
-                try:
-                    result, env = get_device_info(device["name"], "environment")
-                except BaseException as e:
-                    log_console(f"!!! Exception in monitoring compliance: {repr(e)}")
-                    continue
-
-                if result != "success":
-                    device["availability"] = False
-
-                else:
+                device["availability"] = get_device_status(device)["availability"]
+                if device["availability"]:
                     device["os_compliance"] = check_os_compliance(device)
                     device["config_compliance"] = check_config_compliance(device)
                     device["last_compliance_check"] = str(datetime.now())[:-3]

@@ -3,6 +3,34 @@ from quokka.models.apis import get_device, get_facts, set_facts
 from quokka.controller.utils import log_console
 
 
+def get_napalm_device(device):
+
+    if device["os"] == "ios" or device["os"] == "iosxe":
+        driver = napalm.get_network_driver("ios")
+    elif device["os"] == "nxos-ssh":
+        driver = napalm.get_network_driver("nxos_ssh")
+    elif device["os"] == "nxos":
+        driver = napalm.get_network_driver("nxos")
+    else:
+        return "failed", "Unsupported OS"
+
+    if device["os"] in {"ios", "iosxe", "nxos-ssh"}:
+        napalm_device = driver(
+            hostname=device["hostname"],
+            username=device["username"],
+            password=device["password"],
+            optional_args={"port": device["ssh_port"]},
+        )
+    else:
+        napalm_device = driver(
+            hostname=device["hostname"],
+            username=device["username"],
+            password=device["password"],
+        )
+
+    return napalm_device
+
+
 def get_device_info(device_name, requested_info, get_live_info=False):
 
     result, info = get_device(device_name=device_name)
@@ -17,19 +45,29 @@ def get_device_info(device_name, requested_info, get_live_info=False):
         if result == "success":
             return "success", {"facts": facts}
 
-    if device["os"] == "ios" or device["os"] == "iosxe":
-        driver = napalm.get_network_driver("ios")
-    elif device["os"] == "nxos":
-        driver = napalm.get_network_driver("nxos_ssh")
-    else:
-        return "failed", "Unsupported OS"
-
-    napalm_device = driver(
-        hostname=device["ssh_hostname"],
-        username=device["ssh_username"],
-        password=device["ssh_password"],
-        optional_args={"port": device["ssh_port"]},
-    )
+    # if device["os"] == "ios" or device["os"] == "iosxe":
+    #     driver = napalm.get_network_driver("ios")
+    # elif device["os"] == "nxos-ssh":
+    #     driver = napalm.get_network_driver("nxos_ssh")
+    # elif device["os"] == "nxos":
+    #     driver = napalm.get_network_driver("nxos")
+    # else:
+    #     return "failed", "Unsupported OS"
+    #
+    # if device["os"] in {"ios", "iosxe", "nxos-ssh"}:
+    #     napalm_device = driver(
+    #         hostname=device["hostname"],
+    #         username=device["username"],
+    #         password=device["password"],
+    #         optional_args={"port": device["ssh_port"]},
+    #     )
+    # else:
+    #     napalm_device = driver(
+    #         hostname=device["hostname"],
+    #         username=device["username"],
+    #         password=device["password"],
+    #     )
+    napalm_device = get_napalm_device(device)
 
     try:
         napalm_device.open()
@@ -55,6 +93,6 @@ def get_device_info(device_name, requested_info, get_live_info=False):
             return "failure", "Unknown requested info"
 
     except BaseException as e:
-        log_console(f"!!! Exception in monitoring device: {repr(e)}")
+        log_console(f"!!! Exception in get device info: {repr(e)}")
         return "failure", repr(e)
 

@@ -1,10 +1,9 @@
 import socket
 from datetime import datetime
-import time
 
 from time import sleep
 
-from quokka.controller.device.device_info import get_device_info
+from quokka.controller.device.device_status import get_device_status
 from quokka.models.apis import get_all_devices, set_device, record_device_status, log_event
 from quokka.controller.utils import log_console
 
@@ -44,7 +43,7 @@ class DeviceMonitorTask:
             for device in devices:
 
                 try:
-                    ip_address = socket.gethostbyname(device["ssh_hostname"])
+                    ip_address = socket.gethostbyname(device["hostname"])
                 except (socket.error, socket.gaierror) as e:
                     info = f"!!! Caught socket error {repr(e)}, continuing to next device"
                     log_console(info)
@@ -55,35 +54,58 @@ class DeviceMonitorTask:
                     break
 
                 log_console(f"--- monitor:device get environment {device['name']}")
-                time_start = time.time()
-                try:
-                    result, env = get_device_info(device["name"], "environment")
-                    response_time = time.time() - time_start
+                device_status = get_device_status(device)
 
-                except BaseException as e:
-                    info = f"!!! Exception in monitoring device: {repr(e)}"
-                    log_console(info)
-                    log_event(str(datetime.now())[:-3], "device", device['name'], "SEVERE", info)
-                    result = "failed"
+                # time_start = time.time()
+                # try:
+                #     result, env = get_device_info(device["name"], "environment")
+                #     response_time = time.time() - time_start
+                #
+                # except BaseException as e:
+                #     info = f"!!! Exception in monitoring device, get environment: {repr(e)}"
+                #     log_console(info)
+                #     log_event(str(datetime.now())[:-3], "device", device['name'], "SEVERE", info)
+                #     result = "failed"
+                #
+                # if result != "success":
+                #     env = None
+                #     time_start = time.time()
+                #     try:
+                #         result, facts = get_device_info(device["name"], "facts", get_live_info=True)
+                #         response_time = time.time() - time_start
+                #     except BaseException as e:
+                #         info = f"!!! Exception in monitoring device, get facts: {repr(e)}"
+                #         log_console(info)
+                #         log_event(str(datetime.now())[:-3], "device", device['name'], "SEVERE", info)
+                #         result = "failed"
+                #
+                # if result != "success":
+                #     device["availability"] = False
+                #     device["response_time"] = None
+                #     device["cpu"] = None
+                #     device["memory"] = None
+                #     log_event(str(datetime.now())[:-3], "device", device['name'], "SEVERE", "Availability failed")
+                #
+                # else:
+                #     if ip_address:
+                #         device["ip_address"] = ip_address
+                #
+                #     device["availability"] = True
+                #     device["response_time"] = int(response_time*1000)
+                #     device["last_heard"] = str(datetime.now())[:-3]
+                #
+                #     if env:
+                #         device["cpu"] = calculate_cpu(env["environment"]["cpu"])
+                #         device["memory"] = calculate_memory(env["environment"]["memory"])
 
-                if result != "success":
-                    device["availability"] = False
-                    device["response_time"] = None
-                    device["cpu"] = None
-                    device["memory"] = None
-                    log_event(str(datetime.now())[:-3], "device", device['name'], "SEVERE", "Availability failed")
+                device["ip_address"] = ip_address
+                device["availability"] = device_status["availability"]
+                device["response_time"] = device_status["response_time"]
+                device["cpu"] = device_status["cpu"]
+                device["memory"] = device_status["memory"]
 
-
-                else:
-                    if ip_address:
-                        device["ip_address"] = ip_address
-
-                    device["availability"] = True
-                    device["response_time"] = int(response_time*1000)
-                    device["last_heard"] = str(datetime.now())[:-3]
-
-                    device["cpu"] = calculate_cpu(env["environment"]["cpu"])
-                    device["memory"] = calculate_memory(env["environment"]["memory"])
+                if device_status["last_heard"]:
+                    device["last_heard"] = device_status["last_heard"]
 
                 record_device_status(device)
                 set_device(device)
