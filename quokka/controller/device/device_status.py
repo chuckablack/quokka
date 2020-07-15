@@ -26,6 +26,7 @@ def get_device_status(device):
     device_status["response_time"] = None
     device_status["cpu"] = None
     device_status["memory"] = None
+    device_status["last_heard"] = None
 
     env = None
     response_time = None

@@ -8,12 +8,24 @@ from quokka.models.apis import set_host
 from quokka.controller.utils import get_response_time
 from quokka.controller.utils import log_console
 
-from python_arptable import get_arp_table
 from pprint import pprint
+
+try:
+    from python_arptable import get_arp_table
+except FileNotFoundError as e:
+    log_console("!!! Error loading python_arptable, WSL perhaps issue?")
+    get_arp_table = None
 
 
 def learn_mac_addresses():
-    arp_table_list = get_arp_table()
+
+    try:
+        if get_arp_table:
+            arp_table_list = get_arp_table()
+        else:
+            return {}
+    except FileNotFoundError as e:
+        return {}
 
     arp_table = dict()
     for arp_entry in arp_table_list:
