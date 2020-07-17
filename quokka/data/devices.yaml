@@ -2,7 +2,7 @@
   ip_address: 10.0.0.1
   name: CSR-sandbox
   os: iosxe
-  transport: SSH
+  transport: napalm
   hostname: ios-xe-mgmt-latest.cisco.com
   password: C1sco12345
   ssh_port: 8181
@@ -15,7 +15,7 @@
   ip_address: 10.0.0.2
   name: NXOS-sandbox (SSH)
   os: nxos-ssh
-  transport: SSH
+  transport: napalm
   hostname: sbx-nxos-mgmt.cisco.com
   password: Admin_1234!
   ssh_port: 8181
@@ -28,7 +28,7 @@
   ip_address: 10.0.0.2
   name: NXOS-sandbox (NX-API)
   os: nxos
-  transport: NX-API
+  transport: napalm
   hostname: sbx-nxos-mgmt.cisco.com
   password: Admin_1234!
   username: admin
