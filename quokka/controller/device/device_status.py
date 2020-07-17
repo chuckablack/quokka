@@ -31,11 +31,11 @@ def get_device_status(device):
     env = None
     response_time = None
 
-    if device["os"] in {"ios", "iosxe", "nxos-ssh"}:
+    if device["os"] in {"ios", "iosxe", "nxos-ssh"} and device["transport"] == "napalm":
 
         try:
             time_start = time.time()
-            result, env = get_device_info(device["name"], "environment")
+            result, env = get_device_info(device, "environment")
             response_time = time.time() - time_start
         except BaseException as e:
             info = f"!!! Exception in monitoring device, get environment: {repr(e)}"
@@ -47,7 +47,7 @@ def get_device_status(device):
 
         try:
             time_start = time.time()
-            result, facts = get_device_info(device["name"], "facts", get_live_info=True)
+            result, facts = get_device_info(device, "facts", get_live_info=True)
             response_time = time.time() - time_start
         except BaseException as e:
             info = f"!!! Exception in monitoring device, get facts: {repr(e)}"

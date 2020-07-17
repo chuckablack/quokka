@@ -1,6 +1,10 @@
 import napalm
-from quokka.models.apis import get_device, get_facts, set_facts
+from quokka.models.apis import get_facts, set_facts
 from quokka.controller.utils import log_console
+from ncclient import manager
+# the following comment/lines are to workaround a PyCharm bug
+# noinspection PyUnresolvedReferences
+from xml.dom.minidom import parseString
 
 
 def get_napalm_device(device):
@@ -31,13 +35,18 @@ def get_napalm_device(device):
     return napalm_device
 
 
-def get_device_info(device_name, requested_info, get_live_info=False):
+def get_device_info(device, requested_info, get_live_info=False):
 
-    result, info = get_device(device_name=device_name)
-    if result == "failed":
-        return result, info
+    if device["transport"] == "napalm":
+        return get_device_info_napalm(device, requested_info, get_live_info)
+    elif device["transport"] == "ncclient":
+        # log_console(f"Getting device info via ncclient for {device['name']}")
+        return get_device_info_ncclient(device, requested_info, get_live_info)
+    else:
+        return "failure", "Unable to retrieve requested info from device"
 
-    device = info
+
+def get_device_info_napalm(device, requested_info, get_live_info=False):
 
     # Try to get the info from the DB first
     if requested_info == "facts" and not get_live_info:
@@ -45,28 +54,6 @@ def get_device_info(device_name, requested_info, get_live_info=False):
         if result == "success":
             return "success", {"facts": facts}
 
-    # if device["os"] == "ios" or device["os"] == "iosxe":
-    #     driver = napalm.get_network_driver("ios")
-    # elif device["os"] == "nxos-ssh":
-    #     driver = napalm.get_network_driver("nxos_ssh")
-    # elif device["os"] == "nxos":
-    #     driver = napalm.get_network_driver("nxos")
-    # else:
-    #     return "failed", "Unsupported OS"
-    #
-    # if device["os"] in {"ios", "iosxe", "nxos-ssh"}:
-    #     napalm_device = driver(
-    #         hostname=device["hostname"],
-    #         username=device["username"],
-    #         password=device["password"],
-    #         optional_args={"port": device["ssh_port"]},
-    #     )
-    # else:
-    #     napalm_device = driver(
-    #         hostname=device["hostname"],
-    #         username=device["username"],
-    #         password=device["password"],
-    #     )
     napalm_device = get_napalm_device(device)
 
     try:
@@ -96,3 +83,42 @@ def get_device_info(device_name, requested_info, get_live_info=False):
         log_console(f"!!! Exception in get device info: {repr(e)}")
         return "failure", repr(e)
 
+
+def get_device_info_ncclient(device, requested_info, get_live_info=False):
+
+    # Try to get the info from the DB first
+    if requested_info == "facts" and not get_live_info:
+        result, facts = get_facts(device["name"])
+        if result == "success":
+            return "success", {"facts": facts}
+
+    nc_connection = manager.connect(
+        host=device["hostname"],
+        port=device["netconf_port"],
+        username=device["username"],
+        password=device["password"],
+        device_params={"name": device["ncclient_name"]},
+        hostkey_verify=False,
+    )
+
+    config = nc_connection.get_config("running")
+    nc_connection.close_session()
+
+    if requested_info == "facts":
+        facts = {"vendor": device["vendor"]}
+
+        xml_doc = parseString(str(config))
+
+        version = xml_doc.getElementsByTagName("version")
+        hostname = xml_doc.getElementsByTagName("hostname")
+
+        if len(version) > 0:
+            facts["os_version"] = version[0].firstChild.nodeValue
+        if len(hostname) > 0:
+            facts["hostname"] = hostname[0].firstChild.nodeValue
+            facts["fqdn"] = hostname[0].firstChild.nodeValue
+
+        return "success", {"facts": facts}
+
+    else:
+        return "failure", "unsupported requested info"

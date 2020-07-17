@@ -56,48 +56,6 @@ class DeviceMonitorTask:
                 log_console(f"--- monitor:device get environment {device['name']}")
                 device_status = get_device_status(device)
 
-                # time_start = time.time()
-                # try:
-                #     result, env = get_device_info(device["name"], "environment")
-                #     response_time = time.time() - time_start
-                #
-                # except BaseException as e:
-                #     info = f"!!! Exception in monitoring device, get environment: {repr(e)}"
-                #     log_console(info)
-                #     log_event(str(datetime.now())[:-3], "device", device['name'], "SEVERE", info)
-                #     result = "failed"
-                #
-                # if result != "success":
-                #     env = None
-                #     time_start = time.time()
-                #     try:
-                #         result, facts = get_device_info(device["name"], "facts", get_live_info=True)
-                #         response_time = time.time() - time_start
-                #     except BaseException as e:
-                #         info = f"!!! Exception in monitoring device, get facts: {repr(e)}"
-                #         log_console(info)
-                #         log_event(str(datetime.now())[:-3], "device", device['name'], "SEVERE", info)
-                #         result = "failed"
-                #
-                # if result != "success":
-                #     device["availability"] = False
-                #     device["response_time"] = None
-                #     device["cpu"] = None
-                #     device["memory"] = None
-                #     log_event(str(datetime.now())[:-3], "device", device['name'], "SEVERE", "Availability failed")
-                #
-                # else:
-                #     if ip_address:
-                #         device["ip_address"] = ip_address
-                #
-                #     device["availability"] = True
-                #     device["response_time"] = int(response_time*1000)
-                #     device["last_heard"] = str(datetime.now())[:-3]
-                #
-                #     if env:
-                #         device["cpu"] = calculate_cpu(env["environment"]["cpu"])
-                #         device["memory"] = calculate_memory(env["environment"]["memory"])
-
                 device["ip_address"] = ip_address
                 device["availability"] = device_status["availability"]
                 device["response_time"] = device_status["response_time"]

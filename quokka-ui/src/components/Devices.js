@@ -80,6 +80,7 @@ class Devices extends Component {
                                     : <CancelIcon style={{color: red[500]}}/>,
                         },
                         { title: 'Name', field: 'name', defaultSort: 'asc' },
+                        { title: 'Hostname', field: 'hostname', defaultSort: 'asc' },
                         { title: 'Vendor:OS', render: rowData => rowData.vendor + ":" + rowData.os},
                         { title: 'IP Address', field: 'ip_address' },
                         { title: 'CPU%', field: 'cpu' },

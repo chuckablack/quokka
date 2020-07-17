@@ -22,7 +22,6 @@ db.create_all()
 from quokka.models.apis import import_devices, import_compliance, import_services
 from quokka.models.apis import get_all_devices, set_facts
 from quokka.models.Host import Host
-from quokka.controller.device.device_info import get_device_info
 
 import_devices(filename="devices.yaml", filetype="yaml")
 import_compliance(filename="compliance.yaml")
@@ -40,13 +39,6 @@ DeviceStatusTS.query.delete()
 HostStatusTS.query.delete()
 ServiceStatusTS.query.delete()
 Event.query.delete()
-
-# Pre-populate the DB with device facts
-# devices = get_all_devices()
-# for device in devices:
-#     result, facts = get_device_info(device_name=device["name"], requested_info="facts")
-#     if result == "success":
-#         set_facts(device, facts)
 
 from quokka.controller.ThreadManager import ThreadManager
 ThreadManager.start_device_threads()

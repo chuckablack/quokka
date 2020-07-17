@@ -28,6 +28,8 @@ class Device(db.Model):
     last_compliance_check = db.Column(db.Text)
 
     ssh_port = db.Column(db.Integer)
+    ncclient_name = db.Column(db.Text)
+    netconf_port = db.Column(db.Integer)
 
     hostname = db.Column(db.Text)
     username = db.Column(db.Text)

@@ -18,7 +18,7 @@ def check_os_compliance(device):
         return False
 
     try:
-        result, facts = get_device_info(device["name"], "facts", get_live_info=True)
+        result, facts = get_device_info(device, "facts", get_live_info=True)
     except BaseException as e:
         log_console(f"!!! Exception getting device info in compliance monitoring for {device['name']}")
         result = "failed"
@@ -49,28 +49,6 @@ def check_config_compliance(device):
         with open(standard_filename + ".diff." + device["name"], "w") as config_out:
             config_out.write(diff)
         return False
-
-    return True
-
-    # result, config = get_device_info(device["name"], "config")
-    # if result != "success" or "config" not in config or "running" not in config["config"]:
-    #     log_console(f"!!! Error retrieving running config for this device {device['name']}")
-    #     return False
-    #
-    # config_running = config["config"]["running"]
-    #
-    # try:
-    #     # standard_filename = "quokka/data/" + device["vendor"] + "." + device["os"] + "." + "standard.config"
-    #     with open(standard_filename, "r") as config_out:
-    #         config_standard = config_out.read()
-    # except (FileExistsError, FileNotFoundError) as e:
-    #     log_console(f"!!! Error retrieving compliance standard file {standard_filename} for device {device['name']}")
-    #     return False
-
-    # if config_running != config_standard:
-    #     with open(standard_filename.replace("standard", "running" + "." + device["name"]), "w") as config_out:
-    #         config_out.write(config_running)
-    #     return False
 
     return True
 

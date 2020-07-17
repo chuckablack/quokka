@@ -61,6 +61,12 @@ def device_info():
 
         if not device_name or not requested_info:
             return "Must provide device and info", 400
+
+        result, info = get_device(device_name=device_name)
+        if result == "failed":
+            return info, 406
+        device = info
+
         if not live:
             get_live_info = False
         else:
@@ -69,9 +75,7 @@ def device_info():
             else:
                 get_live_info = bool(live)
 
-        status, result_info = get_device_info(
-            device_name, requested_info, get_live_info
-        )
+        status, result_info = get_device_info(device, requested_info, get_live_info)
         if status == "success":
             return result_info, 200
         else:
@@ -119,9 +123,11 @@ def host_ts():
     if not host_id or not num_datapoints:
         return "Must provide hostid and datapoints", 400
 
-    return {"host_data": get_host_ts_data(host_id, num_datapoints),
-            "host_summary": get_host_summary_data(host_id, num_datapoints),
-            "host": get_host(host_id)}
+    return {
+        "host_data": get_host_ts_data(host_id, num_datapoints),
+        "host_summary": get_host_summary_data(host_id, num_datapoints),
+        "host": get_host(host_id),
+    }
 
 
 @app.route("/service/ts", methods=["GET"])
@@ -133,9 +139,11 @@ def service_ts():
     if not service_id or not num_datapoints:
         return "Must provide serviceid and datapoints", 400
 
-    return {"service_data": get_service_ts_data(service_id, num_datapoints),
-            "service_summary": get_service_summary_data(service_id, num_datapoints),
-            "service": get_service(service_id)}
+    return {
+        "service_data": get_service_ts_data(service_id, num_datapoints),
+        "service_summary": get_service_summary_data(service_id, num_datapoints),
+        "service": get_service(service_id),
+    }
 
 
 @app.route("/device/ts", methods=["GET"])
@@ -152,8 +160,10 @@ def device_ts():
         return "Could not find device in DB", 404
 
     device = info
-    return {"device_data": get_device_ts_data(device_name, num_datapoints),
-            "device": device}
+    return {
+        "device_data": get_device_ts_data(device_name, num_datapoints),
+        "device": device,
+    }
 
 
 @app.route("/reset/devices", methods=["POST"])
