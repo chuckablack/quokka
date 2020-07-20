@@ -74,6 +74,9 @@ class ComplianceMonitorTask:
                 if self.terminate:
                     break
 
+                if device["transport"] == "HTTP-REST":
+                    continue  # HTTP-REST devices (e.g. sdwan) communicate to us, we don't poll them
+
                 device["availability"] = get_device_status(device)["availability"]
                 if device["availability"]:
                     device["os_compliance"] = check_os_compliance(device)

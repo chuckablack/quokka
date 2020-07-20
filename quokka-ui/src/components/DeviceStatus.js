@@ -27,7 +27,7 @@ class DeviceDashboard extends Component {
 
         const deviceName = this.state.deviceName;
 
-        let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/device/ts?device='
+        let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/ui/device/ts?device='
                                    + deviceName + '&datapoints=' + process.env.REACT_APP_NUM_DATAPOINTS
 
         fetch(requestUrl)
@@ -124,7 +124,7 @@ class DeviceDashboard extends Component {
                             <FlexibleXYPlot
                                 height={300}
                                 xType="time"
-                                yDomain={[0,maxYCpu+(maxYCpu/5)]}>
+                                yDomain={[0,100]}>
                                 <HorizontalGridLines />
                                 <LineSeries
                                     data={tsCpuData} />
@@ -137,7 +137,7 @@ class DeviceDashboard extends Component {
                             <FlexibleXYPlot
                                 height={300}
                                 xType="time"
-                                yDomain={[0,maxYMemory+(maxYMemory/5)]}>
+                                yDomain={[0,100]}>
                                 <HorizontalGridLines />
                                 <LineSeries
                                     data={tsMemoryData} />

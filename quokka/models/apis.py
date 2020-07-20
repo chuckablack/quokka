@@ -83,6 +83,8 @@ def set_device(device):
     else:
         if "ip_address" in device and device["ip_address"]:
             device_obj.ip_address = device["ip_address"]
+        if "serial" in device and device["serial"]:
+            device_obj.serial = device["serial"]
         if "mac_address" in device and device["mac_address"]:
             device_obj.mac_address = device["mac_address"]
         if "availability" in device and device["availability"] is not None:

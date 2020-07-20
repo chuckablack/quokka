@@ -37,17 +37,17 @@
   sla_availability: 95
   sla_response_time: 15
 
-- id: 4
-  ip_address:
-  name: NXOS-sandbox (NX-API)
-  os: nxos
-  transport: napalm
-  hostname: sbx-nxos-mgmt.cisco.com
-  password: Admin_1234!
-  username: admin
-  vendor: cisco
-  sla_availability: 95
-  sla_response_time: 15
+#- id: 4
+#  ip_address:
+#  name: NXOS-sandbox (NX-API)
+#  os: nxos
+#  transport: napalm
+#  hostname: sbx-nxos-mgmt.cisco.com
+#  password: Admin_1234!
+#  username: admin
+#  vendor: cisco
+#  sla_availability: 95
+#  sla_response_time: 15
 
 - id: 5
   ip_address:
@@ -62,3 +62,48 @@
   vendor: cisco
   sla_availability: 95
   sla_response_time: 15
+
+- id: 6
+  ip_address:
+  name: SDWAN-LA
+  serial: 111-111-111
+  os: ios-sdwan
+  transport: HTTP-REST
+  hostname: sdwan-la-downtown.cisco.com
+  vendor: cisco
+
+- id: 7
+  ip_address:
+  name: SDWAN-SF
+  serial: 111-111-112
+  os: ios-sdwan
+  transport: HTTP-REST
+  hostname: sdwan-sf-fishermans-wharf.cisco.com
+  vendor: cisco
+
+- id: 8
+  ip_address:
+  name: SDWAN-Seattle
+  serial: 111-111-113
+  os: ios-sdwan
+  transport: HTTP-REST
+  hostname: sdwan-seattle-downtown.cisco.com
+  vendor: cisco
+
+- id: 9
+  ip_address:
+  name: SDWAN-Denver
+  serial: 111-111-114
+  os: ios-sdwan
+  transport: HTTP-REST
+  hostname: sdwan-denver-uptown.cisco.com
+  vendor: cisco
+
+- id: 10
+  ip_address:
+  serial: 111-111-115
+  name: SDWAN-Atlanta
+  os: ios-sdwan
+  transport: HTTP-REST
+  hostname: sdwan-atlanta-midtown
+  vendor: cisco

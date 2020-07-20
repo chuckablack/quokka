@@ -22,7 +22,7 @@ import quokka.models.reset
 from quokka.controller.ThreadManager import ThreadManager
 
 
-@app.route("/devices", methods=["GET", "POST"])
+@app.route("/ui/devices", methods=["GET", "POST"])
 def devices():
 
     to_file = request.args.get("export_to")
@@ -50,7 +50,7 @@ def devices():
         return "Invalid request method"
 
 
-@app.route("/device", methods=["GET"])
+@app.route("/ui/device", methods=["GET"])
 def device_info():
 
     if request.method == "GET":
@@ -82,7 +82,7 @@ def device_info():
             return result_info, 406
 
 
-@app.route("/hosts", methods=["GET"])
+@app.route("/ui/hosts", methods=["GET"])
 def hosts():
 
     if request.method == "GET":
@@ -92,7 +92,7 @@ def hosts():
         return "Invalid request method"
 
 
-@app.route("/events", methods=["GET"])
+@app.route("/ui/events", methods=["GET"])
 def events():
 
     num_events = request.args.get("num_events", default=1000)
@@ -104,7 +104,7 @@ def events():
         return "Invalid request method"
 
 
-@app.route("/services", methods=["GET"])
+@app.route("/ui/services", methods=["GET"])
 def services():
 
     if request.method == "GET":
@@ -114,7 +114,7 @@ def services():
         return "Invalid request method"
 
 
-@app.route("/host/ts", methods=["GET"])
+@app.route("/ui/host/ts", methods=["GET"])
 def host_ts():
 
     host_id = request.args.get("hostid")
@@ -130,7 +130,7 @@ def host_ts():
     }
 
 
-@app.route("/service/ts", methods=["GET"])
+@app.route("/ui/service/ts", methods=["GET"])
 def service_ts():
 
     service_id = request.args.get("serviceid")
@@ -146,7 +146,7 @@ def service_ts():
     }
 
 
-@app.route("/device/ts", methods=["GET"])
+@app.route("/ui/device/ts", methods=["GET"])
 def device_ts():
 
     device_name = request.args.get("device")
@@ -166,7 +166,7 @@ def device_ts():
     }
 
 
-@app.route("/reset/devices", methods=["POST"])
+@app.route("/ui/reset/devices", methods=["POST"])
 def reset_devices():
     ThreadManager.stop_device_threads()
     quokka.models.reset.reset_devices()
@@ -174,7 +174,7 @@ def reset_devices():
     return "Devices reset"
 
 
-@app.route("/reset/hosts", methods=["POST"])
+@app.route("/ui/reset/hosts", methods=["POST"])
 def reset_hosts():
     ThreadManager.stop_host_thread()
     quokka.models.reset.reset_hosts()
@@ -182,7 +182,7 @@ def reset_hosts():
     return "Hosts reset"
 
 
-@app.route("/reset/services", methods=["POST"])
+@app.route("/ui/reset/services", methods=["POST"])
 def reset_services():
     ThreadManager.stop_service_thread()
     quokka.models.reset.reset_services()
@@ -190,7 +190,7 @@ def reset_services():
     return "Services reset"
 
 
-@app.route("/reset/events", methods=["POST"])
+@app.route("/ui/reset/events", methods=["POST"])
 def reset_events():
     quokka.models.reset.reset_events()
     return "Services reset"

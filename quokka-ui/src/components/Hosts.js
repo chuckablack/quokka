@@ -31,7 +31,7 @@ class Hosts extends Component {
     fetchHosts() {
 
         this.setState({isLoading: true});
-        let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/hosts'
+        let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/ui/hosts'
         fetch(requestUrl)
             .then(res => res.json())
             .then((data) => {

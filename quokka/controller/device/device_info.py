@@ -118,6 +118,14 @@ def get_device_info_ncclient(device, requested_info, get_live_info=False):
             facts["hostname"] = hostname[0].firstChild.nodeValue
             facts["fqdn"] = hostname[0].firstChild.nodeValue
 
+        serial_number = """
+            <System xmlns="http://cisco.com/ns/yang/cisco-nx-os-device">
+            <serial/>
+            </System>
+            """
+        rsp = nc_connection.get(("subtree", serial_number))
+        xml_doc = parseString(str(rsp))
+
         return "success", {"facts": facts}
 
     else:

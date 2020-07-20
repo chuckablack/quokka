@@ -1,11 +1,12 @@
 import socket
-from datetime import datetime
-
+from datetime import datetime, timedelta
 from time import sleep
 
 from quokka.controller.device.device_status import get_device_status
-from quokka.models.apis import get_all_devices, set_device, record_device_status, log_event
 from quokka.controller.utils import log_console
+from quokka.models.apis import get_all_devices, set_device, record_device_status, log_event
+
+MAX_NOT_HEARD_MINUTES = 5  # For SDWAN, if we haven't heard in 5 minutes, mark device 'unavailable'
 
 
 def calculate_cpu(cpu):
@@ -41,6 +42,19 @@ class DeviceMonitorTask:
             devices = get_all_devices()
             log_console(f"Monitor: Beginning monitoring for {len(devices)} devices")
             for device in devices:
+
+                if device["transport"] == "HTTP-REST":
+                    if not device["last_heard"]:
+                        continue
+
+                    last_heard_time = datetime.strptime(device["last_heard"], "%Y-%m-%d %H:%M:%S.%f")
+                    print(f"now: {datetime.now()}, last_heard: {last_heard_time}")
+                    if (datetime.now() - last_heard_time) > timedelta(minutes=MAX_NOT_HEARD_MINUTES):
+                        device["availability"] = False
+                        record_device_status(device)
+                        set_device(device)
+
+                    continue  # HTTP-REST devices (e.g. sdwan) communicate to us, we don't poll them
 
                 try:
                     ip_address = socket.gethostbyname(device["hostname"])

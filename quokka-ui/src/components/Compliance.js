@@ -31,7 +31,7 @@ class Compliance extends Component {
     fetchCompliance() {
 
         this.setState({isLoading: true});
-        let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/devices'
+        let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/ui/devices'
         fetch(requestUrl)
             .then(res => res.json())
             .then((data) => {

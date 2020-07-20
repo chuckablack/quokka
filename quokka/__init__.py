@@ -14,7 +14,8 @@ from flask_sqlalchemy import SQLAlchemy
 app.config["SQLALCHEMY_DATABASE_URI"] = 'postgres:///quokka'
 db = SQLAlchemy(app)
 
-import quokka.views
+import quokka.views.ui_views
+import quokka.views.device_views
 import quokka.models
 
 db.create_all()

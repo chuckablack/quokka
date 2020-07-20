@@ -7,6 +7,7 @@ class Device(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text, unique=True, nullable=False)
+    serial = db.Column(db.Text)
     ip_address = db.Column(db.Text)
     mac_address = db.Column(db.Text)
     vendor = db.Column(db.Text)

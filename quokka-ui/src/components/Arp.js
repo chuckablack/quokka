@@ -25,7 +25,7 @@ class Arp extends Component {
         const deviceName = this.state.deviceName
 
         this.setState({isLoading: true});
-        fetch('http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/device?device=' + deviceName + '&info=arp')
+        fetch('http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/ui/device?device=' + deviceName + '&info=arp')
             .then(res => res.json())
             .then((data) => {
                 this.setState({arp_table: data, isLoading: false})

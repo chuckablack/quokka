@@ -13,7 +13,7 @@ class Interfaces extends Component {
     componentDidMount() {
         this.setState({isLoading: true});
 
-        fetch('http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/device?device=devnet-csr-always-on-sandbox&info=interfaces')
+        fetch('http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/ui/device?device=devnet-csr-always-on-sandbox&info=interfaces')
             .then(res => res.json())
             .then((data) => {
                 this.setState({interfaces_table: data, isLoading: false})
