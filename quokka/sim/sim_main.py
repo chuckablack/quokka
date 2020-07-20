@@ -4,7 +4,7 @@ import random
 import time
 
 filename = "devices.yaml"
-with open("../../quokka/data/" + filename, "r") as import_file:
+with open("quokka/data/" + filename, "r") as import_file:
     devices = yaml.load(import_file.read())
 
 while True:
@@ -26,6 +26,7 @@ while True:
             "memory": memory,
         }
 
+        print(f"sdwan sim for {device['name']}, heartbeat_info: {heartbeat_info}")
         rsp = requests.post("http://192.168.254.114:5000/device/heartbeat", json=heartbeat_info)
 
     time.sleep(60)
