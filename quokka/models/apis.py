@@ -43,7 +43,6 @@ def get_device(device_id=None, device_name=None):
 
 def get_all_devices():
 
-    # device_objs = Device.query.all()
     device_objs = db.session.query(Device).all()
 
     devices = list()
@@ -51,6 +50,12 @@ def get_all_devices():
         devices.append(get_model_as_dict(device_obj))
 
     return devices
+
+
+def get_all_device_ids():
+
+    device_ids = db.session.query(Device.id).all()
+    return [id for id, in device_ids]  # The query returns IDs in tuples, this strips the tuple-ness
 
 
 def get_facts(device_name):

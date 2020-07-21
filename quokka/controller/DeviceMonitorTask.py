@@ -4,9 +4,9 @@ from time import sleep
 
 from quokka.controller.device.device_status import get_device_status
 from quokka.controller.utils import log_console
-from quokka.models.apis import get_all_devices, set_device, record_device_status, log_event
+from quokka.models.apis import get_all_device_ids, get_device, set_device, record_device_status, log_event
 
-MAX_NOT_HEARD_MINUTES = 5  # For SDWAN, if we haven't heard in 5 minutes, mark device 'unavailable'
+MAX_NOT_HEARD_SECONDS = 90  # For sdwan devices, time to have not seen a heartbeat
 
 
 def calculate_cpu(cpu):
@@ -39,9 +39,18 @@ class DeviceMonitorTask:
 
         while True and not self.terminate:
 
-            devices = get_all_devices()
-            log_console(f"Monitor: Beginning monitoring for {len(devices)} devices")
-            for device in devices:
+            # We get device IDs every time through, so that we can then re-retrieve the device object.
+            # The reason for this is because other entities may have changed device (e.g. SDWAN heartbeats)
+            device_ids = get_all_device_ids()
+            log_console(f"Monitor: Beginning monitoring for {len(device_ids)} devices")
+
+            for device_id in device_ids:
+
+                result, device = get_device(device_id=device_id)  # re-retrieve device as it may have been changed
+
+                if result != "success":
+                    log_console(f"Device Monitor: Error retrieving device from DB. id: {device_id}, error: {device}")
+                    continue
 
                 if device["transport"] == "HTTP-REST":
                     if not device["last_heard"]:
@@ -49,7 +58,7 @@ class DeviceMonitorTask:
 
                     last_heard_time = datetime.strptime(device["last_heard"], "%Y-%m-%d %H:%M:%S.%f")
                     print(f"now: {datetime.now()}, last_heard: {last_heard_time}")
-                    if (datetime.now() - last_heard_time) > timedelta(minutes=MAX_NOT_HEARD_MINUTES):
+                    if (datetime.now() - last_heard_time) > timedelta(seconds=MAX_NOT_HEARD_SECONDS):
                         device["availability"] = False
                         record_device_status(device)
                         set_device(device)

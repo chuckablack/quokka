@@ -1,17 +1,16 @@
 from datetime import datetime
 from time import sleep
 
-from quokka.controller.device.device_info import get_device_info
-from quokka.controller.device.device_status import get_device_status
 from quokka.controller.device.config_diff import config_diff
-from quokka.models.Compliance import Compliance
-from quokka.models.apis import get_all_devices
-from quokka.models.apis import set_device
+from quokka.controller.device.device_info import get_device_info
 from quokka.controller.utils import log_console
+from quokka.models.Compliance import Compliance
+from quokka.models.apis import get_all_device_ids, get_device, set_device
 
 
 def check_os_compliance(device):
 
+    facts = None
     standard = Compliance.query.filter_by(**{"vendor": device["vendor"], "os": device["os"]}).one_or_none()
     if standard is None:
         log_console(f"!!! Error retrieving compliance record for this device {device['name']}")
@@ -20,17 +19,17 @@ def check_os_compliance(device):
     try:
         result, facts = get_device_info(device, "facts", get_live_info=True)
     except BaseException as e:
-        log_console(f"!!! Exception getting device info in compliance monitoring for {device['name']}")
+        log_console(f"!!! Exception getting device info in compliance monitoring for {device['name']}: {repr(e)}")
         result = "failed"
 
-    if result == "success":
-        if standard.standard_version == facts["facts"]["os_version"]:
-            return True
-        else:
-            return False  # Just a normal incorrect version
-    else:
+    if result == "failed" or not facts:
         log_console(f"!!! Error retrieving version info for this device {device['name']}")
         return False
+
+    if standard.standard_version == facts["facts"]["os_version"]:
+        return True
+    else:
+        return False  # Just a normal incorrect version
 
 
 def check_config_compliance(device):
@@ -67,17 +66,22 @@ class ComplianceMonitorTask:
 
         while True and not self.terminate:
 
-            devices = get_all_devices()
-            log_console(f"Monitor: Beginning compliance monitoring for {len(devices)} devices")
-            for device in devices:
+            # We get device IDs every time through, so that we can then re-retrieve the device object.
+            # The reason for this is because other entities may have changed device (e.g. SDWAN heartbeats)
+            device_ids = get_all_device_ids()
+            log_console(f"Monitor: Beginning compliance monitoring for {len(device_ids)} devices")
+
+            for device_id in device_ids:
 
                 if self.terminate:
                     break
 
-                if device["transport"] == "HTTP-REST":
-                    continue  # HTTP-REST devices (e.g. sdwan) communicate to us, we don't poll them
+                result, device = get_device(device_id=device_id)  # re-retrieve device as it may have been changed
 
-                device["availability"] = get_device_status(device)["availability"]
+                if result != "success":
+                    log_console(f"Device Monitor: Error retrieving device from DB. id: {device_id}, error: {device}")
+                    continue
+
                 if device["availability"]:
                     device["os_compliance"] = check_os_compliance(device)
                     device["config_compliance"] = check_config_compliance(device)

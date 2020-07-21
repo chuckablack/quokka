@@ -105,7 +105,12 @@ def get_device_info_ncclient(device, requested_info, get_live_info=False):
     nc_connection.close_session()
 
     if requested_info == "facts":
-        facts = {"vendor": device["vendor"]}
+        facts = {"vendor": device["vendor"],
+                 "os_version": None,
+                 "hostname": None,
+                 "fqdn": None,
+                 "serial_number": None
+                 }
 
         xml_doc = parseString(str(config))
 
