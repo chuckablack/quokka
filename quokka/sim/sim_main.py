@@ -2,6 +2,7 @@ import yaml
 import requests
 import random
 import time
+import psutil
 from datetime import datetime
 
 NUM_CONSECUTIVE_FAILURES_REQUIRED = 3
@@ -39,14 +40,13 @@ while True:
             consecutive_failures[device["id"]] = NUM_CONSECUTIVE_FAILURES_REQUIRED
             continue
 
-        response_time = random.randint(2000, 7500)
-        cpu = random.randint(20, 50)
-        memory = random.randint(30, 50)
+        cpu = psutil.cpu_percent()
+        memory = psutil.virtual_memory()[2]
 
         heartbeat_info = {
             "name": device["name"],
             "serial": device["serial"],
-            "response_time": response_time,
+            "response_time": device["response_time"] if "response_time" in device else 0,
             "cpu": cpu,
             "memory": memory,
         }
@@ -56,15 +56,19 @@ while True:
         )
 
         try:
+            start = time.time()
             rsp = requests.post(
                 "http://192.168.254.114:5000/device/heartbeat", json=heartbeat_info
             )
+            device["response_time"] = (time.time() - start) * 1000
             if rsp.status_code != 200:
                 print(
                     f"{str(datetime.now())[:-3]}: --- response: {rsp.status_code}, {rsp.json()}"
                 )
         except BaseException as e:
             print(f"Error in connecting to quokka server: {repr(e)}")
+
+        time.sleep(1)  # space out the heartbeats a little bit
 
     print()
     time.sleep(INTERVAL_TIME)
