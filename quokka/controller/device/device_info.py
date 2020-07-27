@@ -102,7 +102,6 @@ def get_device_info_ncclient(device, requested_info, get_live_info=False):
     )
 
     config = nc_connection.get_config("running")
-    nc_connection.close_session()
 
     if requested_info == "facts":
         facts = {"vendor": device["vendor"],
@@ -131,7 +130,10 @@ def get_device_info_ncclient(device, requested_info, get_live_info=False):
         rsp = nc_connection.get(("subtree", serial_number))
         xml_doc = parseString(str(rsp))
 
+        nc_connection.close_session()
         return "success", {"facts": facts}
 
     else:
+        if nc_connection:
+            nc_connection.close_session()
         return "failure", "unsupported requested info"
