@@ -30,7 +30,7 @@
   name: DNS via google
   type: dns
   target: 8.8.8.8
-  data: baskinrobbins.com
+  data: davidbombal.com
   sla_availability: 95
   sla_response_time: 0.5
 
@@ -38,7 +38,7 @@
   name: DNS via OpenDNS
   type: dns
   target: 208.67.222.222
-  data: baskinrobbins.com
+  data: thisisit.io
   sla_availability: 95
   sla_response_time: 0.5
 

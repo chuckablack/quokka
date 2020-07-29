@@ -27,12 +27,17 @@ class ThreadManager:
     @staticmethod
     def stop_device_threads():
 
-        log_console("--- ---> Shutting down device monitoring threads (device and compliance)")
+        log_console(
+            "--- ---> Shutting down device monitoring threads (device and compliance)"
+        )
 
         if ThreadManager.device_monitor_task and ThreadManager.device_monitor_thread:
             ThreadManager.device_monitor_task.set_terminate()
             ThreadManager.device_monitor_thread.join()
-        if ThreadManager.compliance_monitor_task and ThreadManager.compliance_monitor_thread:
+        if (
+            ThreadManager.compliance_monitor_task
+            and ThreadManager.compliance_monitor_thread
+        ):
             ThreadManager.compliance_monitor_task.set_terminate()
             ThreadManager.compliance_monitor_thread.join()
 
@@ -42,16 +47,22 @@ class ThreadManager:
         ThreadManager.compliance_monitor_thread = None
 
     @staticmethod
-    def start_device_threads():
+    def start_device_threads(
+        device_monitor_interval=60, compliance_monitor_interval=300
+    ):
 
         ThreadManager.device_monitor_task = DeviceMonitorTask()
-        ThreadManager.device_monitor_thread = threading.Thread(target=ThreadManager.device_monitor_task.monitor,
-                                                               args=(60,))
+        ThreadManager.device_monitor_thread = threading.Thread(
+            target=ThreadManager.device_monitor_task.monitor,
+            args=(device_monitor_interval,),
+        )
         ThreadManager.device_monitor_thread.start()
 
         ThreadManager.compliance_monitor_task = ComplianceMonitorTask()
-        ThreadManager.compliance_monitor_thread = threading.Thread(target=ThreadManager.compliance_monitor_task.monitor,
-                                                                   args=(60,))
+        ThreadManager.compliance_monitor_thread = threading.Thread(
+            target=ThreadManager.compliance_monitor_task.monitor,
+            args=(compliance_monitor_interval,),
+        )
         ThreadManager.compliance_monitor_thread.start()
 
     @staticmethod
@@ -67,11 +78,13 @@ class ThreadManager:
         ThreadManager.host_monitor_thread = None
 
     @staticmethod
-    def start_host_thread():
+    def start_host_thread(host_monitor_interval=60):
 
         ThreadManager.host_monitor_task = HostMonitorTask()
-        ThreadManager.host_monitor_thread = threading.Thread(target=ThreadManager.host_monitor_task.monitor,
-                                                             args=(60,))
+        ThreadManager.host_monitor_thread = threading.Thread(
+            target=ThreadManager.host_monitor_task.monitor,
+            args=(host_monitor_interval,),
+        )
         ThreadManager.host_monitor_thread.start()
 
     @staticmethod
@@ -87,11 +100,13 @@ class ThreadManager:
         ThreadManager.service_monitor_thread = None
 
     @staticmethod
-    def start_service_thread():
+    def start_service_thread(service_monitor_interval=60):
 
         ThreadManager.service_monitor_task = ServiceMonitorTask()
-        ThreadManager.service_monitor_thread = threading.Thread(target=ThreadManager.service_monitor_task.monitor,
-                                                                args=(60,))
+        ThreadManager.service_monitor_thread = threading.Thread(
+            target=ThreadManager.service_monitor_task.monitor,
+            args=(service_monitor_interval,),
+        )
         ThreadManager.service_monitor_thread.start()
 
     @staticmethod
@@ -107,10 +122,12 @@ class ThreadManager:
         ThreadManager.discovery_thread = None
 
     @staticmethod
-    def start_discovery_thread():
+    def start_discovery_thread(discovery_interval=3600):
 
         ThreadManager.discovery_task = DiscoverTask()
-        ThreadManager.discovery_thread = threading.Thread(target=ThreadManager.discovery_task.discover, args=(60,))
+        ThreadManager.discovery_thread = threading.Thread(
+            target=ThreadManager.discovery_task.discover, args=(discovery_interval,)
+        )
         ThreadManager.discovery_thread.start()
 
     @staticmethod
@@ -129,7 +146,9 @@ class ThreadManager:
     def start_summaries_thread():
 
         ThreadManager.summaries_task = SummariesTask()
-        ThreadManager.summaries_thread = threading.Thread(target=ThreadManager.summaries_task.start, args=(60,))
+        ThreadManager.summaries_thread = threading.Thread(
+            target=ThreadManager.summaries_task.start, args=(60,)
+        )
         ThreadManager.summaries_thread.start()
 
     @staticmethod
@@ -137,7 +156,10 @@ class ThreadManager:
 
         if ThreadManager.device_monitor_task and ThreadManager.device_monitor_thread:
             ThreadManager.device_monitor_task.set_terminate()
-        if ThreadManager.compliance_monitor_task and ThreadManager.compliance_monitor_thread:
+        if (
+            ThreadManager.compliance_monitor_task
+            and ThreadManager.compliance_monitor_thread
+        ):
             ThreadManager.compliance_monitor_task.set_terminate()
         if ThreadManager.host_monitor_task and ThreadManager.host_monitor_thread:
             ThreadManager.host_monitor_task.set_terminate()

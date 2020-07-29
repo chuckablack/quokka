@@ -85,6 +85,7 @@ class ServiceMonitorTask:
 
     def monitor(self, interval):
 
+        log_console(f"Service monitoring starting, interval={interval}")
         while True and not self.terminate:
 
             services = get_all_services()
