@@ -58,7 +58,7 @@ while True:
         try:
             start = time.time()
             rsp = requests.post(
-                "http://192.168.254.114:5000/device/heartbeat", json=heartbeat_info
+                "http://192.168.254.125:5000/device/heartbeat", json=heartbeat_info
             )
             device["response_time"] = (time.time() - start) * 1000
             if rsp.status_code != 200:
