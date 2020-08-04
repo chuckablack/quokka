@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import yaml
 import requests
 import random
