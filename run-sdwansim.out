@@ -1,0 +1,13 @@
+starting sdwan-sim with host IP address: 192.168.254.125
+Quokka IP: 192.168.254.125
+2020-08-04 07:55:07.708: sdwan sim for SDWAN-LA, heartbeat_info: {'name': 'SDWAN-LA', 'serial': '111-111-111', 'response_time': 0, 'cpu': 50.0, 'memory': 35.8}
+Error in connecting to quokka server: ConnectionError(MaxRetryError("HTTPConnectionPool(host='192.168.254.125', port=5000): Max retries exceeded with url: /device/heartbeat (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f530c355340>: Failed to establish a new connection: [Errno 111] Connection refused'))"))
+2020-08-04 07:55:08.714: sdwan sim for SDWAN-SF, heartbeat_info: {'name': 'SDWAN-SF', 'serial': '111-111-112', 'response_time': 0, 'cpu': 1.0, 'memory': 35.8}
+Error in connecting to quokka server: ConnectionError(MaxRetryError("HTTPConnectionPool(host='192.168.254.125', port=5000): Max retries exceeded with url: /device/heartbeat (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f530c3550d0>: Failed to establish a new connection: [Errno 111] Connection refused'))"))
+2020-08-04 07:55:09.719: sdwan sim for SDWAN-Seattle, heartbeat_info: {'name': 'SDWAN-Seattle', 'serial': '111-111-113', 'response_time': 0, 'cpu': 0.5, 'memory': 35.8}
+Error in connecting to quokka server: ConnectionError(MaxRetryError("HTTPConnectionPool(host='192.168.254.125', port=5000): Max retries exceeded with url: /device/heartbeat (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f530c355610>: Failed to establish a new connection: [Errno 111] Connection refused'))"))
+2020-08-04 07:55:10.723: sdwan sim for SDWAN-Denver, heartbeat_info: {'name': 'SDWAN-Denver', 'serial': '111-111-114', 'response_time': 0, 'cpu': 0.5, 'memory': 35.8}
+Error in connecting to quokka server: ConnectionError(MaxRetryError("HTTPConnectionPool(host='192.168.254.125', port=5000): Max retries exceeded with url: /device/heartbeat (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f530c360130>: Failed to establish a new connection: [Errno 111] Connection refused'))"))
+2020-08-04 07:55:11.727: sdwan sim for SDWAN-Atlanta, heartbeat_info: {'name': 'SDWAN-Atlanta', 'serial': '111-111-115', 'response_time': 0, 'cpu': 1.0, 'memory': 35.8}
+Error in connecting to quokka server: ConnectionError(MaxRetryError("HTTPConnectionPool(host='192.168.254.125', port=5000): Max retries exceeded with url: /device/heartbeat (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f530c3604f0>: Failed to establish a new connection: [Errno 111] Connection refused'))"))
+

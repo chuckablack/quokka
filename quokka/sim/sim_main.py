@@ -4,6 +4,7 @@ import random
 import time
 import psutil
 from datetime import datetime
+import argparse
 
 NUM_CONSECUTIVE_FAILURES_REQUIRED = 3
 INTERVAL_TIME = 60
@@ -11,6 +12,12 @@ INTERVAL_TIME = 60
 filename = "devices.yaml"
 with open("quokka/data/" + filename, "r") as import_file:
     devices = yaml.safe_load(import_file.read())
+
+parser = argparse.ArgumentParser(description="Simulate SDWAN devices")
+parser.add_argument('-quokka',  default='localhost', help='IP address of quokka server')
+args = parser.parse_args()
+quokka_ip = args.quokka
+print(f"Quokka IP: {quokka_ip}")
 
 # This dict keeps track of devices' failures - we must fail a couple times in a row in order
 # for the monitoring software to be aware that the device is unavailable
@@ -58,7 +65,7 @@ while True:
         try:
             start = time.time()
             rsp = requests.post(
-                "http://192.168.254.125:5000/device/heartbeat", json=heartbeat_info
+                "http://" + quokka_ip + ":5000/device/heartbeat", json=heartbeat_info
             )
             device["response_time"] = (time.time() - start) * 1000
             if rsp.status_code != 200:
