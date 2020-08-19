@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 from quokka import app
 from flask import request
-from quokka.models.apis import get_device, set_device, record_device_status
+from quokka.models.apis import get_device, set_device, record_device_status, set_facts
 
 from quokka.controller.utils import log_console
 
@@ -54,8 +54,14 @@ def heartbeat():
     device["availability"] = True
     device["last_heard"] = str(datetime.now())[:-3]
 
+    if "vendor" in heartbeat_info:
+        device["vendor"] = heartbeat_info["vendor"]
+    if "model" in heartbeat_info:
+        device["model"] = heartbeat_info["model"]
+    if "os" in heartbeat_info:
+        device["os"] = heartbeat_info["os"]
     if "version" in heartbeat_info:
-        device["version"] = heartbeat_info["verion"]
+        device["version"] = heartbeat_info["version"]
 
     if "response_time" in heartbeat_info:
         device["response_time"] = heartbeat_info["response_time"]
@@ -63,6 +69,8 @@ def heartbeat():
         device["cpu"] = heartbeat_info["cpu"]
     if "memory" in heartbeat_info:
         device["memory"] = heartbeat_info["memory"]
+    if "uptime" in heartbeat_info:
+        device["uptime"] = heartbeat_info["uptime"]
 
     record_device_status(device)
     set_device(device)

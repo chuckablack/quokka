@@ -94,8 +94,6 @@
 + shutdown
 +interface GigabitEthernet3
 + description to
-- no ip address
-+ shutdown
 +interface GigabitEthernet4
 + description to
 - no ip address

@@ -42,6 +42,18 @@ def get_device_info(device, requested_info, get_live_info=False):
     elif device["transport"] == "ncclient":
         # log_console(f"Getting device info via ncclient for {device['name']}")
         return get_device_info_ncclient(device, requested_info, get_live_info)
+    elif device["transport"] == "HTTP-REST" and requested_info == "facts":
+        # HTTP-REST devices will update device information with their heartbeats, no need to fetch it
+        facts = {
+            "fqdn": device["hostname"],
+            "hostname": device["hostname"],
+            "os_version": device["version"],
+            "serial_number": device["serial"],
+            "uptime": device["uptime"],
+            "vendor": device["vendor"]
+        }
+        return "success", {"facts": facts}
+
     else:
         return "failure", "Unable to retrieve requested info from device"
 

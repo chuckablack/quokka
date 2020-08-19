@@ -30,7 +30,7 @@ class HostStatus extends Component {
         const hostId = this.state.hostId;
 
         this.setState({isLoading: true});
-        let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/ui/host/ts?hostid='
+        let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/ui/host/status?hostid='
                                    + hostId + '&datapoints=' + process.env.REACT_APP_NUM_DATAPOINTS;
 
         fetch(requestUrl)

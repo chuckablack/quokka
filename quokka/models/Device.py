@@ -7,11 +7,14 @@ class Device(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text, unique=True, nullable=False)
+    fqdn = db.Column(db.Text)
     serial = db.Column(db.Text)
     ip_address = db.Column(db.Text)
     mac_address = db.Column(db.Text)
     vendor = db.Column(db.Text)
+    model = db.Column(db.Text)
     os = db.Column(db.Text)
+    version = db.Column(db.Text)
     transport = db.Column(db.Text)
 
     availability = db.Column(db.Boolean)
@@ -23,6 +26,7 @@ class Device(db.Model):
 
     cpu = db.Column(db.Integer)
     memory = db.Column(db.Integer)
+    uptime = db.Column(db.Integer)
 
     os_compliance = db.Column(db.Boolean)
     config_compliance = db.Column(db.Boolean)

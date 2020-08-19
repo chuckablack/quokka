@@ -4,11 +4,11 @@ import time
 from quokka.controller.utils import log_console
 from quokka.models.apis import (
     get_all_hosts,
-    get_host_ts_data_for_hour,
+    get_host_status_data_for_hour,
     get_all_services,
-    get_service_ts_data_for_hour,
+    get_service_status_data_for_hour,
     get_all_devices,
-    get_device_ts_data_for_hour,
+    get_device_status_data_for_hour,
     record_service_hourly_summaries,
     record_host_hourly_summaries,
     log_event,
@@ -31,7 +31,7 @@ class SummariesTask:
         hourly_summaries = dict()
 
         for item in items:
-            service_ts_data = get_hour_data_function(item["id"], self.current_hour)
+            service_status_data = get_hour_data_function(item["id"], self.current_hour)
 
             hourly_summary = dict()
             hourly_summary["id"] = item["id"]
@@ -42,11 +42,11 @@ class SummariesTask:
             num_availability_records = 0
             num_response_time_records = 0
 
-            for service_ts_data_item in service_ts_data:
+            for service_status_data_item in service_status_data:
                 num_availability_records += 1
-                if service_ts_data_item["availability"]:
+                if service_status_data_item["availability"]:
                     hourly_summary["availability"] += 100
-                    hourly_summary["response_time"] += service_ts_data_item["response_time"]
+                    hourly_summary["response_time"] += service_status_data_item["response_time"]
                     num_response_time_records += 1
 
             if num_response_time_records > 0:
@@ -80,11 +80,11 @@ class SummariesTask:
                 time.sleep(60)
                 continue
 
-            service_hourly_summaries = self.get_summaries(get_all_services(), "services", get_service_ts_data_for_hour)
+            service_hourly_summaries = self.get_summaries(get_all_services(), "services", get_service_status_data_for_hour)
             record_service_hourly_summaries(service_hourly_summaries)
-            host_hourly_summaries = self.get_summaries(get_all_hosts(), "hosts", get_host_ts_data_for_hour)
+            host_hourly_summaries = self.get_summaries(get_all_hosts(), "hosts", get_host_status_data_for_hour)
             record_host_hourly_summaries(host_hourly_summaries)
-            self.get_summaries(get_all_devices(), "devices", get_device_ts_data_for_hour)
+            self.get_summaries(get_all_devices(), "devices", get_device_status_data_for_hour)
 
             self.current_hour = this_hour
 

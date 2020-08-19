@@ -12,9 +12,9 @@ from quokka.models.Host import Host
 from quokka.models.Service import Service
 from quokka.models.Event import Event
 
-from quokka.models.DeviceStatusTS import DeviceStatusTS
-from quokka.models.HostStatusTS import HostStatusTS
-from quokka.models.ServiceStatusTS import ServiceStatusTS
+from quokka.models.DeviceStatus import DeviceStatusTS
+from quokka.models.HostStatus import HostStatus
+from quokka.models.ServiceStatus import ServiceStatus
 from quokka.models.HostStatusSummary import HostStatusSummary
 from quokka.models.ServiceStatusSummary import ServiceStatusSummary
 
@@ -92,6 +92,18 @@ def set_device(device):
             device_obj.serial = device["serial"]
         if "mac_address" in device and device["mac_address"]:
             device_obj.mac_address = device["mac_address"]
+        if "vendor" in device and device["vendor"]:
+            device_obj.vendor = device["vendor"]
+        if "os" in device and device["os"]:
+            device_obj.os = device["os"]
+        if "version" in device and device["version"]:
+            device_obj.version = device["version"]
+        if "model" in device and device["model"]:
+            device_obj.model = device["model"]
+        if "fqdn" in device and device["fqdn"]:
+            device_obj.fqdn = device["fqdn"]
+        if "uptime" in device and device["uptime"]:
+            device_obj.uptime = device["uptime"]
         if "availability" in device and device["availability"] is not None:
             device_obj.availability = device["availability"]
         if "response_time" in device and device["response_time"]:
@@ -102,9 +114,9 @@ def set_device(device):
             device_obj.cpu = device["cpu"]
         if "memory" in device and device["memory"]:
             device_obj.memory = device["memory"]
-        if "os_compliance" in device and device["os_compliance"]:
+        if "os_compliance" in device and device["os_compliance"] is not None:
             device_obj.os_compliance = device["os_compliance"]
-        if "config_compliance" in device and device["config_compliance"]:
+        if "config_compliance" in device and device["config_compliance"] is not None:
             device_obj.config_compliance = device["config_compliance"]
         if "last_compliance_check" in device and device["last_compliance_check"]:
             device_obj.last_compliance_check = device["last_compliance_check"]
@@ -333,7 +345,7 @@ def record_host_status(host):
     host_status["availability"] = host["availability"]
     host_status["response_time"] = host["response_time"]
 
-    host_status_obj = HostStatusTS(**host_status)
+    host_status_obj = HostStatus(**host_status)
     db.session.add(host_status_obj)
 
     db.session.commit()
@@ -363,7 +375,7 @@ def record_service_status(service):
     service_status["availability"] = service["availability"]
     service_status["response_time"] = service["response_time"]
 
-    service_status_obj = ServiceStatusTS(**service_status)
+    service_status_obj = ServiceStatus(**service_status)
     db.session.add(service_status_obj)
 
     db.session.commit()
@@ -385,20 +397,20 @@ def record_service_hourly_summaries(hourly_summaries):
     db.session.commit()
 
 
-def get_host_ts_data(host_id, num_datapoints):
+def get_host_status_data(host_id, num_datapoints):
 
-    host_ts_objs = (
-        db.session.query(HostStatusTS).filter_by(**{"host_id": host_id})
-        .order_by(desc(HostStatusTS.timestamp))
+    host_status_objs = (
+        db.session.query(HostStatus).filter_by(**{"host_id": host_id})
+        .order_by(desc(HostStatus.timestamp))
         .limit(num_datapoints)
         .all()
     )
 
-    host_ts_data = list()
-    for host_ts_obj in host_ts_objs:
-        host_ts_data.append(get_model_as_dict(host_ts_obj))
+    host_status_data = list()
+    for host_status_obj in host_status_objs:
+        host_status_data.append(get_model_as_dict(host_status_obj))
 
-    return host_ts_data
+    return host_status_data
 
 
 def get_host_summary_data(host_id, num_datapoints):
@@ -411,41 +423,41 @@ def get_host_summary_data(host_id, num_datapoints):
     )
 
     host_summary_data = list()
-    for host_ts_obj in host_summary_objs:
-        host_summary_data.append(get_model_as_dict(host_ts_obj))
+    for host_status_obj in host_summary_objs:
+        host_summary_data.append(get_model_as_dict(host_status_obj))
 
     return host_summary_data
 
 
-def get_host_ts_data_for_hour(host_id, hour):
+def get_host_status_data_for_hour(host_id, hour):
 
-    host_ts_objs = (
-        db.session.query(HostStatusTS).filter_by(**{"host_id": host_id})
-        .filter(HostStatusTS.timestamp.startswith(hour))
+    host_status_objs = (
+        db.session.query(HostStatus).filter_by(**{"host_id": host_id})
+        .filter(HostStatus.timestamp.startswith(hour))
         .all()
     )
 
-    host_ts_data = list()
-    for host_ts_obj in host_ts_objs:
-        host_ts_data.append(get_model_as_dict(host_ts_obj))
+    host_status_data = list()
+    for host_status_obj in host_status_objs:
+        host_status_data.append(get_model_as_dict(host_status_obj))
 
-    return host_ts_data
+    return host_status_data
 
 
-def get_service_ts_data(service_id, num_datapoints):
+def get_service_status_data(service_id, num_datapoints):
 
-    service_ts_objs = (
-        db.session.query(ServiceStatusTS).filter_by(**{"service_id": service_id})
-        .order_by(desc(ServiceStatusTS.timestamp))
+    service_status_objs = (
+        db.session.query(ServiceStatus).filter_by(**{"service_id": service_id})
+        .order_by(desc(ServiceStatus.timestamp))
         .limit(num_datapoints)
         .all()
     )
 
-    service_ts_data = list()
-    for service_ts_obj in service_ts_objs:
-        service_ts_data.append(get_model_as_dict(service_ts_obj))
+    service_status_data = list()
+    for service_status_obj in service_status_objs:
+        service_status_data.append(get_model_as_dict(service_status_obj))
 
-    return service_ts_data
+    return service_status_data
 
 
 def get_service_summary_data(service_id, num_datapoints):
@@ -458,61 +470,61 @@ def get_service_summary_data(service_id, num_datapoints):
     )
 
     service_summary_data = list()
-    for service_ts_obj in service_summary_objs:
-        service_summary_data.append(get_model_as_dict(service_ts_obj))
+    for service_status_obj in service_summary_objs:
+        service_summary_data.append(get_model_as_dict(service_status_obj))
 
     return service_summary_data
 
 
-def get_service_ts_data_for_hour(service_id, hour):
+def get_service_status_data_for_hour(service_id, hour):
 
-    service_ts_objs = (
-        db.session.query(ServiceStatusTS).filter_by(**{"service_id": service_id})
-        .filter(ServiceStatusTS.timestamp.startswith(hour))
+    service_status_objs = (
+        db.session.query(ServiceStatus).filter_by(**{"service_id": service_id})
+        .filter(ServiceStatus.timestamp.startswith(hour))
         .all()
     )
 
-    service_ts_data = list()
-    for service_ts_obj in service_ts_objs:
-        service_ts_data.append(get_model_as_dict(service_ts_obj))
+    service_status_data = list()
+    for service_status_obj in service_status_objs:
+        service_status_data.append(get_model_as_dict(service_status_obj))
 
-    return service_ts_data
+    return service_status_data
 
 
-def get_device_ts_data(device_name, num_datapoints):
+def get_device_status_data(device_name, num_datapoints):
 
     result, info = get_device(device_name=device_name)
     if result != "success":
         return result, info
 
     device_id = info["id"]
-    device_ts_objs = (
+    device_status_objs = (
         db.session.query(DeviceStatusTS).filter_by(**{"device_id": device_id})
         .order_by(desc(DeviceStatusTS.timestamp))
         .limit(num_datapoints)
         .all()
     )
 
-    device_ts_data = list()
-    for device_ts_obj in device_ts_objs:
-        device_ts_data.append(get_model_as_dict(device_ts_obj))
+    device_status_data = list()
+    for device_status_obj in device_status_objs:
+        device_status_data.append(get_model_as_dict(device_status_obj))
 
-    return device_ts_data
+    return device_status_data
 
 
-def get_device_ts_data_for_hour(device_id, hour):
+def get_device_status_data_for_hour(device_id, hour):
 
-    device_ts_objs = (
+    device_status_objs = (
         db.session.query(DeviceStatusTS).filter_by(**{"device_id": device_id})
         .filter(DeviceStatusTS.timestamp.startswith(hour))
         .all()
     )
 
-    device_ts_data = list()
-    for device_ts_obj in device_ts_objs:
-        device_ts_data.append(get_model_as_dict(device_ts_obj))
+    device_status_data = list()
+    for device_status_obj in device_status_objs:
+        device_status_data.append(get_model_as_dict(device_status_obj))
 
-    return device_ts_data
+    return device_status_data
 
 
 def log_event(time, source_type, source, severity, info):

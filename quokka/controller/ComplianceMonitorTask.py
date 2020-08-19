@@ -8,6 +8,25 @@ from quokka.models.Compliance import Compliance
 from quokka.models.apis import get_all_device_ids, get_device, set_device
 
 
+def check_version(device, standard, actual):
+
+    # Cisco devices don't return 'version' consistently, so we are going to only check to see
+    # if the standard version string is present in the 'version' we got from the device.
+
+    # CSR (iosxe) version strings can have three parts, if so, select the middle part
+    if device["vendor"] == "cisco" and device["os"] == "iosxe":
+        version_parts = actual.split(",")
+        if len(version_parts) == 3 and version_parts[1].find(standard) >= 0:
+            return True
+
+    # If our attempt at specific CSR comparison failed, just check for the standard version in actual
+    if actual.find(standard) >= 0:
+        return True
+
+    # Otherwise, we give up and return false
+    return False
+
+
 def check_os_compliance(device):
 
     facts = None
@@ -26,10 +45,7 @@ def check_os_compliance(device):
         log_console(f"!!! Error retrieving version info for this device {device['name']}")
         return False
 
-    if standard.standard_version == facts["facts"]["os_version"]:
-        return True
-    else:
-        return False  # Just a normal incorrect version
+    return check_version(device, standard=standard.standard_version, actual=facts["facts"]["os_version"])
 
 
 def check_config_compliance(device):

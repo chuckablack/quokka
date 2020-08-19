@@ -67,43 +67,43 @@
   ip_address:
   name: SDWAN-LA
   serial: 111-111-111
-  os: ios-sdwan
+  os: talos
   transport: HTTP-REST
-  hostname: sdwan-la-downtown.cisco.com
-  vendor: cisco
+  hostname: sdwan-la-downtown.tallac.com
+  vendor: tallac
 
 - id: 7
   ip_address:
   name: SDWAN-SF
   serial: 111-111-112
-  os: ios-sdwan
+  os: talos
   transport: HTTP-REST
-  hostname: sdwan-sf-fishermans-wharf.cisco.com
-  vendor: cisco
+  hostname: sdwan-sf-fishermans-wharf.tallac.com
+  vendor: tallac
 
 - id: 8
   ip_address:
   name: SDWAN-Seattle
   serial: 111-111-113
-  os: ios-sdwan
+  os: talos
   transport: HTTP-REST
-  hostname: sdwan-seattle-downtown.cisco.com
-  vendor: cisco
+  hostname: sdwan-seattle-downtown.tallac.com
+  vendor: tallac
 
 - id: 9
   ip_address:
   name: SDWAN-Denver
   serial: 111-111-114
-  os: ios-sdwan
+  os: talos
   transport: HTTP-REST
-  hostname: sdwan-denver-uptown.cisco.com
-  vendor: cisco
+  hostname: sdwan-denver-uptown.tallac.com
+  vendor: tallac
 
 - id: 10
   ip_address:
   serial: 111-111-115
   name: SDWAN-Atlanta
-  os: ios-sdwan
+  os: talos
   transport: HTTP-REST
-  hostname: sdwan-atlanta-midtown
-  vendor: cisco
+  hostname: sdwan-atlanta-midtown.tallac.com
+  vendor: tallac

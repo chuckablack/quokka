@@ -7,13 +7,13 @@ from quokka.models.apis import (
     get_all_devices,
     import_devices,
     export_devices,
-    get_device_ts_data,
+    get_device_status_data,
     get_host,
     get_all_hosts,
-    get_host_ts_data,
+    get_host_status_data,
     get_service,
     get_all_services,
-    get_service_ts_data,
+    get_service_status_data,
     get_all_events,
     get_service_summary_data,
     get_host_summary_data,
@@ -114,8 +114,8 @@ def services():
         return "Invalid request method"
 
 
-@app.route("/ui/host/ts", methods=["GET"])
-def host_ts():
+@app.route("/ui/host/status", methods=["GET"])
+def host_status():
 
     host_id = request.args.get("hostid")
     num_datapoints = request.args.get("datapoints")
@@ -124,14 +124,14 @@ def host_ts():
         return "Must provide hostid and datapoints", 400
 
     return {
-        "host_data": get_host_ts_data(host_id, num_datapoints),
+        "host_data": get_host_status_data(host_id, num_datapoints),
         "host_summary": get_host_summary_data(host_id, num_datapoints),
         "host": get_host(host_id),
     }
 
 
-@app.route("/ui/service/ts", methods=["GET"])
-def service_ts():
+@app.route("/ui/service/status", methods=["GET"])
+def service_status():
 
     service_id = request.args.get("serviceid")
     num_datapoints = request.args.get("datapoints")
@@ -140,14 +140,14 @@ def service_ts():
         return "Must provide serviceid and datapoints", 400
 
     return {
-        "service_data": get_service_ts_data(service_id, num_datapoints),
+        "service_data": get_service_status_data(service_id, num_datapoints),
         "service_summary": get_service_summary_data(service_id, num_datapoints),
         "service": get_service(service_id),
     }
 
 
-@app.route("/ui/device/ts", methods=["GET"])
-def device_ts():
+@app.route("/ui/device/status", methods=["GET"])
+def device_status():
 
     device_name = request.args.get("device")
     num_datapoints = request.args.get("datapoints")
@@ -161,7 +161,7 @@ def device_ts():
 
     device = info
     return {
-        "device_data": get_device_ts_data(device_name, num_datapoints),
+        "device_data": get_device_status_data(device_name, num_datapoints),
         "device": device,
     }
 

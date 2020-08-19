@@ -54,10 +54,17 @@ while True:
 
         heartbeat_info = {
             "name": device["name"],
+            "fqdn": device["name"],
+            "hostname": device["hostname"],
+            "model": "tallac-mog",
             "serial": device["serial"],
             "response_time": device["response_time"] if "response_time" in device else 0,
             "cpu": cpu,
             "memory": memory,
+            "vendor": "tallac",
+            "os": "talos",
+            "version": random.choices(["2.5", "2.2", "2.1"], weights=(70, 20, 10))[0],
+            "uptime": 1234567,
         }
 
         print(
