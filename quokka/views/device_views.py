@@ -8,7 +8,7 @@ from quokka.controller.utils import log_console
 
 
 @app.route("/device/register", methods=["GET", "POST"])
-def register():
+def device_register():
 
     registration_info = request.get_json()
     if not registration_info:
@@ -35,7 +35,7 @@ def register():
 
 
 @app.route("/device/heartbeat", methods=["POST"])
-def heartbeat():
+def device_heartbeat():
 
     heartbeat_info = request.get_json()
     if not heartbeat_info:

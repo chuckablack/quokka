@@ -11,3 +11,5 @@ ncclient~=0.6.7
 lxml~=4.5.1
 urllib3~=1.25.8
 psutil~=5.7.2
+pyshark~=0.4.2.11
+pika~=1.1.0

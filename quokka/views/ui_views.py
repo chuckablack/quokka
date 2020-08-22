@@ -20,6 +20,7 @@ from quokka.models.apis import (
 )
 import quokka.models.reset
 from quokka.controller.ThreadManager import ThreadManager
+from quokka.controller.SnifferManager import SnifferManager
 
 
 @app.route("/ui/devices", methods=["GET", "POST"])
@@ -194,3 +195,28 @@ def reset_services():
 def reset_events():
     quokka.models.reset.reset_events()
     return "Services reset"
+
+
+@app.route("/ui/sniff/host", methods=["POST"])
+def host_sniff():
+
+    host_id = request.args.get("hostid")
+    host_ip = request.args.get("ip")
+    count = request.args.get("count")
+
+    if not host_id and not host_ip:
+        return "Must provide either hostid or ip", 400
+
+    if not count:
+        return "Must provide count", 400
+
+    if not host_ip:
+
+        host = get_host(host_id)
+        if host is None:
+            return "Host not found", 404
+        host_ip = host["ip"]
+
+    SnifferManager.sniff_host(interface="enp0s3", ip=host_ip, count=count)
+
+    return "Host sniffing initiated"

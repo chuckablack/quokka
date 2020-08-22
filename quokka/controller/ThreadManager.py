@@ -1,4 +1,6 @@
 import threading
+import multiprocessing
+import pyshark
 
 from quokka.controller.DeviceMonitorTask import DeviceMonitorTask
 from quokka.controller.ComplianceMonitorTask import ComplianceMonitorTask
@@ -23,6 +25,8 @@ class ThreadManager:
     discovery_thread = None
     summaries_task = None
     summaries_thread = None
+
+    sniffing_processes = list()
 
     @staticmethod
     def stop_device_threads():
@@ -169,3 +173,29 @@ class ThreadManager:
             ThreadManager.discovery_task.set_terminate()
         if ThreadManager.summaries_task and ThreadManager.summaries_thread:
             ThreadManager.summaries_task.set_terminate()
+
+        # Kill all outstanding sniffing processes, if any
+        for sniffing_process in ThreadManager.sniffing_processes:
+            if sniffing_process.is_alive():
+                sniffing_process.terminate()
+
+    # @staticmethod
+    # def start_sniff_host(host, timeout):
+    #
+    #     # sniff_host_process = multiprocessing.Process(target=sniff_host, args=(host, timeout))
+    #     # sniff_host_process.start()
+    #     # ThreadManager.sniffing_processes.append(sniff_host_process)
+    #
+    #     interface = "enp0s3"
+    #     host_filter = "host " + host
+    #     log_console(f"sniffer: begin on interface: {interface} for host: {host}")
+    #     capture = pyshark.LiveCapture(interface=interface, bpf_filter=host_filter)
+    #     # capture.apply_on_packets(store_packet, timeout=timeout)
+    #     # for packet in capture.sniff_continuously(packet_count=100):
+    #     #     log_console(f"packet sniffed: {packet}")
+    #     log_console("sniffer: begin capture")
+    #     capture.sniff(packet_count=10)
+    #     log_console("sniffer: end capture")
+    #
+    #     for packet in capture:
+    #         log_console(f"---- packet sniffed: {packet}")
