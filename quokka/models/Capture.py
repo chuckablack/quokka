@@ -5,7 +5,10 @@ class Capture(db.Model):
 
     __tablename__ = "capture"
 
-    timestamp = db.Column(db.Text, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    timestamp = db.Column(db.Text)
+    local_timestamp = db.Column(db.Text)
+    source = db.Column(db.Text)
 
     ether_src = db.Column(db.Text)
     ether_dst = db.Column(db.Text)

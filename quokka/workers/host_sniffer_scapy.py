@@ -3,12 +3,12 @@
 import pika
 import json
 import scapy.all as scapy
-from scapy2dict import to_dict
-from pprint import pprint
-import requests
 from datetime import datetime
 
+from util import get_packets_from_capture, send_capture
+
 quokka_ip = "localhost"
+serial_no = "111.111.111"
 
 connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
 channel = connection.channel()
@@ -43,28 +43,8 @@ def receive_sniff_host_request(host_sniffer_channel, method, properties, body):
 
     capture = scapy.sniff(iface=interface, filter=host_filter, count=count)
 
-    packets = list()
-    for packet in capture:
-        # print(f"---- sniffing host: packet sniffed: {packet.show()}")
-        packet_dict = to_dict(packet, strict=True)
-        if "Raw" in packet_dict:
-            del packet_dict["Raw"]
-        packets.append(packet_dict)
-
-    print("\n---- Summaries --------------------")
-    print(capture.nsummary())
-    pprint(packets)
-
-    capture_payload = {"name": "host_sniffer_1",
-                       "serial": "1",
-                       "packets": packets}
-    rsp = requests.post(
-        "http://" + quokka_ip + ":5000/capture/store", json=capture_payload
-    )
-    if rsp.status_code != 200:
-        print(
-            f"{str(datetime.now())[:-3]}: Error calling /capture/store response: {rsp.status_code}, {rsp.json()}"
-        )
+    packets = get_packets_from_capture(capture)
+    send_capture(quokka_ip, serial_no, str(datetime.now())[:-1], packets)
 
     channel.basic_ack(delivery_tag=method.delivery_tag)
     print('\n\n [*] Host Sniffer Worker: waiting for messages.')

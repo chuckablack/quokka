@@ -220,3 +220,21 @@ def host_sniff():
     SnifferManager.sniff_host(interface="enp0s3", ip=host_ip, count=count)
 
     return "Host sniffing initiated"
+
+
+@app.route("/ui/sniff/protocol", methods=["POST"])
+def protocol_sniff():
+
+    protocol = request.args.get("protocol")
+    port = request.args.get("port")
+    count = request.args.get("count")
+
+    if not protocol and not port:
+        return "Must provide protocol and port", 400
+
+    if not count:
+        return "Must provide count", 400
+
+    SnifferManager.sniff_protocol(interface="enp0s3", protocol=protocol, port=port, count=count)
+
+    return "Protocol sniffing initiated"

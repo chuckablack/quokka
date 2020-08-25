@@ -2,7 +2,7 @@ from flask import request
 
 from quokka import app
 from quokka.controller.utils import log_console
-from quokka.models.apis import get_device
+from quokka.models.apis import get_device, record_capture
 
 
 @app.route("/capture/register", methods=["GET", "POST"])
@@ -39,20 +39,15 @@ def capture_store():
         return "Must provide 'serial' in capture information", 404
     if "name" not in capture_info:
         return "Must provide 'name' in capture information", 404
+    if "timestamp" not in capture_info:
+        return "Must provide 'timestamp' in capture information", 404
     if "packets" not in capture_info:
         return "Must include 'packets' in capture information", 404
 
-    # result, device = get_device(device_name=capture_info["name"])
-    # if result != "success":
-    #     return "Unknown device name in capture information", 404
-    # if capture_info["serial"] != device["serial"]:
-    #     return "Serial number in capture information does not match device serial", 404
-
-    for packet in capture_info["packets"]:
-        print(f"Received captured packet from {capture_info['name']}: {packet}")
+    record_capture(capture_info["timestamp"], capture_info["name"], capture_info["packets"])
 
     log_console(
-        f"Received capture store request from {capture_info['name']}, info={capture_info}"
+        f"Received capture store request from {capture_info['name']}, pkts={len(capture_info['packets'])}"
     )
 
     return {}, 200

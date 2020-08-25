@@ -11,6 +11,7 @@ from quokka.models.Compliance import Compliance
 from quokka.models.Host import Host
 from quokka.models.Service import Service
 from quokka.models.Event import Event
+from quokka.models.Capture import Capture
 
 from quokka.models.DeviceStatus import DeviceStatusTS
 from quokka.models.HostStatus import HostStatus
@@ -55,7 +56,7 @@ def get_all_devices():
 def get_all_device_ids():
 
     device_ids = db.session.query(Device.id).all()
-    return [id for id, in device_ids]  # The query returns IDs in tuples, this strips the tuple-ness
+    return [device_id for device_id, in device_ids]  # The query returns IDs in tuples, this strips the tuple-ness
 
 
 def get_facts(device_name):
@@ -552,3 +553,55 @@ def get_all_events(num_events):
         events.append(event)
 
     return events
+
+
+def record_capture(timestamp, source, packets):
+
+    for packet in packets:
+
+        capture = dict()
+        capture["timestamp"] = datetime.now()
+        capture["local_timestamp"] = timestamp
+        capture["source"] = source
+
+        if "Ethernet" in packet:
+            if "dst" in packet["Ethernet"]:
+                capture["ether_dst"] = packet["Ethernet"]["dst"]
+            if "src" in packet["Ethernet"]:
+                capture["ether_src"] = packet["Ethernet"]["src"]
+
+        if "IP" in packet:
+            if "dst" in packet["IP"]:
+                capture["ip_dst"] = packet["IP"]["dst"]
+            if "src" in packet["IP"]:
+                capture["ip_src"] = packet["IP"]["src"]
+
+        if "TCP" in packet:
+            if "dport" in packet["TCP"]:
+                capture["dport"] = packet["TCP"]["dport"]
+            if "sport" in packet["TCP"]:
+                capture["sport"] = packet["TCP"]["sport"]
+
+            if capture["sport"] == 443 or capture["dport"] == 443:
+                capture["protocol"] = "HTTPS"
+            elif capture["sport"] == 80 or capture["dport"] == 80:
+                capture["protocol"] = "HTTP"
+            else:
+                capture["protocol"] = "TCP"
+
+        elif "UDP" in packet:
+            if "dport" in packet["UDP"]:
+                capture["dport"] = packet["UDP"]["dport"]
+            if "sport" in packet["UDP"]:
+                capture["sport"] = packet["UDP"]["sport"]
+
+        if "DNS" in packet:
+            capture["protocol"] = "DNS"
+
+        if "ARP" in packet:
+            capture["protocol"] = "ARP"
+
+        capture_obj = Capture(**capture)
+        db.session.add(capture_obj)
+
+        db.session.commit()
