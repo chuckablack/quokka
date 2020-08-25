@@ -229,8 +229,8 @@ def protocol_sniff():
     port = request.args.get("port")
     count = request.args.get("count")
 
-    if not protocol and not port:
-        return "Must provide protocol and port", 400
+    if protocol is None:
+        return "Must provide protocol", 400
 
     if not count:
         return "Must provide count", 400
