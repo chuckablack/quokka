@@ -55,6 +55,11 @@ class Hosts extends Component {
         this.state.dashboard.setState({hostId: hostId, show: "hoststatus"})
     }
 
+    renderCapture(ip) {
+        this.state.dashboard.setState({ip: ip, protocol: null, port: null, show: "capture"})
+    }
+
+
     render() {
 
         const {hosts, isLoading} = this.state;
@@ -106,6 +111,13 @@ class Hosts extends Component {
                             tooltip: 'Display Time-Series for Host',
                             onClick: (event, rowData) => {
                                 this.renderHostTS(rowData.id)
+                            }
+                        },
+                        {
+                            icon: 'pageview',
+                            tooltip: 'Capture packets for host',
+                            onClick: (event, rowData) => {
+                                this.renderCapture(rowData.ip_address)
                             }
                         }
                     ]}

@@ -12,7 +12,7 @@ from quokka.controller.utils import log_console
 def get_avail_and_rsp_time(service):
 
     time_start = time.time()
-    if service["type"] == "http":
+    if service["type"] == "https" or service["type"] == "http":
         try:
             response = requests.get(service["target"])
         except BaseException as e:

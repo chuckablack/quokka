@@ -1,7 +1,8 @@
 import json
 import yaml
 from datetime import datetime
-from sqlalchemy import desc
+from sqlalchemy import desc, or_, func
+from pprint import pformat
 
 from quokka import db
 
@@ -56,14 +57,18 @@ def get_all_devices():
 def get_all_device_ids():
 
     device_ids = db.session.query(Device.id).all()
-    return [device_id for device_id, in device_ids]  # The query returns IDs in tuples, this strips the tuple-ness
+    return [
+        device_id for device_id, in device_ids
+    ]  # The query returns IDs in tuples, this strips the tuple-ness
 
 
 def get_facts(device_name):
 
-    facts_obj = db.session.query(DeviceFacts).filter_by(
-        **{"device_name": device_name}
-    ).one_or_none()
+    facts_obj = (
+        db.session.query(DeviceFacts)
+        .filter_by(**{"device_name": device_name})
+        .one_or_none()
+    )
     if not facts_obj:
         return "failed", "Could not find device facts in DB"
 
@@ -139,9 +144,11 @@ def set_facts(device, facts):
     device_facts["device_name"] = device["name"]
     device_facts_obj = DeviceFacts(**device_facts)
 
-    facts_obj = db.session.query(DeviceFacts).filter_by(
-        **{"device_name": device_facts["device_name"]}
-    ).one_or_none()
+    facts_obj = (
+        db.session.query(DeviceFacts)
+        .filter_by(**{"device_name": device_facts["device_name"]})
+        .one_or_none()
+    )
     if not facts_obj:
         db.session.add(device_facts_obj)
 
@@ -401,7 +408,8 @@ def record_service_hourly_summaries(hourly_summaries):
 def get_host_status_data(host_id, num_datapoints):
 
     host_status_objs = (
-        db.session.query(HostStatus).filter_by(**{"host_id": host_id})
+        db.session.query(HostStatus)
+        .filter_by(**{"host_id": host_id})
         .order_by(desc(HostStatus.timestamp))
         .limit(num_datapoints)
         .all()
@@ -417,7 +425,8 @@ def get_host_status_data(host_id, num_datapoints):
 def get_host_summary_data(host_id, num_datapoints):
 
     host_summary_objs = (
-        db.session.query(HostStatusSummary).filter_by(**{"host_id": host_id})
+        db.session.query(HostStatusSummary)
+        .filter_by(**{"host_id": host_id})
         .order_by(desc(HostStatusSummary.timestamp))
         .limit(num_datapoints)
         .all()
@@ -433,7 +442,8 @@ def get_host_summary_data(host_id, num_datapoints):
 def get_host_status_data_for_hour(host_id, hour):
 
     host_status_objs = (
-        db.session.query(HostStatus).filter_by(**{"host_id": host_id})
+        db.session.query(HostStatus)
+        .filter_by(**{"host_id": host_id})
         .filter(HostStatus.timestamp.startswith(hour))
         .all()
     )
@@ -448,7 +458,8 @@ def get_host_status_data_for_hour(host_id, hour):
 def get_service_status_data(service_id, num_datapoints):
 
     service_status_objs = (
-        db.session.query(ServiceStatus).filter_by(**{"service_id": service_id})
+        db.session.query(ServiceStatus)
+        .filter_by(**{"service_id": service_id})
         .order_by(desc(ServiceStatus.timestamp))
         .limit(num_datapoints)
         .all()
@@ -464,7 +475,8 @@ def get_service_status_data(service_id, num_datapoints):
 def get_service_summary_data(service_id, num_datapoints):
 
     service_summary_objs = (
-        db.session.query(ServiceStatusSummary).filter_by(**{"service_id": service_id})
+        db.session.query(ServiceStatusSummary)
+        .filter_by(**{"service_id": service_id})
         .order_by(desc(ServiceStatusSummary.timestamp))
         .limit(num_datapoints)
         .all()
@@ -480,7 +492,8 @@ def get_service_summary_data(service_id, num_datapoints):
 def get_service_status_data_for_hour(service_id, hour):
 
     service_status_objs = (
-        db.session.query(ServiceStatus).filter_by(**{"service_id": service_id})
+        db.session.query(ServiceStatus)
+        .filter_by(**{"service_id": service_id})
         .filter(ServiceStatus.timestamp.startswith(hour))
         .all()
     )
@@ -500,7 +513,8 @@ def get_device_status_data(device_name, num_datapoints):
 
     device_id = info["id"]
     device_status_objs = (
-        db.session.query(DeviceStatusTS).filter_by(**{"device_id": device_id})
+        db.session.query(DeviceStatusTS)
+        .filter_by(**{"device_id": device_id})
         .order_by(desc(DeviceStatusTS.timestamp))
         .limit(num_datapoints)
         .all()
@@ -516,7 +530,8 @@ def get_device_status_data(device_name, num_datapoints):
 def get_device_status_data_for_hour(device_id, hour):
 
     device_status_objs = (
-        db.session.query(DeviceStatusTS).filter_by(**{"device_id": device_id})
+        db.session.query(DeviceStatusTS)
+        .filter_by(**{"device_id": device_id})
         .filter(DeviceStatusTS.timestamp.startswith(hour))
         .all()
     )
@@ -545,7 +560,9 @@ def log_event(time, source_type, source, severity, info):
 
 def get_all_events(num_events):
 
-    event_objs = db.session.query(Event).order_by(desc(Event.time)).limit(num_events).all()
+    event_objs = (
+        db.session.query(Event).order_by(desc(Event.time)).limit(num_events).all()
+    )
 
     events = list()
     for event_obj in event_objs:
@@ -560,7 +577,7 @@ def record_capture(timestamp, source, packets):
     for packet in packets:
 
         capture = dict()
-        capture["timestamp"] = datetime.now()
+        capture["timestamp"] = str(datetime.now())[:-3]
         capture["local_timestamp"] = timestamp
         capture["source"] = source
 
@@ -577,6 +594,7 @@ def record_capture(timestamp, source, packets):
                 capture["ip_src"] = packet["IP"]["src"]
 
         if "TCP" in packet:
+            capture["protocol"] = "TCP"
             if "dport" in packet["TCP"]:
                 capture["dport"] = packet["TCP"]["dport"]
             if "sport" in packet["TCP"]:
@@ -586,22 +604,129 @@ def record_capture(timestamp, source, packets):
                 capture["protocol"] = "HTTPS"
             elif capture["sport"] == 80 or capture["dport"] == 80:
                 capture["protocol"] = "HTTP"
-            else:
-                capture["protocol"] = "TCP"
 
         elif "UDP" in packet:
+            capture["protocol"] = "UDP"
             if "dport" in packet["UDP"]:
                 capture["dport"] = packet["UDP"]["dport"]
             if "sport" in packet["UDP"]:
                 capture["sport"] = packet["UDP"]["sport"]
 
+            if capture["sport"] == 123 or capture["dport"] == 123:
+                capture["protocol"] = "NTP"
+
         if "DNS" in packet:
             capture["protocol"] = "DNS"
-
         if "ARP" in packet:
             capture["protocol"] = "ARP"
+        if "DHCP" in packet:
+            capture["protocol"] = "DCHP"
+
+        # capture["packet_json"] = json.dumps(packet)
+        capture["packet_json"] = pformat(packet)
 
         capture_obj = Capture(**capture)
         db.session.add(capture_obj)
 
         db.session.commit()
+
+
+# def get_host_capture(ip, num_packets):
+#
+#     packet_objs = (
+#         db.session.query(Capture)
+#         .filter(or_(Capture.ip_src == ip, Capture.ip_dst == ip))
+#         .order_by(desc(Capture.timestamp))
+#         .limit(num_packets)
+#     )
+#
+#     packets = list()
+#     for packet_obj in packet_objs:
+#         packet = get_model_as_dict(packet_obj)
+#         packets.append(packet)
+#
+#     return packets
+#
+#
+# def get_protocol_capture(protocol, port, num_packets):
+#
+#     if port:
+#         packet_objs = (
+#             db.session.query(Capture)
+#             .filter(func.lower(Capture.protocol) == func.lower(protocol))
+#             .filter(or_(Capture.sport == port, Capture.dport == port))
+#             .order_by(desc(Capture.timestamp))
+#             .limit(num_packets)
+#         )
+#     else:
+#         packet_objs = (
+#             db.session.query(Capture)
+#             .filter(func.lower(Capture.protocol) == func.lower(protocol))
+#             .order_by(desc(Capture.timestamp))
+#             .limit(num_packets)
+#         )
+#
+#     packets = list()
+#     for packet_obj in packet_objs:
+#         packet = get_model_as_dict(packet_obj)
+#         packets.append(packet)
+#
+#     return packets
+
+
+def get_capture(ip, protocol, port, num_packets):
+
+    # We must generate and implement specific queries based on what has been requested
+    # Note that if we add more imports, we'll have to modify this simple method to handle all cases
+    if ip and not protocol:  # Note that if not protocol, port isn't relevant
+        packet_objs = (
+            db.session.query(Capture)
+            .filter(or_(Capture.ip_src == ip, Capture.ip_dst == ip))
+            .order_by(desc(Capture.timestamp))
+            .limit(num_packets)
+        )
+    elif ip and protocol and not port:
+        packet_objs = (
+            db.session.query(Capture)
+            .filter(or_(Capture.ip_src == ip, Capture.ip_dst == ip))
+            .filter(func.lower(Capture.protocol) == func.lower(protocol))
+            .order_by(desc(Capture.timestamp))
+            .limit(num_packets)
+        )
+    elif ip and protocol and port:
+        packet_objs = (
+            db.session.query(Capture)
+                .filter(or_(Capture.ip_src == ip, Capture.ip_dst == ip))
+                .filter(func.lower(Capture.protocol) == func.lower(protocol))
+                .filter(or_(Capture.sport == port, Capture.dport == port))
+                .order_by(desc(Capture.timestamp))
+                .limit(num_packets)
+        )
+    elif not ip and protocol and not port:
+        packet_objs = (
+            db.session.query(Capture)
+            .filter(func.lower(Capture.protocol) == func.lower(protocol))
+            .order_by(desc(Capture.timestamp))
+            .limit(num_packets)
+        )
+    elif not ip and protocol and port:
+        packet_objs = (
+            db.session.query(Capture)
+            .filter(func.lower(Capture.protocol) == func.lower(protocol))
+            .filter(or_(Capture.sport == port, Capture.dport == port))
+            .order_by(desc(Capture.timestamp))
+            .limit(num_packets)
+        )
+    else:  # Not sure what was requested, so just get everything
+        packet_objs = (
+            db.session.query(Capture)
+            .order_by(desc(Capture.timestamp))
+            .limit(num_packets)
+        )
+
+    packets = list()
+    for packet_obj in packet_objs:
+        packet = get_model_as_dict(packet_obj)
+        packets.append(packet)
+
+    return packets

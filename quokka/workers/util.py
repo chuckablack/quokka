@@ -6,6 +6,22 @@ from pprint import pprint
 source = "protocol-sniffer-01"
 
 
+def get_filter(ip, protocol, port):
+
+    filter = ""
+    if ip:
+        filter += "host " + ip
+    if protocol:
+        if ip:
+            filter += " and " + protocol
+        else:
+            filter += protocol
+        if port:
+            filter += " port " + port
+
+    return filter
+
+
 def get_packets_from_capture(capture):
 
     packets = list()

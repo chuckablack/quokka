@@ -55,6 +55,10 @@ class Services extends Component {
         this.state.dashboard.setState({serviceId: serviceId, show: "servicestatus"})
     }
 
+    renderCapture(protocol) {
+        this.state.dashboard.setState({ip: null, protocol: protocol, port: null, show: "capture"})
+    }
+
     render() {
 
         const {services, isLoading} = this.state;
@@ -83,6 +87,8 @@ class Services extends Component {
                         {
                             title: 'Availability',
                             field: 'availability',
+                            headerStyle: {textAlign: 'right'},
+                            cellStyle: {textAlign: 'center'},
                             render: rowData =>
                                 rowData.availability ?
                                     <CheckCircleIcon style={{color: green[500]}}/>
@@ -108,6 +114,13 @@ class Services extends Component {
                             tooltip: 'Display Time-Series for Service',
                             onClick: (event, rowData) => {
                                 this.renderServiceTS(rowData.id)
+                            }
+                        },
+                        {
+                            icon: 'pageview',
+                            tooltip: 'Capture packets for service',
+                            onClick: (event, rowData) => {
+                                this.renderCapture(rowData.type)
                             }
                         }
                     ]}

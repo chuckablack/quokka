@@ -17,10 +17,13 @@ from quokka.models.apis import (
     get_all_events,
     get_service_summary_data,
     get_host_summary_data,
+    # get_host_capture,
+    # get_protocol_capture,
+    get_capture,
 )
 import quokka.models.reset
 from quokka.controller.ThreadManager import ThreadManager
-from quokka.controller.SnifferManager import SnifferManager
+from quokka.controller.CaptureManager import CaptureManager
 
 
 @app.route("/ui/devices", methods=["GET", "POST"])
@@ -197,44 +200,103 @@ def reset_events():
     return "Services reset"
 
 
-@app.route("/ui/sniff/host", methods=["POST"])
-def host_sniff():
+# @app.route("/ui/sniff/host", methods=["POST"])
+# def host_sniff():
+#
+#     host_id = request.args.get("hostid")
+#     host_ip = request.args.get("ip")
+#     count = request.args.get("count")
+#
+#     if not host_id and not host_ip:
+#         return "Must provide either hostid or ip", 400
+#
+#     if not count:
+#         return "Must provide count", 400
+#
+#     if not host_ip:
+#
+#         host = get_host(host_id)
+#         if host is None:
+#             return "Host not found", 404
+#         host_ip = host["ip"]
+#
+#     SnifferManager.sniff_host(interface="enp0s3", ip=host_ip, count=count)
+#
+#     return "Host sniffing initiated"
+#
+#
+# @app.route("/ui/sniff/protocol", methods=["POST"])
+# def protocol_sniff():
+#
+#     protocol = request.args.get("protocol")
+#     port = request.args.get("port")
+#     count = request.args.get("count")
+#
+#     if protocol is None:
+#         return "Must provide protocol", 400
+#
+#     if not count:
+#         return "Must provide count", 400
+#
+#     SnifferManager.sniff_protocol(interface="enp0s3", protocol=protocol, port=port, count=count)
+#
+#     return "Protocol sniffing initiated"
+#
+#
+# @app.route("/ui/capture/host", methods=["GET"])
+# def host_capture():
+#
+#     ip = request.args.get("ip")
+#     num_packets = request.args.get("num_packets")
+#
+#     if ip is None:
+#         return "Must provide IP", 400
+#     if num_packets is None:
+#         return "Must provide num_packets", 400
+#
+#     if request.method == "GET":
+#         return {"packets": get_host_capture(ip, num_packets)}
+#
+#     else:
+#         return "Invalid request method"
+#
+#
+# @app.route("/ui/capture/protocol", methods=["GET"])
+# def protocol_capture():
+#
+#     proto = request.args.get("proto")
+#     port = request.args.get("port")
+#     num_packets = request.args.get("num_packets")
+#
+#     if proto is None:
+#         return "Must provide proto", 400
+#     if num_packets is None:
+#         return "Must provide num_packets", 400
+#
+#     if request.method == "GET":
+#         return {"packets": get_protocol_capture(proto, port, num_packets)}
+#
+#     else:
+#         return "Invalid request method"
 
-    host_id = request.args.get("hostid")
-    host_ip = request.args.get("ip")
-    count = request.args.get("count")
 
-    if not host_id and not host_ip:
-        return "Must provide either hostid or ip", 400
+@app.route("/ui/capture", methods=["GET", "POST"])
+def capture():
 
-    if not count:
-        return "Must provide count", 400
-
-    if not host_ip:
-
-        host = get_host(host_id)
-        if host is None:
-            return "Host not found", 404
-        host_ip = host["ip"]
-
-    SnifferManager.sniff_host(interface="enp0s3", ip=host_ip, count=count)
-
-    return "Host sniffing initiated"
-
-
-@app.route("/ui/sniff/protocol", methods=["POST"])
-def protocol_sniff():
-
+    ip = request.args.get("ip")
     protocol = request.args.get("protocol")
     port = request.args.get("port")
-    count = request.args.get("count")
+    num_packets = request.args.get("num_packets")
 
-    if protocol is None:
-        return "Must provide protocol", 400
+    if not num_packets:
+        num_packets = 10
 
-    if not count:
-        return "Must provide count", 400
+    if request.method == "GET":
+        return {"packets": get_capture(ip, protocol, port, num_packets)}
 
-    SnifferManager.sniff_protocol(interface="enp0s3", protocol=protocol, port=port, count=count)
+    elif request.method == "POST":
+        CaptureManager.initiate_capture(ip, protocol, port, num_packets)
+        return "Capture initiated"
 
-    return "Protocol sniffing initiated"
+    else:
+        return "Invalid request method"

@@ -72,11 +72,11 @@ ServiceStatus.query.delete()
 Event.query.delete()
 
 from quokka.controller.ThreadManager import ThreadManager
-# ThreadManager.start_device_threads(device_monitor_interval, compliance_monitor_interval)
-# ThreadManager.start_service_thread(service_monitor_interval)
+ThreadManager.start_device_threads(device_monitor_interval, compliance_monitor_interval)
+ThreadManager.start_service_thread(service_monitor_interval)
 ThreadManager.start_discovery_thread(discovery_interval)
-# ThreadManager.start_host_thread(host_monitor_interval)
-# ThreadManager.start_summaries_thread()
+ThreadManager.start_host_thread(host_monitor_interval)
+ThreadManager.start_summaries_thread()
 
 
 def shutdown():

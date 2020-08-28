@@ -101,8 +101,15 @@ class Devices extends Component {
                             onClick: (event, rowData) => {
                                 this.renderDeviceStatus(rowData.name)
                             }
+                        },
+                        {
+                            icon: 'pageview',
+                            tooltip: 'Capture packets for device',
+                            onClick: (event, rowData) => {
+                                this.renderHostTS(rowData.ip_address)
+                            }
                         }
-                    ]}
+                     ]}
                 />
             </div>
         );

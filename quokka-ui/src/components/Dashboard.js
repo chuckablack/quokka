@@ -5,12 +5,13 @@ import 'typeface-roboto'
 import DashboardAppBar from "./DashboardAppBar";
 import Devices from "./Devices";
 import Hosts from "./Hosts";
-import Compliance from "./Compliance"
-import Services from "./Services"
-import HostStatus from "./HostStatus"
-import DeviceDashboard from "./DeviceDashboard"
+import Compliance from "./Compliance";
+import Services from "./Services";
+import HostStatus from "./HostStatus";
+import DeviceDashboard from "./DeviceDashboard";
 import ServiceStatus from "./ServiceStatus";
 import Events from "./Events";
+import Capture from "./Capture";
 
 class Dashboard extends Component {
 
@@ -24,7 +25,7 @@ class Dashboard extends Component {
     }
 
     render() {
-        const {deviceName, show, hostId, serviceId} = this.state
+        const {deviceName, show, hostId, serviceId, ip, protocol, port} = this.state
 
         let info;
 
@@ -42,9 +43,12 @@ class Dashboard extends Component {
             info = <ServiceStatus serviceId={serviceId} dashboard={this}/>;
         } else if (show === "devicestatus") {
             info = <DeviceDashboard deviceName={deviceName} dashboard={this}/>;
-        }else if (show === "events") {
+        } else if (show === "events") {
             info = <Events dashboard={this}/>;
+        } else if (show === "capture") {
+            info = <Capture ip={ip} protocol={protocol} port={port} dashboard={this}/>;
         }
+
 
         return (
             <Grid container direction="column">

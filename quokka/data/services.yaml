@@ -1,27 +1,27 @@
 - id: 1
   name: HTTP google
-  type: http
+  type: https
   target: https://www.google.com
   sla_availability: 95
   sla_response_time: 0.5
 
 - id: 2
   name: HTTP wikipedia
-  type: http
+  type: https
   target: https://www.wikipedia.com
   sla_availability: 95
   sla_response_time: 0.5
 
 - id: 3
   name: HTTP BBC
-  type: http
+  type: https
   target: https://bbc.com/news
   sla_availability: 95
   sla_response_time: 0.5
 
 - id: 4
   name: HTTP Tallac
-  type: http
+  type: https
   target: https://www.tallac.com
   sla_availability: 95
   sla_response_time: 0.5

@@ -83,15 +83,18 @@
 +username cisco privilege 15 secret 9 $9$ROmjFH65Ljp8EU$BJHNETsa6m3172YRGq0LUxAeN7.Fjj8/A0NBNi6MOXc
 +interface Loopback0
 + description to
-- no ip address
 + shutdown
 +interface GigabitEthernet1
 + description to port3.unmanaged-switch-0
 + ip address 192.168.254.201 255.255.255.0
 +interface GigabitEthernet2
 + description to
+- no ip address
++ shutdown
 +interface GigabitEthernet3
 + description to
+- no ip address
++ shutdown
 +interface GigabitEthernet4
 + description to
 - no ip address

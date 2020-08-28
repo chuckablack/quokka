@@ -23,13 +23,15 @@ def receive_sniff_host_request(host_sniffer_channel, method, properties, body):
     sniff_host_info = json.loads(body)
     print(f"sniffing host info: {sniff_host_info}")
 
+    channel.basic_ack(delivery_tag=method.delivery_tag)
+
     if (
         "interface" not in sniff_host_info
         or "ip" not in sniff_host_info
         or "count" not in sniff_host_info
         or not sniff_host_info["count"].isnumeric()
     ):
-        channel.basic_nack(requeue=False)
+        print("received invalid or missing sniff_host_info")
         return
 
     interface = sniff_host_info["interface"]
@@ -46,7 +48,6 @@ def receive_sniff_host_request(host_sniffer_channel, method, properties, body):
     packets = get_packets_from_capture(capture)
     send_capture(quokka_ip, serial_no, str(datetime.now())[:-1], packets)
 
-    channel.basic_ack(delivery_tag=method.delivery_tag)
     print('\n\n [*] Host Sniffer Worker: waiting for messages.')
 
 
