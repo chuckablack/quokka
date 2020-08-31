@@ -19,6 +19,7 @@ class Capture(db.Model):
     dport = db.Column(db.Text)
 
     packet_json = db.Column(db.Text)
+    packet_hexdump = db.Column(db.Text)
 
     def __repr__(self):
         return f"Sniff host at {self.timestamp} for host {self.host_ip} packet: {self.packet}"

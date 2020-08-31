@@ -2,6 +2,7 @@ from scapy2dict import to_dict
 from datetime import datetime
 import requests
 from pprint import pprint
+import scapy.all as scapy
 
 source = "protocol-sniffer-01"
 
@@ -29,6 +30,7 @@ def get_packets_from_capture(capture):
         packet_dict = to_dict(packet, strict=True)
         if "Raw" in packet_dict:
             del packet_dict["Raw"]
+        packet_dict["hexdump"] = scapy.hexdump(packet, dump=True)
         packet_dict_no_bytes = bytes_to_string(packet_dict)
         packets.append(packet_dict_no_bytes)
 

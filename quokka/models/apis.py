@@ -572,60 +572,62 @@ def get_all_events(num_events):
     return events
 
 
-def record_capture(timestamp, source, packets):
+def record_capture(timestamp, source, captured_packets):
 
-    for packet in packets:
+    for captured_packet in captured_packets:
 
-        capture = dict()
-        capture["timestamp"] = str(datetime.now())[:-3]
-        capture["local_timestamp"] = timestamp
-        capture["source"] = source
+        packet = dict()
+        packet["timestamp"] = str(datetime.now())[:-3]
+        packet["local_timestamp"] = timestamp
+        packet["source"] = source
 
-        if "Ethernet" in packet:
-            if "dst" in packet["Ethernet"]:
-                capture["ether_dst"] = packet["Ethernet"]["dst"]
-            if "src" in packet["Ethernet"]:
-                capture["ether_src"] = packet["Ethernet"]["src"]
+        if "Ethernet" in captured_packet:
+            if "dst" in captured_packet["Ethernet"]:
+                packet["ether_dst"] = captured_packet["Ethernet"]["dst"]
+            if "src" in captured_packet["Ethernet"]:
+                packet["ether_src"] = captured_packet["Ethernet"]["src"]
 
-        if "IP" in packet:
-            if "dst" in packet["IP"]:
-                capture["ip_dst"] = packet["IP"]["dst"]
-            if "src" in packet["IP"]:
-                capture["ip_src"] = packet["IP"]["src"]
+        if "IP" in captured_packet:
+            if "dst" in captured_packet["IP"]:
+                packet["ip_dst"] = captured_packet["IP"]["dst"]
+            if "src" in captured_packet["IP"]:
+                packet["ip_src"] = captured_packet["IP"]["src"]
 
-        if "TCP" in packet:
-            capture["protocol"] = "TCP"
-            if "dport" in packet["TCP"]:
-                capture["dport"] = packet["TCP"]["dport"]
-            if "sport" in packet["TCP"]:
-                capture["sport"] = packet["TCP"]["sport"]
+        if "TCP" in captured_packet:
+            packet["protocol"] = "TCP"
+            if "dport" in captured_packet["TCP"]:
+                packet["dport"] = captured_packet["TCP"]["dport"]
+            if "sport" in captured_packet["TCP"]:
+                packet["sport"] = captured_packet["TCP"]["sport"]
 
-            if capture["sport"] == 443 or capture["dport"] == 443:
-                capture["protocol"] = "HTTPS"
-            elif capture["sport"] == 80 or capture["dport"] == 80:
-                capture["protocol"] = "HTTP"
+            if packet["sport"] == 443 or packet["dport"] == 443:
+                packet["protocol"] = "HTTPS"
+            elif packet["sport"] == 80 or packet["dport"] == 80:
+                packet["protocol"] = "HTTP"
 
-        elif "UDP" in packet:
-            capture["protocol"] = "UDP"
-            if "dport" in packet["UDP"]:
-                capture["dport"] = packet["UDP"]["dport"]
-            if "sport" in packet["UDP"]:
-                capture["sport"] = packet["UDP"]["sport"]
+        elif "UDP" in captured_packet:
+            packet["protocol"] = "UDP"
+            if "dport" in captured_packet["UDP"]:
+                packet["dport"] = captured_packet["UDP"]["dport"]
+            if "sport" in captured_packet["UDP"]:
+                packet["sport"] = captured_packet["UDP"]["sport"]
 
-            if capture["sport"] == 123 or capture["dport"] == 123:
-                capture["protocol"] = "NTP"
+            if packet["sport"] == 123 or packet["dport"] == 123:
+                packet["protocol"] = "NTP"
 
-        if "DNS" in packet:
-            capture["protocol"] = "DNS"
-        if "ARP" in packet:
-            capture["protocol"] = "ARP"
-        if "DHCP" in packet:
-            capture["protocol"] = "DCHP"
+        if "DNS" in captured_packet:
+            packet["protocol"] = "DNS"
+        if "ARP" in captured_packet:
+            packet["protocol"] = "ARP"
+        if "DHCP" in captured_packet:
+            packet["protocol"] = "DCHP"
 
         # capture["packet_json"] = json.dumps(packet)
-        capture["packet_json"] = pformat(packet)
+        packet["packet_hexdump"] = captured_packet["hexdump"]
+        del captured_packet["hexdump"]
+        packet["packet_json"] = pformat(captured_packet)
 
-        capture_obj = Capture(**capture)
+        capture_obj = Capture(**packet)
         db.session.add(capture_obj)
 
         db.session.commit()

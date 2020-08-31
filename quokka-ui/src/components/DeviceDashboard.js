@@ -65,11 +65,11 @@ class DeviceDashboard extends Component {
                             this.setState({show: "config"})
                         }}>Config</Button>
                         <br/><br/> <br/><br/>
-                        <Button variant="contained" onClick={() => this.renderDevices(this.state.dashboard)}>
-                            Back to Devices
+                        <Button variant="contained" style={{width: '100%'}} onClick={() => this.renderDevices(this.state.dashboard)}>
+                            Return to Devices
                         </Button>
-                        <Button variant="contained" onClick={() => this.renderCompliance(this.state.dashboard)}>
-                            Back to Compliance
+                        <Button variant="contained" style={{width: '100%'}} onClick={() => this.renderCompliance(this.state.dashboard)}>
+                            Return to Compliance
                         </Button>
                     </Grid>
                 </Grid>

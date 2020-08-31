@@ -59,7 +59,7 @@ class ServiceStatus extends Component {
                         <br/><br/>
                         <b>LAST HEARD</b>:<br/>{this.state.serviceData.service.last_heard}
                         <br/><br/> <br/><br/>
-                        <Button variant="contained" onClick={() => this.renderServices(this.state.dashboard)}>Return to
+                        <Button variant="contained" style={{width: '100%'}} onClick={() => this.renderServices(this.state.dashboard)}>Return to
                             Services</Button>
                     </Grid>
 

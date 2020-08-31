@@ -51,6 +51,10 @@ class Devices extends Component {
         this.state.dashboard.setState({deviceName: deviceName, show: "devicestatus"})
     }
 
+    renderCapture(ip) {
+        this.state.dashboard.setState({ip: ip, protocol: null, port: null, show: "capture"})
+    }
+
     render() {
 
         const {devices} = this.state;
@@ -106,7 +110,7 @@ class Devices extends Component {
                             icon: 'pageview',
                             tooltip: 'Capture packets for device',
                             onClick: (event, rowData) => {
-                                this.renderHostTS(rowData.ip_address)
+                                this.renderCapture(rowData.ip_address)
                             }
                         }
                      ]}

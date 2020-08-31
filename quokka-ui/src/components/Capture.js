@@ -69,6 +69,11 @@ class Capture extends Component {
         dashboard.setState({show: "hosts"})
     }
 
+    getDetail(packetData) {
+        // return ['<pre id="json">', packetData, '</pre>'].join('')
+        return '<pre id="json">' + packetData + '</pre>'
+    }
+
     render() {
 
         const {packets, isLoading} = this.state;
@@ -83,10 +88,10 @@ class Capture extends Component {
                         <br /><br />
                         Port:<br /><b>{this.state.port}</b>
                         <br /><br />  <br /><br />
-                        <Button variant="contained" onClick={() => this.startCapture()}>Start capture</Button>
-                        <br /><br />  <br /><br />
-                        <Button variant="contained" onClick={() => this.renderHosts(this.state.dashboard)}>Return to Hosts</Button>
-                        <Button variant="contained" onClick={() => this.renderServices(this.state.dashboard)}>Return to Services</Button>
+                        <Button variant="contained" style={{width: '100%'}} onClick={() => this.startCapture()}>Start capture</Button>
+                        <br /><br />
+                        <Button variant="contained" style={{width: '100%'}} onClick={() => this.renderHosts(this.state.dashboard)}>Return to Hosts</Button>
+                        <Button variant="contained" style={{width: '100%'}} onClick={() => this.renderServices(this.state.dashboard)}>Return to Services</Button>
                     </Grid>
 
                     <Grid item style={{width: '85%', paddingRight: '10px'}}>
@@ -126,14 +131,20 @@ class Capture extends Component {
                                     pageSize: 10,
                                 }}
                                 detailPanel={rowData => {
-                                    const detail = ['<pre>', rowData.packet_json, '</pre>'].join('')
+                                    const detail = ['<pre id="json">', rowData.packet_json, '</pre>'].join('')
                                     return (
-                                        <iframe
-                                            width="100%"
-                                            height="315"
-                                            srcDoc={detail}
-                                            frameBorder="0"
-                                        />
+                                        <Grid container direction="row">
+                                            <Grid item style={{width: '50%', padding: '10px'}}>
+                                                <pre>
+                                                    {rowData.packet_json}
+                                                </pre>
+                                            </Grid>
+                                            <Grid item style={{width: '50%', padding: '10px'}}>
+                                                <pre>
+                                                    {rowData.packet_hexdump}
+                                                </pre>
+                                            </Grid>
+                                        </Grid>
                                     )
                                 }}
                             />

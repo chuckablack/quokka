@@ -60,7 +60,7 @@ class HostStatus extends Component {
                         <br /><br />
                         <b>Last heard</b>:<br />{this.state.hostData.host.last_heard}
                         <br /><br />  <br /><br />
-                        <Button variant="contained" onClick={() => this.renderHosts(this.state.dashboard)}>Return to Hosts</Button>
+                        <Button variant="contained" style={{width: '100%'}} onClick={() => this.renderHosts(this.state.dashboard)}>Return to Hosts</Button>
                     </Grid>
 
                     <Grid item style={{width: '85%', paddingRight: '10px'}}>
