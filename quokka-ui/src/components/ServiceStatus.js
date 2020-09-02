@@ -12,12 +12,20 @@ class ServiceStatus extends Component {
             isLoading: false,
             dashboard: props.dashboard,
             serviceId: props.serviceId,
+            countdownValue: process.env.REACT_APP_REFRESH_RATE,
         };
+    }
+
+    countdown() {
+        this.setState({countdownValue: this.state.countdownValue-1})
+        if (this.state.countdownValue <= 0) {
+            this.fetchServiceStatusData()
+        }
     }
 
     componentDidMount() {
         this.fetchServiceStatusData()
-        this.interval = setInterval(() => this.fetchServiceStatusData(), 60000)
+        this.interval = setInterval(() => this.countdown(), 1000)
     }
 
     componentWillUnmount() {
@@ -36,6 +44,7 @@ class ServiceStatus extends Component {
             .then(res => res.json())
             .then((data) => {
                 this.setState({serviceData: data, isLoading: false});
+                this.setState({countdownValue: process.env.REACT_APP_REFRESH_RATE})
             })
             .catch(console.log);
 
@@ -58,6 +67,8 @@ class ServiceStatus extends Component {
                         <b>DATA</b>:<br/>{this.state.serviceData.service.data}
                         <br/><br/>
                         <b>LAST HEARD</b>:<br/>{this.state.serviceData.service.last_heard}
+                        <br/><br/> <br/><br/>
+                        <b>REFRESH IN</b>:<br/>{this.state.countdownValue} seconds
                         <br/><br/> <br/><br/>
                         <Button variant="contained" style={{width: '100%'}} onClick={() => this.renderServices(this.state.dashboard)}>Return to
                             Services</Button>

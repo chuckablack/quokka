@@ -14,7 +14,15 @@ class Events extends Component {
             events: {events: []},
             isLoading: false,
             dashboard: props.dashboard,
+            countdownValue: process.env.REACT_APP_REFRESH_RATE,
         };
+    }
+
+    countdown() {
+        this.setState({countdownValue: this.state.countdownValue-1})
+        if (this.state.countdownValue <= 0) {
+            this.fetchEvents()
+        }
     }
 
     fetchEvents() {
@@ -26,13 +34,14 @@ class Events extends Component {
             .then((data) => {
                 this.setState({events: data, isLoading: false})
                 console.log(this.state.events)
+                this.setState({countdownValue: process.env.REACT_APP_REFRESH_RATE})
             })
             .catch(console.log)
     }
 
     componentDidMount() {
         this.fetchEvents()
-        this.interval = setInterval(() => this.fetchEvents(), 60000)
+        this.interval = setInterval(() => this.countdown(), 1000)
     }
 
     componentWillUnmount() {
@@ -56,6 +65,7 @@ class Events extends Component {
                             <CircularProgress color="inherit" />
                         </Backdrop>
                         : ""}
+                    <h6>Time until refresh: {this.state.countdownValue} seconds</h6>
                     <Button variant="contained" onClick={() => {
                         this.fetchEvents()
                     }}>Refresh Events</Button>

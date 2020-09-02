@@ -10,20 +10,28 @@ class DeviceDashboard extends Component {
             deviceName: props.deviceName,
             deviceData: {device_data: [], device: {}},
             dashboard: props.dashboard,
+            countdownValue: process.env.REACT_APP_REFRESH_RATE,
         };
 
     }
 
+    countdown() {
+        this.setState({countdownValue: this.state.countdownValue-1})
+        if (this.state.countdownValue <= 0) {
+            this.fetchDeviceStatusData()
+        }
+    }
+
     componentDidMount() {
-        this.fetchDeviceTsData()
-        this.interval = setInterval(() => this.fetchDeviceTsData(), 60000)
+        this.fetchDeviceStatusData()
+        this.interval = setInterval(() => this.countdown(), 1000)
     }
 
     componentWillUnmount() {
         clearInterval(this.interval)
     }
 
-    fetchDeviceTsData() {
+    fetchDeviceStatusData() {
 
         const deviceName = this.state.deviceName;
 
@@ -33,7 +41,8 @@ class DeviceDashboard extends Component {
         fetch(requestUrl)
             .then(res => res.json())
             .then((data) => {
-                 this.setState({deviceData: data});
+                this.setState({deviceData: data});
+                this.setState({countdownValue: process.env.REACT_APP_REFRESH_RATE})
             })
             .catch(console.log);
 
@@ -88,6 +97,7 @@ class DeviceDashboard extends Component {
         const maxYMemory = data.maxY;
         return (
             <Grid item style={{padding: '10px'}}>
+                <h6 align='right'>Time until refresh: {this.state.countdownValue} seconds</h6>
                 <Grid container direction="row">
                     <Grid item style={{width: '50%'}}>
                         <Grid item>

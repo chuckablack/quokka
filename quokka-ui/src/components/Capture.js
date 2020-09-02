@@ -18,7 +18,15 @@ class Capture extends Component {
             ip: props.ip,
             protocol: props.protocol,
             port: props.port,
+            countdownValue: process.env.REACT_APP_REFRESH_RATE,
         };
+    }
+
+    countdown() {
+        this.setState({countdownValue: this.state.countdownValue-1})
+        if (this.state.countdownValue <= 0) {
+            this.fetchPackets()
+        }
     }
 
     fetchPackets() {
@@ -35,6 +43,7 @@ class Capture extends Component {
             .then((data) => {
                 this.setState({packets: data, isLoading: false})
                 console.log(this.state.packets)
+                this.setState({countdownValue: process.env.REACT_APP_REFRESH_RATE})
             })
             .catch(console.log)
     }
@@ -55,7 +64,7 @@ class Capture extends Component {
 
     componentDidMount() {
         this.fetchPackets()
-        this.interval = setInterval(() => this.fetchPackets(), 60000)
+        this.interval = setInterval(() => this.countdown(), 1000)
     }
 
     componentWillUnmount() {
@@ -67,11 +76,6 @@ class Capture extends Component {
     }
     renderHosts(dashboard) {
         dashboard.setState({show: "hosts"})
-    }
-
-    getDetail(packetData) {
-        // return ['<pre id="json">', packetData, '</pre>'].join('')
-        return '<pre id="json">' + packetData + '</pre>'
     }
 
     render() {
@@ -107,6 +111,7 @@ class Capture extends Component {
                                         <CircularProgress color="inherit" />
                                     </Backdrop>
                                     : ""}
+                                <h6>Time until refresh: {this.state.countdownValue} seconds</h6>
                                 <Button variant="contained" onClick={() => {
                                     this.fetchPackets()
                                 }}>Refresh Packets</Button>

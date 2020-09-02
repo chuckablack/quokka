@@ -12,20 +12,28 @@ class HostStatus extends Component {
             isLoading: false,
             dashboard: props.dashboard,
             hostId: props.hostId,
+            countdownValue: process.env.REACT_APP_REFRESH_RATE,
         };
 
     }
 
+    countdown() {
+        this.setState({countdownValue: this.state.countdownValue-1})
+        if (this.state.countdownValue <= 0) {
+            this.fetchHostStatusData()
+        }
+    }
+
     componentDidMount() {
-        this.fetchHostTsData()
-        this.interval = setInterval(() => this.fetchHostTsData(), 60000)
+        this.fetchHostStatusData()
+        this.interval = setInterval(() => this.countdown(), 1000)
     }
 
     componentWillUnmount() {
         clearInterval(this.interval)
     }
 
-    fetchHostTsData() {
+    fetchHostStatusData() {
 
         const hostId = this.state.hostId;
 
@@ -36,7 +44,8 @@ class HostStatus extends Component {
         fetch(requestUrl)
             .then(res => res.json())
             .then((data) => {
-                 this.setState({hostData: data, isLoading: false});
+                this.setState({hostData: data, isLoading: false});
+                this.setState({countdownValue: process.env.REACT_APP_REFRESH_RATE})
             })
             .catch(console.log);
 
@@ -60,6 +69,8 @@ class HostStatus extends Component {
                         <br /><br />
                         <b>Last heard</b>:<br />{this.state.hostData.host.last_heard}
                         <br /><br />  <br /><br />
+                        <b>REFRESH IN</b>:<br/>{this.state.countdownValue} seconds
+                        <br/><br/> <br/><br/>
                         <Button variant="contained" style={{width: '100%'}} onClick={() => this.renderHosts(this.state.dashboard)}>Return to Hosts</Button>
                     </Grid>
 
