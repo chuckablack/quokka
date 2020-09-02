@@ -617,10 +617,12 @@ def record_capture(timestamp, source, captured_packets):
 
         if "DNS" in captured_packet:
             packet["protocol"] = "DNS"
-        if "ARP" in captured_packet:
+        elif "ARP" in captured_packet:
             packet["protocol"] = "ARP"
-        if "DHCP" in captured_packet:
+        elif "DHCP" in captured_packet:
             packet["protocol"] = "DCHP"
+        elif "ICMP" in captured_packet:
+            packet["protocol"] = "ICMP"
 
         # capture["packet_json"] = json.dumps(packet)
         packet["packet_hexdump"] = captured_packet["hexdump"]

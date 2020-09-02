@@ -42,8 +42,9 @@ class CaptureManager:
         channel = connection.channel()
         channel.queue_declare(queue="capture_queue", durable=True)
 
-        if protocol:
+        if protocol:  # Translate port and protocol if necessary, e.g. 'http' must become 'tcp', '80'
             protocol, port = CaptureManager.translate_protocol_and_port(protocol, port)
+
         capture_info = {
             "interface": interface,
             "ip": ip,
