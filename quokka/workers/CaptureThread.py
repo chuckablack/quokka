@@ -1,4 +1,4 @@
-from scapy.all import sniff, hexdump
+from scapy.all import sniff, hexdump, conf, get_if_list, get_if_addr
 from threading import Thread
 from util import get_filter
 from scapy2dict import to_dict
@@ -16,12 +16,33 @@ class CaptureThread(Thread):
         print(
             f"CaptureThread: initializing thread object: quokka_ip={quokka_ip}, serial={serial_no}, capture info={capture_info}"
         )
-        self.interface = capture_info["interface"]
+        self.interface = CaptureThread.get_interface(capture_info["ip"])
+        if not self.interface:
+            self.interface = capture_info["interface"]
+
         self.capture_filter = get_filter(
             capture_info["ip"], capture_info["protocol"], capture_info["port"]
         )
+        print(f"CaptureThread: listening on interface: {self.interface}, filter: {self.capture_filter}")
+
         self.quokka_ip = quokka_ip
         self.serial_no = serial_no
+
+    @staticmethod
+    def get_interface(ip):
+
+        route = conf.route.route(ip)
+        if route:
+            return route[0]
+
+        else:
+            if_list = get_if_list()
+            for interface in if_list:
+                ip = get_if_addr(interface)
+                if ip and ip != "127.0.0.1":
+                    return interface
+
+        return None
 
     def process_packet(self, packet):
 
