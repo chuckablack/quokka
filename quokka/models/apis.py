@@ -635,49 +635,6 @@ def record_capture(timestamp, source, captured_packets):
         db.session.commit()
 
 
-# def get_host_capture(ip, num_packets):
-#
-#     packet_objs = (
-#         db.session.query(Capture)
-#         .filter(or_(Capture.ip_src == ip, Capture.ip_dst == ip))
-#         .order_by(desc(Capture.timestamp))
-#         .limit(num_packets)
-#     )
-#
-#     packets = list()
-#     for packet_obj in packet_objs:
-#         packet = get_model_as_dict(packet_obj)
-#         packets.append(packet)
-#
-#     return packets
-#
-#
-# def get_protocol_capture(protocol, port, num_packets):
-#
-#     if port:
-#         packet_objs = (
-#             db.session.query(Capture)
-#             .filter(func.lower(Capture.protocol) == func.lower(protocol))
-#             .filter(or_(Capture.sport == port, Capture.dport == port))
-#             .order_by(desc(Capture.timestamp))
-#             .limit(num_packets)
-#         )
-#     else:
-#         packet_objs = (
-#             db.session.query(Capture)
-#             .filter(func.lower(Capture.protocol) == func.lower(protocol))
-#             .order_by(desc(Capture.timestamp))
-#             .limit(num_packets)
-#         )
-#
-#     packets = list()
-#     for packet_obj in packet_objs:
-#         packet = get_model_as_dict(packet_obj)
-#         packets.append(packet)
-#
-#     return packets
-
-
 def get_capture(ip, protocol, port, num_packets):
 
     # We must generate and implement specific queries based on what has been requested

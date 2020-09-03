@@ -56,12 +56,13 @@ class CaptureThread(Thread):
         pprint(packet_dict_no_bytes)
 
         print(f"CaptureThread: sending capture: {packet_dict_no_bytes}")
-        send_capture(
+        status_code = send_capture(
             self.quokka_ip,
             self.serial_no,
             str(datetime.now())[:-1],
             [packet_dict_no_bytes],
         )
+        print(f"CaptureThread: capture sent, result={status_code}\n")
 
     def run(self):
 

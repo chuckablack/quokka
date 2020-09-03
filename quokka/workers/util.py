@@ -55,6 +55,8 @@ def send_capture(destination, serial_no, timestamp, packets):
             f"{str(datetime.now())[:-3]}: Error calling /capture/store response: {rsp.status_code}, {rsp.content}"
         )
 
+    return rsp.status_code
+
 
 def bytes_to_string(data):
 

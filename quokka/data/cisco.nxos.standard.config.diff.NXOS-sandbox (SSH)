@@ -2,9 +2,6 @@ cfs eth distribute
 feature vpc
 feature telemetry
 vpc domain 10
-  ip address 172.16.1.1/30
-  ip ospf network broadcast
-  no ip ospf passive-interface
 telemetry
   sensor-group 1
     path sys/intf/phys-[eth1/11] depth 0

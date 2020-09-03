@@ -9,6 +9,7 @@ from quokka.models.HostStatus import HostStatus
 from quokka.models.Service import Service
 from quokka.models.ServiceStatus import ServiceStatus
 from quokka.models.Event import Event
+from quokka.models.Capture import Capture
 from quokka.models.apis import import_devices, import_services, import_compliance
 
 
@@ -44,6 +45,13 @@ def reset_services():
 
 def reset_events():
     db.session.query(Event).delete()
+    db.session.commit()
+
+    return
+
+
+def reset_capture():
+    db.session.query(Capture).delete()
     db.session.commit()
 
     return

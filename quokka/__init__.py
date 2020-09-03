@@ -59,17 +59,22 @@ import_compliance(filename="compliance.yaml")
 import_services(filename="services.yaml")
 
 Host.query.delete()
-db.session.commit()
 
-# Reset time-series data
+# Reset time-series data tables
 from quokka.models.DeviceStatus import DeviceStatusTS
 from quokka.models.HostStatus import HostStatus
 from quokka.models.ServiceStatus import ServiceStatus
-from quokka.models.Event import Event
 DeviceStatusTS.query.delete()
 HostStatus.query.delete()
 ServiceStatus.query.delete()
+
+# Reset event log and packet capture tables
+from quokka.models.Event import Event
+from quokka.models.Capture import Capture
 Event.query.delete()
+Capture.query.delete()
+
+db.session.commit()
 
 from quokka.controller.ThreadManager import ThreadManager
 ThreadManager.start_device_threads(device_monitor_interval, compliance_monitor_interval)

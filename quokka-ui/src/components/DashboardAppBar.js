@@ -43,6 +43,10 @@ function renderEvents(dashboard) {
     dashboard.setState({show: "events"})
 }
 
+function renderCapture(dashboard) {
+    dashboard.setState({show: "capture"})
+}
+
 export default function DashboardAppBar(props) {
     const classes = useStyles();
     const dashboard = props.dashboard;
@@ -67,7 +71,10 @@ export default function DashboardAppBar(props) {
                     renderServices(dashboard)
                 } else if (target === "events") {
                     renderEvents(dashboard)
+                } else if (target === "capture") {
+                    renderCapture(dashboard)
                 }
+
 
                 setIsLoading(false)
             })
@@ -92,6 +99,12 @@ export default function DashboardAppBar(props) {
         fetchReset("events");
         setAnchorEl(null);
     };
+    const handleResetCapture = (event) => {
+        setIsLoading(true);
+        fetchReset("capture");
+        setAnchorEl(null);
+    };
+
 
     const handleClose = () => {
         setAnchorEl(null);
@@ -115,6 +128,7 @@ export default function DashboardAppBar(props) {
                         <MenuItem onClick={handleResetHosts}>Reset Hosts</MenuItem>
                         <MenuItem onClick={handleResetServices}>Reset Services</MenuItem>
                         <MenuItem onClick={handleResetEvents}>Reset Events</MenuItem>
+                        <MenuItem onClick={handleResetCapture}>Reset Capture</MenuItem>
                     </Menu>
                     <Typography variant="h6" className={classes.title} style={{paddingLeft: '20px'}}>
                         <b>QUOKKA</b> Dashboard
@@ -124,6 +138,7 @@ export default function DashboardAppBar(props) {
                     <Button color="inherit" onClick={() => renderHosts(dashboard)}>Hosts</Button>
                     <Button color="inherit" onClick={() => renderServices(dashboard)}>Services</Button>
                     <Button color="inherit" onClick={() => renderEvents(dashboard)}>Events</Button>
+                    <Button color="inherit" onClick={() => renderCapture(dashboard)}>Capture</Button>
                 </Toolbar>
             </AppBar>
             {isLoading ?
