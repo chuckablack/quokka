@@ -83,6 +83,8 @@ ThreadManager.start_discovery_thread(discovery_interval)
 ThreadManager.start_host_thread(host_monitor_interval)
 ThreadManager.start_summaries_thread()
 
+from quokka.controller.CaptureManager import CaptureManager
+capture_manager = CaptureManager()
 
 def shutdown():
 

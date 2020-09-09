@@ -72,7 +72,7 @@ class CaptureThread(Thread):
         sniff(
             iface=self.interface,
             filter=self.capture_filter,
-            timeout=300,
+            timeout=180,
             prn=self.process_packet,
         )
 

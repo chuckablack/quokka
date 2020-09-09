@@ -90,12 +90,9 @@
 + ip address 192.168.254.201 255.255.255.0
 +interface GigabitEthernet2
 + description to
-- no ip address
-+ shutdown
 +interface GigabitEthernet3
 + description to
 - no ip address
-+ shutdown
 +interface GigabitEthernet4
 + description to
 - no ip address
@@ -111,3 +108,4 @@
 +line vty 0 4
 + exec-timeout 720 0
 + password cisco
++ transport input telnet ssh

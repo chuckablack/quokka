@@ -1,5 +1,7 @@
 import pika
 import json
+import yaml
+from netaddr import IPNetwork
 from quokka.controller.utils import log_console
 
 interface = "enp0s3"
@@ -7,15 +9,21 @@ interface = "enp0s3"
 
 class CaptureManager:
 
-    log_console("Initializing CaptureManager")
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host="localhost"))
-    channel = connection.channel()
-
-    channel.queue_declare(queue="capture_queue", durable=True)
+    try:
+        with open("quokka/data/" + "capturemonitors.yaml", "r") as import_file:
+            capture_monitors = yaml.safe_load(import_file.read())
+    except FileNotFoundError as e:
+        log_console(f"Could not import capture monitors file: {repr(e)}")
+        capture_monitors["0.0.0.0/0"] = "localhost"
 
     @staticmethod
-    def close():
-        CaptureManager.connection.close()
+    def get_channel(monitor):
+
+        connection = pika.BlockingConnection(pika.ConnectionParameters(host=monitor))
+        channel = connection.channel()
+        channel.queue_declare(queue="capture_queue", durable=True)
+
+        return channel
 
     @staticmethod
     def translate_protocol_and_port(protocol, port):
@@ -34,13 +42,28 @@ class CaptureManager:
             return protocol, port
 
     @staticmethod
+    def find_monitor(ip=None):
+
+        if not ip:
+            return "localhost"
+
+        if ip in CaptureManager.capture_monitors:
+            return CaptureManager.capture_monitors[ip]
+
+        # If not a per-IP monitor, get the subnet for this IP and find match
+        for network, monitor in CaptureManager.capture_monitors.items():
+            if ip in IPNetwork(network):
+                return CaptureManager.capture_monitors[network]
+
+        else:
+            # If we didn't find a specific monitor, default to localhost
+            return "localhost"
+
+    @staticmethod
     def initiate_capture(ip, protocol, port, count):
 
-        connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host="localhost")
-        )
-        channel = connection.channel()
-        channel.queue_declare(queue="capture_queue", durable=True)
+        monitor = CaptureManager.find_monitor(ip)
+        channel = CaptureManager.get_channel(monitor)
 
         if protocol:  # Translate port and protocol if necessary, e.g. 'http' must become 'tcp', '80'
             protocol, port = CaptureManager.translate_protocol_and_port(protocol, port)
