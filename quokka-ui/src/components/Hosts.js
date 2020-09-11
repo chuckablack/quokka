@@ -8,6 +8,10 @@ import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
 import {green, red} from '@material-ui/core/colors';
 import MaterialTable from "material-table";
+import Dialog from '@material-ui/core/Dialog'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
 
 class Hosts extends Component {
 
@@ -18,6 +22,9 @@ class Hosts extends Component {
             isLoading: false,
             dashboard: props.dashboard,
             countdownValue: process.env.REACT_APP_REFRESH_RATE,
+            openPortScanDialog: false,
+            portScanHost: '',
+            portScanResults: "[22, 23, 80, 443]",
         };
     }
 
@@ -42,6 +49,21 @@ class Hosts extends Component {
             .catch(console.log)
     }
 
+    fetchPortScan(hostId) {
+
+        this.setState({isLoading: true});
+        this.setState({portScanResults: {result: "scanning ...", open_ports: "scanning ..."}})
+        let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/ui/host/scan?hostid=' + hostId
+        const requestOptions = { method: 'PUT'}
+        fetch(requestUrl, requestOptions)
+            .then(res => res.json())
+            .then((data) => {
+                this.setState({portScanResults: data, isLoading: false})
+                console.log(this.state.portScanResults)
+            })
+            .catch(console.log)
+    }
+
     componentDidMount() {
         this.fetchHosts()
         this.interval = setInterval(() => this.countdown(), 1000)
@@ -57,6 +79,15 @@ class Hosts extends Component {
 
     renderCapture(ip) {
         this.state.dashboard.setState({ip: ip, protocol: null, port: null, show: "capture"})
+    }
+
+    handleClosePortScanDialog(parent) {
+        parent.setState({openPortScanDialog: false})
+    }
+
+    renderPortScanDialog(hostId, ip) {
+        this.fetchPortScan(hostId)
+        this.setState({openPortScanDialog: true, portScanHost: ip})
     }
 
 
@@ -119,10 +150,36 @@ class Hosts extends Component {
                             onClick: (event, rowData) => {
                                 this.renderCapture(rowData.ip_address)
                             }
+                        },
+                        {
+                            icon: 'policy',
+                            tooltip: 'Scan for open ports',
+                            onClick: (event, rowData) => {
+                                this.renderPortScanDialog(rowData.id, rowData.ip_address)
+                            }
                         }
+
                     ]}
 
                 />
+                <Dialog
+                    open={this.state.openPortScanDialog}
+                >
+                    <DialogTitle>Port Scan Results: {this.state.portScanHost}</DialogTitle>
+                    <DialogContent>
+                        <b>Open TCP Ports for connections:</b><br />
+                        Result: {this.state.portScanResults.result}<br />
+                        Open Ports: {this.state.portScanResults.open_ports}
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => this.handleClosePortScanDialog(this)}>
+                            Extended Scan
+                        </Button>
+                        <Button onClick={() => this.handleClosePortScanDialog(this)}>
+                            Close
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </div>
         );
     }

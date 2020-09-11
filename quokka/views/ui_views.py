@@ -24,6 +24,7 @@ from quokka.models.apis import (
 import quokka.models.reset
 from quokka.controller.ThreadManager import ThreadManager
 from quokka.controller.CaptureManager import CaptureManager
+from quokka.controller.host.port_scan import get_port_scan_tcp_connection
 
 
 @app.route("/ui/devices", methods=["GET", "POST"])
@@ -226,3 +227,27 @@ def capture():
 
     else:
         return "Invalid request method"
+
+
+@app.route("/ui/host/scan", methods=["PUT"])
+def host_scan():
+
+    host_id = request.args.get("hostid")
+    scan_type = request.args.get("type", "tcp-connection")
+
+    if not host_id:
+        return "Must provide hostid", 400
+
+    if scan_type != "tcp-connection":
+        return "Unsupported scan type", 400
+
+    host = get_host(host_id)
+    if not host:
+        return f"Unknown host id={host_id}", 404
+
+    result, scan_results = get_port_scan_tcp_connection(host["ip_address"])
+    return {
+        "result": result,
+        "open_ports": str(scan_results),
+        "host": host,
+    }
