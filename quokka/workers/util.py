@@ -4,23 +4,21 @@ import requests
 from pprint import pprint
 import scapy.all as scapy
 
-source = "protocol-sniffer-01"
-
 
 def get_filter(ip, protocol, port):
 
-    filter = ""
+    capture_filter = ""
     if ip:
-        filter += "host " + ip
+        capture_filter += "host " + ip
     if protocol:
         if ip:
-            filter += " and " + protocol
+            capture_filter += " and " + protocol
         else:
-            filter += protocol
+            capture_filter += protocol
         if port:
-            filter += " port " + port
+            capture_filter += " port " + port
 
-    return filter
+    return capture_filter
 
 
 def get_packets_from_capture(capture):
@@ -39,10 +37,10 @@ def get_packets_from_capture(capture):
     return packets
 
 
-def send_capture(destination, serial_no, timestamp, packets):
+def send_capture(source, destination, serial_no, timestamp, packets):
 
     capture_payload = {
-        "name": source,
+        "source": source,
         "serial": serial_no,
         "timestamp": timestamp,
         "packets": packets,
@@ -78,3 +76,24 @@ def bytes_to_string(data):
 
     else:
         return data
+
+
+def send_portscan(source, destination, serial_no, host_ip, host_name, timestamp, scan_output):
+
+    portscan_payload = {
+        "source": source,
+        "serial": serial_no,
+        "host_ip": host_ip,
+        "host_name": host_name,
+        "timestamp": timestamp,
+        "scan_output": scan_output,
+    }
+    rsp = requests.post(
+        "http://" + destination + ":5000/portscan/store", json=portscan_payload
+    )
+    if rsp.status_code != 200:
+        print(
+            f"{str(datetime.now())[:-3]}: Error calling /portscan/store response: {rsp.status_code}, {rsp.content}"
+        )
+
+    return rsp.status_code

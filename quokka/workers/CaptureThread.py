@@ -4,6 +4,7 @@ from util import get_filter
 from scapy2dict import to_dict
 from pprint import pprint
 from datetime import datetime
+from socket import gethostname
 
 from util import bytes_to_string, send_capture
 
@@ -57,6 +58,7 @@ class CaptureThread(Thread):
 
         print(f"CaptureThread: sending capture: {packet_dict_no_bytes}")
         status_code = send_capture(
+            gethostname(),
             self.quokka_ip,
             self.serial_no,
             str(datetime.now())[:-1],

@@ -4,8 +4,6 @@ import pika
 import json
 from CaptureThread import CaptureThread
 
-from util import get_packets_from_capture, send_capture, get_filter
-
 quokka_ip = "localhost"
 serial_no = "111.111.111"
 

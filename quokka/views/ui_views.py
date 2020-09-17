@@ -24,7 +24,8 @@ from quokka.models.apis import (
 import quokka.models.reset
 from quokka.controller.ThreadManager import ThreadManager
 from quokka.controller.CaptureManager import CaptureManager
-from quokka.controller.host.port_scan import get_port_scan_tcp_connection
+from quokka.controller.PortscanManager import PortscanManager
+from quokka.controller.host.portscan import get_port_scan_tcp_connection, get_port_scan_extended
 
 
 @app.route("/ui/devices", methods=["GET", "POST"])
@@ -229,17 +230,13 @@ def capture():
         return "Invalid request method"
 
 
-@app.route("/ui/host/scan", methods=["PUT"])
-def host_scan():
+@app.route("/ui/scan", methods=["GET"])
+def scan():
 
     host_id = request.args.get("hostid")
-    scan_type = request.args.get("type", "tcp-connection")
 
     if not host_id:
         return "Must provide hostid", 400
-
-    if scan_type != "tcp-connection":
-        return "Unsupported scan type", 400
 
     host = get_host(host_id)
     if not host:
@@ -251,3 +248,26 @@ def host_scan():
         "open_ports": str(scan_results),
         "host": host,
     }
+
+
+@app.route("/ui/scan/extended", methods=["GET", "POST"])
+def scan_extended():
+
+    host_id = request.args.get("hostid")
+
+    if not host_id:
+        return "Must provide hostid", 400
+
+    host = get_host(host_id)
+    if not host:
+        return f"Unknown host id={host_id}", 404
+
+    if request.method == "GET":
+        return {"scan_output": get_port_scan_extended(host_id)}
+
+    elif request.method == "POST":
+        PortscanManager.initiate_portscan(host["ip_address"], host["name"])
+        return f"Portscan initiated for host: {host['name']}, ip: {host['ip_address']}"
+
+    else:
+        return "Invalid request method"

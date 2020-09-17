@@ -46,6 +46,7 @@ db = SQLAlchemy(app)
 import quokka.views.ui_views
 import quokka.views.device_views
 import quokka.views.capture_views
+import quokka.views.portscan_views
 import quokka.models
 
 db.create_all()
@@ -85,6 +86,9 @@ ThreadManager.start_summaries_thread()
 
 from quokka.controller.CaptureManager import CaptureManager
 capture_manager = CaptureManager()
+from quokka.controller.PortscanManager import PortscanManager
+portscan_manager = PortscanManager()
+
 
 def shutdown():
 

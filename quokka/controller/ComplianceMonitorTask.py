@@ -41,7 +41,7 @@ def check_os_compliance(device):
         log_console(f"!!! Exception getting device info in compliance monitoring for {device['name']}: {repr(e)}")
         result = "failed"
 
-    if result == "failed" or not facts:
+    if result == "failed" or not facts or "facts" not in facts or "os_version" not in facts["facts"]:
         log_console(f"!!! Error retrieving version info for this device {device['name']}")
         return False
 

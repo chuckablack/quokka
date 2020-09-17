@@ -53,8 +53,8 @@ class Hosts extends Component {
 
         this.setState({isLoading: true});
         this.setState({portScanResults: {result: "scanning ...", open_ports: "scanning ..."}})
-        let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/ui/host/scan?hostid=' + hostId
-        const requestOptions = { method: 'PUT'}
+        let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/ui/scan?hostid=' + hostId
+        const requestOptions = { method: 'GET'}
         fetch(requestUrl, requestOptions)
             .then(res => res.json())
             .then((data) => {
@@ -170,11 +170,11 @@ class Hosts extends Component {
                         <b>Open TCP Ports for connections:</b><br />
                         Result: {this.state.portScanResults.result}<br />
                         Open Ports: {this.state.portScanResults.open_ports}
+                        <br /><br />
+                        <b>NOTE:</b><br />
+                        Depending on the host, scanning may take up to a few minutes to complete
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={() => this.handleClosePortScanDialog(this)}>
-                            Extended Scan
-                        </Button>
                         <Button onClick={() => this.handleClosePortScanDialog(this)}>
                             Close
                         </Button>
