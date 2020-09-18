@@ -263,11 +263,11 @@ def scan_extended():
         return f"Unknown host id={host_id}", 404
 
     if request.method == "GET":
-        return {"scan_output": get_port_scan_extended(host_id)}
+        return {"scan_output": "this is bogus portscan data"}
 
     elif request.method == "POST":
         PortscanManager.initiate_portscan(host["ip_address"], host["name"])
-        return f"Portscan initiated for host: {host['name']}, ip: {host['ip_address']}"
+        return {"result": f"Portscan initiated for host: {host['name']}, ip: {host['ip_address']}"}
 
     else:
         return "Invalid request method"

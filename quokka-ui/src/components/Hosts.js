@@ -12,6 +12,8 @@ import Dialog from '@material-ui/core/Dialog'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
+import PolicyOutlinedIcon from '@material-ui/icons/PolicyOutlined'
+import PolicyTwoToneIcon from '@material-ui/icons/PolicyTwoTone'
 
 class Hosts extends Component {
 
@@ -23,8 +25,10 @@ class Hosts extends Component {
             dashboard: props.dashboard,
             countdownValue: process.env.REACT_APP_REFRESH_RATE,
             openPortScanDialog: false,
+            openExtendedPortScanDialog: false,
             portScanHost: '',
-            portScanResults: "[22, 23, 80, 443]",
+            portScanResults: '',
+            extendedPortScanResults: '',
         };
     }
 
@@ -64,6 +68,36 @@ class Hosts extends Component {
             .catch(console.log)
     }
 
+    initiateExtendedPortScan(hostId) {
+
+        this.setState({isLoading: true});
+        this.setState({extendedPortScanResults: {result: "initiating scan ..."}})
+        let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/ui/scan/extended?hostid=' + hostId
+        const requestOptions = { method: 'POST'}
+        fetch(requestUrl, requestOptions)
+            .then(res => res.json())
+            .then(() => {
+                this.fetchExtendedPortScanResults(hostId)
+                console.log(this.state.extendedPortScanResults)
+            })
+            .catch(console.log)
+    }
+
+    fetchExtendedPortScanResults( hostId ) {
+        this.setState({isLoading: true});
+        this.setState({extendedPortScanResults: {result: "retrieving scan results ..."}})
+        let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/ui/scan/extended?hostid=' + hostId
+        const requestOptions = { method: 'GET'}
+        fetch(requestUrl, requestOptions)
+            .then(res => res.json())
+            .then((data) => {
+                this.setState({extendedPortScanResults: data, isLoading: false})
+                console.log(this.state.extendedPortScanResults)
+            })
+            .catch(console.log)
+
+    }
+
     componentDidMount() {
         this.fetchHosts()
         this.interval = setInterval(() => this.countdown(), 1000)
@@ -85,9 +119,18 @@ class Hosts extends Component {
         parent.setState({openPortScanDialog: false})
     }
 
+    handleCloseExtendedPortScanDialog(parent) {
+        parent.setState({openExtendedPortScanDialog: false})
+    }
+
     renderPortScanDialog(hostId, ip) {
         this.fetchPortScan(hostId)
         this.setState({openPortScanDialog: true, portScanHost: ip})
+    }
+
+    renderExtendedPortScanDialog(hostId, ip) {
+        this.initiateExtendedPortScan(hostId)
+        this.setState({openExtendedPortScanDialog: true, portScanHost: ip})
     }
 
 
@@ -152,10 +195,17 @@ class Hosts extends Component {
                             }
                         },
                         {
-                            icon: 'policy',
+                            icon: PolicyOutlinedIcon,
                             tooltip: 'Scan for open ports',
                             onClick: (event, rowData) => {
                                 this.renderPortScanDialog(rowData.id, rowData.ip_address)
+                            }
+                        },
+                        {
+                            icon: PolicyTwoToneIcon,
+                            tooltip: 'Extended Scan for open ports',
+                            onClick: (event, rowData) => {
+                                this.renderExtendedPortScanDialog(rowData.id, rowData.ip_address)
                             }
                         }
 
@@ -176,6 +226,24 @@ class Hosts extends Component {
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={() => this.handleClosePortScanDialog(this)}>
+                            Close
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+                <Dialog
+                    open={this.state.openExtendedPortScanDialog}
+                >
+                    <DialogTitle>Port Scan Results: {this.state.portScanHost}</DialogTitle>
+                    <DialogContent>
+                        <b>Open TCP Ports for connections:</b><br />
+                        Result: {this.state.extendedPortScanResults.result}<br />
+                        Extended scan results: {this.state.extendedPortScanResults.scan_output}
+                        <br /><br />
+                        <b>NOTE:</b><br />
+                        Depending on the host, scanning may take up to a few minutes to complete
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => this.handleCloseExtendedPortScanDialog(this)}>
                             Close
                         </Button>
                     </DialogActions>
