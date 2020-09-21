@@ -1,5 +1,6 @@
 from quokka import app
 from flask import request
+from datetime import datetime
 
 from quokka.controller.device.device_info import get_device_info
 from quokka.models.apis import (
@@ -20,12 +21,13 @@ from quokka.models.apis import (
     # get_host_capture,
     # get_protocol_capture,
     get_capture,
+    get_port_scan_extended,
 )
 import quokka.models.reset
 from quokka.controller.ThreadManager import ThreadManager
 from quokka.controller.CaptureManager import CaptureManager
 from quokka.controller.PortscanManager import PortscanManager
-from quokka.controller.host.portscan import get_port_scan_tcp_connection, get_port_scan_extended
+from quokka.controller.host.portscan import get_port_scan_tcp_connection
 
 
 @app.route("/ui/devices", methods=["GET", "POST"])
@@ -263,11 +265,22 @@ def scan_extended():
         return f"Unknown host id={host_id}", 404
 
     if request.method == "GET":
-        return {"scan_output": "this is bogus portscan data"}
+        token = request.args.get("token")
+        if not token:
+            return "Must provide token on GET request", 400
+
+        result, scan_results = get_port_scan_extended(host["ip_address"], host["name"], token)
+        return {
+            "result": result,
+            "scan_output": str(scan_results),
+            "host": host,
+        }
 
     elif request.method == "POST":
-        PortscanManager.initiate_portscan(host["ip_address"], host["name"])
-        return {"result": f"Portscan initiated for host: {host['name']}, ip: {host['ip_address']}"}
+        token = str(datetime.now())[:-3]
+        PortscanManager.initiate_portscan(host["ip_address"], host["name"], token)
+        return {"result": f"Portscan initiated for host: {host['name']}, ip: {host['ip_address']}",
+                "token": token}
 
     else:
         return "Invalid request method"

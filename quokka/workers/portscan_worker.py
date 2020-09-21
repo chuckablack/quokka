@@ -22,7 +22,7 @@ def receive_portscan_request(portscan_channel, method, properties, body):
 
     channel.basic_ack(delivery_tag=method.delivery_tag)
 
-    if "host_ip" not in portscan_info or "port_range" not in portscan_info or "scan_arguments" not in portscan_info:
+    if "host_ip" not in portscan_info or "host_name" not in portscan_info or "token" not in portscan_info:
         print(f"portscan worker: missing information in portscan_info: {portscan_info}")
     else:
         portscan_thread = PortscanThread(quokka_ip, serial_no, portscan_info)

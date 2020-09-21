@@ -17,27 +17,6 @@ def get_port_scan_tcp_connection(ip):
     return "success", nm[ip].all_tcp()
 
 
-def get_port_scan_extended(ip):
-
-    log_console(f"portscan: sending request for scan: {ip}")
-    portscan_queue = "portscan-queue"
-
-    with pika.BlockingConnection() as conn:
-        channel = conn.channel()
-
-        channel.basic_consume('amq.rabbitmq.reply-to',
-                              on_portscan_worker_reply,
-                              auto_ack=True)
-        channel.basic_publish(
-            exchange='',
-            routing_key=portscan_queue,
-            body=ip,
-            properties=pika.BasicProperties(reply_to='amq.rabbitmq.reply-to'))
-        channel.start_consuming()
-
-        return "success", "this is a bogus portscan result"
-
-
 def on_portscan_worker_reply(ch, method_frame, properties, portscan_results_str):
 
     log_console(f"portscan: received reply: {portscan_results_str}")

@@ -29,6 +29,7 @@ class Hosts extends Component {
             portScanHost: '',
             portScanResults: '',
             extendedPortScanResults: '',
+            token: '',
         };
     }
 
@@ -76,7 +77,8 @@ class Hosts extends Component {
         const requestOptions = { method: 'POST'}
         fetch(requestUrl, requestOptions)
             .then(res => res.json())
-            .then(() => {
+            .then((data) => {
+                this.setState({token: data.token})
                 this.fetchExtendedPortScanResults(hostId)
                 console.log(this.state.extendedPortScanResults)
             })
@@ -86,7 +88,7 @@ class Hosts extends Component {
     fetchExtendedPortScanResults( hostId ) {
         this.setState({isLoading: true});
         this.setState({extendedPortScanResults: {result: "retrieving scan results ..."}})
-        let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/ui/scan/extended?hostid=' + hostId
+        let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/ui/scan/extended?hostid=' + hostId + '&token=' + this.state.token
         const requestOptions = { method: 'GET'}
         fetch(requestUrl, requestOptions)
             .then(res => res.json())
@@ -232,12 +234,16 @@ class Hosts extends Component {
                 </Dialog>
                 <Dialog
                     open={this.state.openExtendedPortScanDialog}
+                    maxWidth="lg"
                 >
-                    <DialogTitle>Port Scan Results: {this.state.portScanHost}</DialogTitle>
+                    <DialogTitle>Extended Port Scan Results: {this.state.portScanHost}</DialogTitle>
                     <DialogContent>
-                        <b>Open TCP Ports for connections:</b><br />
+                        <b>Output from extended scan:</b><br />
                         Result: {this.state.extendedPortScanResults.result}<br />
-                        Extended scan results: {this.state.extendedPortScanResults.scan_output}
+                        Extended scan results:
+                        <pre>
+                            {this.state.extendedPortScanResults.scan_output}
+                        </pre>
                         <br /><br />
                         <b>NOTE:</b><br />
                         Depending on the host, scanning may take up to a few minutes to complete

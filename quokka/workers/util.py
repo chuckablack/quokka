@@ -1,7 +1,7 @@
 from scapy2dict import to_dict
 from datetime import datetime
 import requests
-from pprint import pprint
+from pprint import pprint, pformat
 import scapy.all as scapy
 
 
@@ -78,15 +78,16 @@ def bytes_to_string(data):
         return data
 
 
-def send_portscan(source, destination, serial_no, host_ip, host_name, timestamp, scan_output):
+def send_portscan(source, destination, serial_no, host_ip, host_name, token, timestamp, scan_output):
 
     portscan_payload = {
         "source": source,
         "serial": serial_no,
         "host_ip": host_ip,
         "host_name": host_name,
+        "token": token,
         "timestamp": timestamp,
-        "scan_output": scan_output,
+        "scan_output": pformat(scan_output),
     }
     rsp = requests.post(
         "http://" + destination + ":5000/portscan/store", json=portscan_payload

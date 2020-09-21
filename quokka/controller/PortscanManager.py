@@ -42,7 +42,7 @@ class PortscanManager:
             return "localhost"
 
     @staticmethod
-    def initiate_portscan(host_ip, host_name, port_range="22-443", scan_arguments="-sS -sU -O --host-time 300"):
+    def initiate_portscan(host_ip, host_name, token):
 
         monitor = PortscanManager.find_monitor(host_ip)
         channel = PortscanManager.get_channel(monitor)
@@ -50,8 +50,7 @@ class PortscanManager:
         portscan_info = {
             "host_ip": host_ip,
             "host_name": host_name,
-            "port_range": port_range,
-            "scan_arguments": scan_arguments,
+            "token": token,
         }
 
         portscan_info_json = json.dumps(portscan_info)
@@ -62,6 +61,4 @@ class PortscanManager:
         log_console(
             f"Portscan Manager: starting portscan: host_ip   : {host_ip}"
             f"Portscan Manager: starting portscan: host_name : {host_name}"
-            f"Portscan Manager: starting portscan: port_range: {port_range}"
-            f"Portscan Manager: starting portscan: arguments : {scan_arguments}"
         )

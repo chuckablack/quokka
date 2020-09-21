@@ -1,5 +1,6 @@
 import json
 import yaml
+import time
 from datetime import datetime
 from sqlalchemy import desc, or_, func
 from pprint import pformat
@@ -707,44 +708,76 @@ def record_portscan(portscan_info):
     if "host_name" not in portscan_info:
         log_console(f"record_portscan: missing 'host_name' in portscan info")
         return
+    if "token" not in portscan_info:
+        log_console(f"record_portscan: missing 'token' in portscan_info")
+        return
     if "timestamp" not in portscan_info:
         log_console(f"record_portscan: missing 'timestamp' in portscan info")
+        return
+    if "scan_output" not in portscan_info:
+        log_console(f"record_portscan: missing 'scan_output' in portscan info")
         return
 
     portscan["source"] = portscan_info["source"]
     portscan["host_ip"] = portscan_info["host_ip"]
     portscan["host_name"] = portscan_info["host_name"]
+    portscan["token"] = portscan_info["token"]
     portscan["timestamp"] = portscan_info["timestamp"]
+    portscan["scan_output"] = portscan_info["scan_output"]
 
-    if (
-        "scan_output" not in portscan_info
-        or "scan" not in portscan_info["scan_output"]
-        or portscan["host_ip"] not in portscan_info["scan_output"]["scan"]
-    ):
-        return
-    else:
-        scan_output = portscan_info["scan_output"]["scan"][portscan["host_ip"]]
-
-    if "addresses" in scan_output:
-        portscan["addresses"] = pformat(scan_output["addresses"])
-    if "hostnames" in scan_output:
-        portscan["hostnames"] = pformat(scan_output["hostnames"])
-    if "osmatch" in scan_output:
-        portscan["osmatch"] = pformat(scan_output["osmatch"])
-    if "portused" in scan_output:
-        portscan["portused"] = pformat(scan_output["portused"])
-    if "status" in scan_output:
-        portscan["status"] = pformat(scan_output["status"])
-    if "vendor" in scan_output:
-        portscan["vendor"] = pformat(scan_output["vendor"])
-    if "tcp" in scan_output:
-        portscan["tcp"] = pformat(scan_output["tcp"])
-    if "udp" in scan_output:
-        portscan["udp"] = pformat(scan_output["udp"])
-    if "ip" in scan_output:
-        portscan["ip"] = pformat(scan_output["ip"])
+    # if (
+    #     "scan_output" not in portscan_info
+    #     or "scan" not in portscan_info["scan_output"]
+    #     or portscan["host_ip"] not in portscan_info["scan_output"]["scan"]
+    # ):
+    #     return
+    # else:
+    #     scan_output = portscan_info["scan_output"]["scan"][portscan["host_ip"]]
+    #
+    # if "addresses" in scan_output:
+    #     portscan["addresses"] = pformat(scan_output["addresses"])
+    # if "hostnames" in scan_output:
+    #     portscan["hostnames"] = pformat(scan_output["hostnames"])
+    # if "osmatch" in scan_output:
+    #     portscan["osmatch"] = pformat(scan_output["osmatch"])
+    # if "portused" in scan_output:
+    #     portscan["portused"] = pformat(scan_output["portused"])
+    # if "status" in scan_output:
+    #     portscan["status"] = pformat(scan_output["status"])
+    # if "vendor" in scan_output:
+    #     portscan["vendor"] = pformat(scan_output["vendor"])
+    # if "tcp" in scan_output:
+    #     portscan["tcp"] = pformat(scan_output["tcp"])
+    # if "udp" in scan_output:
+    #     portscan["udp"] = pformat(scan_output["udp"])
+    # if "ip" in scan_output:
+    #     portscan["ip"] = pformat(scan_output["ip"])
 
     portscan_obj = Portscan(**portscan)
     db.session.add(portscan_obj)
 
     db.session.commit()
+
+
+def get_port_scan_extended(host_ip, host_name, token):
+
+    max_wait_time = 300  # extended port scan allowed to take 5 minutes max
+    start_time = datetime.now()
+    while (datetime.now()-start_time).total_seconds() < max_wait_time:
+
+        search = {"host_ip": host_ip, "host_name": host_name, "token": token}
+        portscan_obj = db.session.query(Portscan).filter_by(**search).one_or_none()
+
+        if not portscan_obj:
+            time.sleep(2)
+            continue
+
+        portscan = get_model_as_dict(portscan_obj)
+        return "success", portscan["scan_output"]
+
+    return "failed", "No scan results in time provided"
+
+
+
+
+

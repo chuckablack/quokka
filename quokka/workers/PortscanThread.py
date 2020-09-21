@@ -11,11 +11,13 @@ class PortscanThread(Thread):
 
     def __init__(self, quokka_ip, serial_no, scan_info):
         super().__init__()
-        print(
-            f"PortscanThread: initializing thread object: scan_info={scan_info}"
-        )
+        print(f"PortscanThread: initializing thread object: scan_info={scan_info}")
 
-        if "port_range" not in scan_info or "scan_arguments" not in scan_info or "host_ip" not in scan_info:
+        if (
+            "host_ip" not in scan_info
+            or "host_name" not in scan_info
+            or "token" not in scan_info
+        ):
             print(f"PortscanThread: missing information in scan_info: {scan_info}")
             return
 
@@ -23,14 +25,24 @@ class PortscanThread(Thread):
         self.serial_no = serial_no
         self.host_ip = scan_info["host_ip"]
         self.host_name = scan_info["host_name"]
-        self.port_range = scan_info["port_range"]
-        self.scan_arguments = scan_info["scan_arguments"]
+        self.token = scan_info["token"]
+        self.port_range = "1-1024"
+        # self.scan_arguments = "-sT -sU -O --host-time 300"
+        self.scan_arguments = "-sT -sV -O --host-time 300"
+        # self.scan_arguments = "--host-time 300"
 
     def process_scan(self, scan_output):
 
         print(f"PortscanThread: sending portscan: {scan_output}")
         status_code = send_portscan(
-            gethostname(), self.quokka_ip, self.serial_no, self.host_ip, self.host_name, str(datetime.now())[:-1], scan_output
+            gethostname(),
+            self.quokka_ip,
+            self.serial_no,
+            self.host_ip,
+            self.host_name,
+            self.token,
+            str(datetime.now())[:-1],
+            scan_output,
         )
         print(f"PortscanThread: portscan sent, result={status_code}\n")
 
