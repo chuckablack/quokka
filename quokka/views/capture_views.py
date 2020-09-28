@@ -37,17 +37,17 @@ def capture_store():
         return "Must provide capture information in JSON body", 404
     if "serial" not in capture_info:
         return "Must provide 'serial' in capture information", 404
-    if "name" not in capture_info:
-        return "Must provide 'name' in capture information", 404
+    if "source" not in capture_info:
+        return "Must provide 'source' in capture information", 404
     if "timestamp" not in capture_info:
         return "Must provide 'timestamp' in capture information", 404
     if "packets" not in capture_info:
         return "Must include 'packets' in capture information", 404
 
-    record_capture(capture_info["timestamp"], capture_info["name"], capture_info["packets"])
+    record_capture(capture_info["timestamp"], capture_info["source"], capture_info["packets"])
 
     log_console(
-        f"Received capture store request from {capture_info['name']}, pkts={len(capture_info['packets'])}"
+        f"Received capture store request from {capture_info['source']}, pkts={len(capture_info['packets'])}"
     )
 
     return {}, 200
