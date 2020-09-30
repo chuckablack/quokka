@@ -6,7 +6,7 @@ export default function getStatusData(measurement, statusData) {
     let maxY = 0;
     let yValue = 0;
     // const serviceData = this.state.serviceData.service_data;
-    console.log(statusData);
+    // console.log(statusData);
 
     for (let i = 0; i < statusData.length; i++) {
 
@@ -28,6 +28,6 @@ export default function getStatusData(measurement, statusData) {
         }
     }
 
-    console.log(tsData)
+    // console.log(tsData)
     return {tsData: tsData, maxY: maxY};
 }

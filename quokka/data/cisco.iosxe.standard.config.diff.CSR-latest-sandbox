@@ -51,7 +51,6 @@
 + ip address 192.168.254.201 255.255.255.0
 +interface GigabitEthernet2
 + description to
-- no ip address
 +interface GigabitEthernet3
 + description to
 +interface GigabitEthernet4

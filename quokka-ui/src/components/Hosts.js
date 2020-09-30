@@ -21,7 +21,6 @@ class Hosts extends Component {
         super(props);
         this.state = {
             hosts: {hosts: []},
-            isLoading: false,
             dashboard: props.dashboard,
             countdownValue: process.env.REACT_APP_REFRESH_RATE,
             openPortScanDialog: false,
@@ -35,35 +34,36 @@ class Hosts extends Component {
 
     countdown() {
         this.setState({countdownValue: this.state.countdownValue-1})
-        if (this.state.countdownValue <= 0) {
+        if (this.state.countdownValue === 0) {
             this.fetchHosts()
         }
     }
 
     fetchHosts() {
 
-        this.setState({isLoading: true});
         let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/ui/hosts'
         fetch(requestUrl)
             .then(res => res.json())
             .then((data) => {
-                this.setState({hosts: data, isLoading: false})
+                this.setState({hosts: data})
                 console.log(this.state.hosts)
                 this.setState({countdownValue: process.env.REACT_APP_REFRESH_RATE})
             })
-            .catch(console.log)
+            .catch((e) => {
+                console.log(e)
+                this.setState({countdownValue: process.env.REACT_APP_REFRESH_RATE})
+            });
     }
 
     fetchPortScan(hostId) {
 
-        this.setState({isLoading: true});
         this.setState({portScanResults: {result: "scanning ...", open_ports: "scanning ..."}})
         let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/ui/scan?hostid=' + hostId
         const requestOptions = { method: 'GET'}
         fetch(requestUrl, requestOptions)
             .then(res => res.json())
             .then((data) => {
-                this.setState({portScanResults: data, isLoading: false})
+                this.setState({portScanResults: data})
                 console.log(this.state.portScanResults)
             })
             .catch(console.log)
@@ -71,7 +71,6 @@ class Hosts extends Component {
 
     initiateExtendedPortScan(hostId) {
 
-        this.setState({isLoading: true});
         this.setState({extendedPortScanResults: {result: "initiating scan ..."}})
         let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/ui/scan/extended?hostid=' + hostId
         const requestOptions = { method: 'POST'}
@@ -86,14 +85,13 @@ class Hosts extends Component {
     }
 
     fetchExtendedPortScanResults( hostId ) {
-        this.setState({isLoading: true});
-        this.setState({extendedPortScanResults: {result: "retrieving scan results ..."}})
+       this.setState({extendedPortScanResults: {result: "retrieving scan results ..."}})
         let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/ui/scan/extended?hostid=' + hostId + '&token=' + this.state.token
         const requestOptions = { method: 'GET'}
         fetch(requestUrl, requestOptions)
             .then(res => res.json())
             .then((data) => {
-                this.setState({extendedPortScanResults: data, isLoading: false})
+                this.setState({extendedPortScanResults: data})
                 console.log(this.state.extendedPortScanResults)
             })
             .catch(console.log)
@@ -138,7 +136,7 @@ class Hosts extends Component {
 
     render() {
 
-        const {hosts, isLoading} = this.state;
+        const {hosts} = this.state;
 
         return (
             <div className="container" style={{maxWidth: "100%"}}>
@@ -148,18 +146,12 @@ class Hosts extends Component {
                 />
                 <Grid container direction="row" justify="space-between" alignItems="center">
                     <h2>Hosts Table</h2>
-                    {isLoading ?
-                        <Backdrop open={true}>
-                            <CircularProgress color="inherit" />
-                        </Backdrop>
-                        : ""}
                     <h6>Time until refresh: {this.state.countdownValue} seconds</h6>
                     <Button variant="contained" onClick={() => {
                         this.fetchHosts()
                     }}>Refresh Hosts</Button>
                 </Grid>
                 <MaterialTable
-                    isLoading={this.state.isLoading}
                     title="Discovered Hosts with Availability and Response Time"
                     columns={[
                         {

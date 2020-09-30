@@ -15,7 +15,6 @@ class Compliance extends Component {
         super(props);
         this.state = {
             devices: {devices: []},
-            isLoading: false,
             dashboard: props.dashboard,
             countdownValue: process.env.REACT_APP_REFRESH_RATE,
         };
@@ -23,23 +22,25 @@ class Compliance extends Component {
 
     countdown() {
         this.setState({countdownValue: this.state.countdownValue-1})
-        if (this.state.countdownValue <= 0) {
+        if (this.state.countdownValue === 0) {
             this.fetchCompliance()
         }
     }
 
     fetchCompliance() {
 
-        this.setState({isLoading: true});
         let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/ui/devices'
         fetch(requestUrl)
             .then(res => res.json())
             .then((data) => {
-                this.setState({devices: data, isLoading: false})
+                this.setState({devices: data})
                 console.log(this.state.devices)
                 this.setState({countdownValue: process.env.REACT_APP_REFRESH_RATE})
             })
-            .catch(console.log)
+            .catch((e) => {
+                console.log(e)
+                this.setState({countdownValue: process.env.REACT_APP_REFRESH_RATE})
+            });
     }
 
     componentDidMount() {
@@ -57,7 +58,7 @@ class Compliance extends Component {
 
     render() {
 
-        const {devices, isLoading} = this.state;
+        const {devices} = this.state;
 
         return (
             <div className="container" style={{maxWidth: "100%"}}>
@@ -67,11 +68,6 @@ class Compliance extends Component {
                 />
                 <Grid container direction="row" justify="space-between" alignItems="center">
                     <h2>Compliance Table</h2>
-                    {isLoading ?
-                        <Backdrop open={true}>
-                            <CircularProgress color="inherit"/>
-                        </Backdrop>
-                        : ""}
                     <h6>Time until refresh: {this.state.countdownValue} seconds</h6>
                     <Button variant="contained" onClick={() => {
                         this.fetchCompliance()

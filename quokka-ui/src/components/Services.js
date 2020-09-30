@@ -15,7 +15,6 @@ class Services extends Component {
         super(props);
         this.state = {
             services: {services: []},
-            isLoading: false,
             dashboard: props.dashboard,
             countdownValue: process.env.REACT_APP_REFRESH_RATE,
         };
@@ -23,23 +22,25 @@ class Services extends Component {
 
     countdown() {
         this.setState({countdownValue: this.state.countdownValue-1})
-        if (this.state.countdownValue <= 0) {
+        if (this.state.countdownValue === 0) {
             this.fetchServices()
         }
     }
 
     fetchServices() {
 
-        this.setState({isLoading: true});
         let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/ui/services'
         fetch(requestUrl)
             .then(res => res.json())
             .then((data) => {
-                this.setState({services: data, isLoading: false})
+                this.setState({services: data})
                 console.log(this.state.services)
                 this.setState({countdownValue: process.env.REACT_APP_REFRESH_RATE})
             })
-            .catch(console.log)
+            .catch((e) => {
+                console.log(e)
+                this.setState({countdownValue: process.env.REACT_APP_REFRESH_RATE})
+            });
     }
 
     componentDidMount() {
@@ -61,7 +62,7 @@ class Services extends Component {
 
     render() {
 
-        const {services, isLoading} = this.state;
+        const {services} = this.state;
 
         return (
             <div className="container" style={{maxWidth: "100%"}}>
@@ -71,11 +72,6 @@ class Services extends Component {
                 />
                 <Grid container direction="row" justify="space-between" alignItems="center">
                     <h2>Services Table</h2>
-                    {isLoading ?
-                        <Backdrop open={true}>
-                            <CircularProgress color="inherit" />
-                        </Backdrop>
-                        : ""}
                     <h6>Time until refresh: {this.state.countdownValue} seconds</h6>
                     <Button variant="contained" onClick={() => {
                         this.fetchServices()

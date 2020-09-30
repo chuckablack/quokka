@@ -19,7 +19,7 @@ class HostStatus extends Component {
 
     countdown() {
         this.setState({countdownValue: this.state.countdownValue-1})
-        if (this.state.countdownValue <= 0) {
+        if (this.state.countdownValue === 0) {
             this.fetchHostStatusData()
         }
     }
@@ -45,9 +45,13 @@ class HostStatus extends Component {
             .then(res => res.json())
             .then((data) => {
                 this.setState({hostData: data, isLoading: false});
+                console.log(this.state.hostData)
                 this.setState({countdownValue: process.env.REACT_APP_REFRESH_RATE})
             })
-            .catch(console.log);
+            .catch((e) => {
+                console.log(e)
+                this.setState({countdownValue: process.env.REACT_APP_REFRESH_RATE})
+            });
 
     }
 

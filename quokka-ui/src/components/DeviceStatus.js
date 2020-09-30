@@ -17,7 +17,7 @@ class DeviceDashboard extends Component {
 
     countdown() {
         this.setState({countdownValue: this.state.countdownValue-1})
-        if (this.state.countdownValue <= 0) {
+        if (this.state.countdownValue === 0) {
             this.fetchDeviceStatusData()
         }
     }
@@ -42,9 +42,13 @@ class DeviceDashboard extends Component {
             .then(res => res.json())
             .then((data) => {
                 this.setState({deviceData: data});
+                console.log(data)
                 this.setState({countdownValue: process.env.REACT_APP_REFRESH_RATE})
             })
-            .catch(console.log);
+            .catch((e) => {
+                console.log(e)
+                this.setState({countdownValue: process.env.REACT_APP_REFRESH_RATE})
+            });
 
     }
 
@@ -77,7 +81,7 @@ class DeviceDashboard extends Component {
             }
         }
 
-        console.log(tsData)
+        // console.log(tsData)
         return {tsData: tsData, maxY: maxY};
     }
 

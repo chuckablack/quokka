@@ -18,7 +18,7 @@ class ServiceStatus extends Component {
 
     countdown() {
         this.setState({countdownValue: this.state.countdownValue-1})
-        if (this.state.countdownValue <= 0) {
+        if (this.state.countdownValue === 0) {
             this.fetchServiceStatusData()
         }
     }
@@ -46,8 +46,10 @@ class ServiceStatus extends Component {
                 this.setState({serviceData: data, isLoading: false});
                 this.setState({countdownValue: process.env.REACT_APP_REFRESH_RATE})
             })
-            .catch(console.log);
-
+            .catch((e) => {
+                console.log(e)
+                this.setState({countdownValue: process.env.REACT_APP_REFRESH_RATE})
+            });
     }
 
     renderServices(dashboard) {
