@@ -41,8 +41,8 @@ class DeviceDashboard extends Component {
         fetch(requestUrl)
             .then(res => res.json())
             .then((data) => {
-                this.setState({deviceData: data});
                 console.log(data)
+                this.setState({deviceData: data});
                 this.setState({countdownValue: process.env.REACT_APP_REFRESH_RATE})
             })
             .catch((e) => {

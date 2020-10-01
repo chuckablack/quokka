@@ -32,8 +32,8 @@ class Events extends Component {
         fetch(requestUrl)
             .then(res => res.json())
             .then((data) => {
+                console.log(data)
                 this.setState({events: data, isLoading: false})
-                console.log(this.state.events)
                 this.setState({countdownValue: process.env.REACT_APP_REFRESH_RATE})
             })
             .catch((e) => {

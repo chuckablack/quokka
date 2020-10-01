@@ -43,6 +43,7 @@ class ServiceStatus extends Component {
         fetch(requestUrl)
             .then(res => res.json())
             .then((data) => {
+                console.log(data)
                 this.setState({serviceData: data, isLoading: false});
                 this.setState({countdownValue: process.env.REACT_APP_REFRESH_RATE})
             })

@@ -41,8 +41,8 @@ class Capture extends Component {
         fetch(requestUrl)
             .then(res => res.json())
             .then((data) => {
+                console.log(data)
                 this.setState({packets: data, isLoading: false})
-                console.log(this.state.packets)
                 this.setState({countdownValue: process.env.REACT_APP_REFRESH_RATE})
             })
             .catch(console.log)

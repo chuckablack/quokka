@@ -44,8 +44,8 @@ class HostStatus extends Component {
         fetch(requestUrl)
             .then(res => res.json())
             .then((data) => {
+                console.log(data)
                 this.setState({hostData: data, isLoading: false});
-                console.log(this.state.hostData)
                 this.setState({countdownValue: process.env.REACT_APP_REFRESH_RATE})
             })
             .catch((e) => {

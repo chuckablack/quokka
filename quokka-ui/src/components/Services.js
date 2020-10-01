@@ -33,8 +33,8 @@ class Services extends Component {
         fetch(requestUrl)
             .then(res => res.json())
             .then((data) => {
+                console.log(data)
                 this.setState({services: data})
-                console.log(this.state.services)
                 this.setState({countdownValue: process.env.REACT_APP_REFRESH_RATE})
             })
             .catch((e) => {
