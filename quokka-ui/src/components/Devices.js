@@ -6,7 +6,31 @@ import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import {green, red} from "@material-ui/core/colors";
 import CancelIcon from "@material-ui/icons/Cancel";
 import MaterialTable from "material-table";
+import Dialog from "@material-ui/core/Dialog";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogActions from "@material-ui/core/DialogActions";
+import ReactDiffViewer from 'react-diff-viewer'
 
+const oldCode = `
+const a = 10
+const b = 10
+const c = () => console.log('foo')
+
+if(a > 10) {
+  console.log('bar')
+}
+
+console.log('done')
+`;
+const newCode = `
+const a = 10
+const boo = 10
+
+if(a === 10) {
+  console.log('bar')
+}
+`;
 class Devices extends Component {
 
     constructor(props) {
@@ -15,6 +39,9 @@ class Devices extends Component {
             devices: {devices: []},
             dashboard: props.dashboard,
             countdownValue: process.env.REACT_APP_REFRESH_RATE,
+            openConfigDiffDialog: false,
+            deviceName: '',
+            configDiff: {current: {}, old: {}}
         };
     }
 
@@ -41,6 +68,21 @@ class Devices extends Component {
             });
     }
 
+    fetchDeviceConfigDiff(deviceName) {
+
+        let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/ui/device/config?device=' + deviceName
+        fetch(requestUrl)
+            .then(res => res.json())
+            .then((data) => {
+                console.log(data)
+                this.setState({configDiff: data});
+            })
+            .catch((e) => {
+                console.log(e)
+            });
+
+    }
+
     componentDidMount() {
         this.fetchDevices(false)
         this.interval = setInterval(() => this.countdown(), 1000)
@@ -56,6 +98,15 @@ class Devices extends Component {
 
     renderCapture(ip) {
         this.state.dashboard.setState({ip: ip, protocol: null, port: null, show: "capture"})
+    }
+
+    renderConfigDiffDialog(deviceName) {
+        this.fetchDeviceConfigDiff(deviceName)
+        this.setState({openConfigDiffDialog: true, deviceName: deviceName})
+    }
+
+    handleCloseConfigDiffDialog(parent) {
+        parent.setState({openConfigDiffDialog: false})
     }
 
     render() {
@@ -85,8 +136,21 @@ class Devices extends Component {
                                 rowData.availability ?
                                     <CheckCircleIcon style={{color: green[500]}}/>
                                     : <CancelIcon style={{color: red[500]}}/>,
+                            customSort: (a, b) => {
+                                if( a.availability && !b.availability ) return 1;
+                                else if (a.availability === b.availability ) return 0
+                                else return -1;
+                            }
                         },
-                        { title: 'Name', field: 'name', defaultSort: 'asc' },
+                        {   title: 'Name',
+                            field: 'name',
+                            defaultSort: 'asc',
+                            customSort: (a, b) => {
+                                if( a.name.toUpperCase() > b.name.toUpperCase() ) return 1;
+                                else if( a.name.toUpperCase() < b.name.toUpperCase() ) return -1;
+                                else return 0;
+                            }
+                        },
                         { title: 'Hostname', field: 'hostname', defaultSort: 'asc' },
                         { title: 'Vendor:OS', render: rowData => rowData.vendor + ":" + rowData.os},
                         { title: 'IP Address', field: 'ip_address' },
@@ -115,9 +179,37 @@ class Devices extends Component {
                             onClick: (event, rowData) => {
                                 this.renderCapture(rowData.ip_address)
                             }
-                        }
-                     ]}
+                        },
+                        {
+                            icon: 'compare',
+                            tooltip: 'Configuration Diff',
+                            onClick: (event, rowData) => {
+                                this.renderConfigDiffDialog(rowData.name)
+                            }
+                        },
+
+                    ]}
                 />
+                <Dialog
+                    open={this.state.openConfigDiffDialog}
+                    maxWidth="lg"
+                >
+                    <DialogTitle>Config Diff Results: {this.state.deviceName}</DialogTitle>
+                    <DialogContent>
+                        <ReactDiffViewer
+                            leftTitle={this.state.configDiff.old.timestamp}
+                            oldValue={this.state.configDiff.old.config}
+                            rightTitle={this.state.configDiff.current.timestamp}
+                            newValue={this.state.configDiff.current.config}
+                            splitView={true}
+                        />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => this.handleCloseConfigDiffDialog(this)}>
+                            Close
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </div>
         );
     }

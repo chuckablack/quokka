@@ -95,7 +95,7 @@ class ComplianceMonitorTask:
                 result, device = get_device(device_id=device_id)  # re-retrieve device as it may have been changed
 
                 if result != "success":
-                    log_console(f"Device Monitor: Error retrieving device from DB. id: {device_id}, error: {device}")
+                    log_console(f"Compliance Monitor: Error retrieving device from DB. id: {device_id}, error: {device}")
                     continue
 
                 if device["availability"]:

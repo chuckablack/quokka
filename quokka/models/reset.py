@@ -1,7 +1,7 @@
 from quokka import db
 
 from quokka.models.Device import Device
-from quokka.models.DeviceStatus import DeviceStatusTS
+from quokka.models.DeviceStatus import DeviceStatus
 from quokka.models.DeviceFacts import DeviceFacts
 from quokka.models.Compliance import Compliance
 from quokka.models.Host import Host
@@ -16,7 +16,7 @@ from quokka.models.apis import import_devices, import_services, import_complianc
 def reset_devices():
     db.session.query(Device).delete()
     db.session.query(DeviceFacts).delete()
-    db.session.query(DeviceStatusTS).delete()
+    db.session.query(DeviceStatus).delete()
     db.session.query(Compliance).delete()
     db.session.commit()
 

@@ -22,6 +22,7 @@ from quokka.models.apis import (
     # get_protocol_capture,
     get_capture,
     get_port_scan_extended,
+    get_device_config_diff,
 )
 import quokka.models.reset
 from quokka.controller.ThreadManager import ThreadManager
@@ -88,6 +89,27 @@ def device_info():
             return result_info, 200
         else:
             return result_info, 406
+
+
+@app.route("/ui/device/config", methods=["GET"])
+def device_config_diff():
+
+    device_name = request.args.get("device")
+    num_configs = request.args.get("configs", 10)
+
+    if not device_name:
+        return "Must provide device name", 400
+
+    result, info = get_device(device_name=device_name)
+    if result == "failed":
+        return info, 406
+    device = info
+
+    status, result_info = get_device_config_diff(device, num_configs)
+    if status == "success":
+        return result_info, 200
+    else:
+        return result_info, 406
 
 
 @app.route("/ui/hosts", methods=["GET"])

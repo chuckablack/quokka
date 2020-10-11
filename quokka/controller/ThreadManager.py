@@ -1,9 +1,8 @@
 import threading
-import multiprocessing
-import pyshark
 
 from quokka.controller.DeviceMonitorTask import DeviceMonitorTask
 from quokka.controller.ComplianceMonitorTask import ComplianceMonitorTask
+from quokka.controller.ConfigurationMonitorTask import ConfigurationMonitorTask
 from quokka.controller.HostMonitorTask import HostMonitorTask
 from quokka.controller.ServiceMonitorTask import ServiceMonitorTask
 from quokka.controller.DiscoverTask import DiscoverTask
@@ -17,6 +16,8 @@ class ThreadManager:
     device_monitor_thread = None
     compliance_monitor_task = None
     compliance_monitor_thread = None
+    configuration_monitor_task = None
+    configuration_monitor_thread = None
     host_monitor_task = None
     host_monitor_thread = None
     service_monitor_task = None
@@ -32,27 +33,29 @@ class ThreadManager:
     def stop_device_threads():
 
         log_console(
-            "--- ---> Shutting down device monitoring threads (device and compliance)"
+            "--- ---> Shutting down device monitoring threads (device, configuration and compliance)"
         )
 
         if ThreadManager.device_monitor_task and ThreadManager.device_monitor_thread:
             ThreadManager.device_monitor_task.set_terminate()
             ThreadManager.device_monitor_thread.join()
-        if (
-            ThreadManager.compliance_monitor_task
-            and ThreadManager.compliance_monitor_thread
-        ):
+        if ThreadManager.compliance_monitor_task and ThreadManager.compliance_monitor_thread:
             ThreadManager.compliance_monitor_task.set_terminate()
             ThreadManager.compliance_monitor_thread.join()
+        if ThreadManager.configuration_monitor_task and ThreadManager.configuration_monitor_thread:
+            ThreadManager.configuration_monitor_task.set_terminate()
+            ThreadManager.configuration_monitor_thread.join()
 
         ThreadManager.device_monitor_task = None
         ThreadManager.device_monitor_thread = None
         ThreadManager.compliance_monitor_task = None
         ThreadManager.compliance_monitor_thread = None
+        ThreadManager.configuration_monitor_task = None
+        ThreadManager.configuration_monitor_thread = None
 
     @staticmethod
     def start_device_threads(
-        device_monitor_interval=60, compliance_monitor_interval=300
+        device_monitor_interval=60, compliance_monitor_interval=300, configuration_monitor_interval=604800
     ):
 
         ThreadManager.device_monitor_task = DeviceMonitorTask()
@@ -68,6 +71,13 @@ class ThreadManager:
             args=(compliance_monitor_interval,),
         )
         ThreadManager.compliance_monitor_thread.start()
+
+        ThreadManager.configuration_monitor_task = ConfigurationMonitorTask()
+        ThreadManager.configuration_monitor_thread = threading.Thread(
+            target=ThreadManager.configuration_monitor_task.monitor,
+            args=(configuration_monitor_interval,),
+        )
+        ThreadManager.configuration_monitor_thread.start()
 
     @staticmethod
     def stop_host_thread():
@@ -160,11 +170,10 @@ class ThreadManager:
 
         if ThreadManager.device_monitor_task and ThreadManager.device_monitor_thread:
             ThreadManager.device_monitor_task.set_terminate()
-        if (
-            ThreadManager.compliance_monitor_task
-            and ThreadManager.compliance_monitor_thread
-        ):
+        if ThreadManager.compliance_monitor_task and ThreadManager.compliance_monitor_thread:
             ThreadManager.compliance_monitor_task.set_terminate()
+        if ThreadManager.configuration_monitor_task and ThreadManager.configuration_monitor_thread:
+            ThreadManager.configuration_monitor_task.set_terminate()
         if ThreadManager.host_monitor_task and ThreadManager.host_monitor_thread:
             ThreadManager.host_monitor_task.set_terminate()
         if ThreadManager.service_monitor_task and ThreadManager.service_monitor_thread:
@@ -178,24 +187,3 @@ class ThreadManager:
         for sniffing_process in ThreadManager.sniffing_processes:
             if sniffing_process.is_alive():
                 sniffing_process.terminate()
-
-    # @staticmethod
-    # def start_sniff_host(host, timeout):
-    #
-    #     # sniff_host_process = multiprocessing.Process(target=sniff_host, args=(host, timeout))
-    #     # sniff_host_process.start()
-    #     # ThreadManager.sniffing_processes.append(sniff_host_process)
-    #
-    #     interface = "enp0s3"
-    #     host_filter = "host " + host
-    #     log_console(f"sniffer: begin on interface: {interface} for host: {host}")
-    #     capture = pyshark.LiveCapture(interface=interface, bpf_filter=host_filter)
-    #     # capture.apply_on_packets(store_packet, timeout=timeout)
-    #     # for packet in capture.sniff_continuously(packet_count=100):
-    #     #     log_console(f"packet sniffed: {packet}")
-    #     log_console("sniffer: begin capture")
-    #     capture.sniff(packet_count=10)
-    #     log_console("sniffer: end capture")
-    #
-    #     for packet in capture:
-    #         log_console(f"---- packet sniffed: {packet}")

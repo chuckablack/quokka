@@ -88,10 +88,22 @@ class Services extends Component {
                             render: rowData =>
                                 rowData.availability ?
                                     <CheckCircleIcon style={{color: green[500]}}/>
-                                    : <CancelIcon style={{color: red[500]}}/>
-
+                                    : <CancelIcon style={{color: red[500]}}/>,
+                            customSort: (a, b) => {
+                                if( a.availability && !b.availability ) return 1;
+                                else if (a.availability === b.availability ) return 0
+                                else return -1;
+                            }
                         },
-                        { title: 'Name', field: 'name', defaultSort: 'asc' },
+                        {   title: 'Name',
+                            field: 'name',
+                            defaultSort: 'asc',
+                            customSort: (a, b) => {
+                                if( a.name.toUpperCase() > b.name.toUpperCase() ) return 1;
+                                else if( a.name.toUpperCase() < b.name.toUpperCase() ) return -1;
+                                else return 0;
+                            }
+                        },
                         { title: 'Type', field: 'type' },
                         { title: 'Target', field: 'target' },
                         { title: 'Data', field: 'data' },

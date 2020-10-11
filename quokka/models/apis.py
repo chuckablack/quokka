@@ -17,11 +17,13 @@ from quokka.models.Event import Event
 from quokka.models.Capture import Capture
 from quokka.models.Portscan import Portscan
 
-from quokka.models.DeviceStatus import DeviceStatusTS
+from quokka.models.DeviceStatus import DeviceStatus
 from quokka.models.HostStatus import HostStatus
 from quokka.models.ServiceStatus import ServiceStatus
 from quokka.models.HostStatusSummary import HostStatusSummary
 from quokka.models.ServiceStatusSummary import ServiceStatusSummary
+
+from quokka.models.DeviceConfig import DeviceConfig
 
 from quokka.models.util import get_model_as_dict
 from quokka.controller.utils import log_console
@@ -342,7 +344,7 @@ def record_device_status(device):
     device_status["cpu"] = device["cpu"]
     device_status["memory"] = device["memory"]
 
-    device_status_obj = DeviceStatusTS(**device_status)
+    device_status_obj = DeviceStatus(**device_status)
     db.session.add(device_status_obj)
 
     db.session.commit()
@@ -516,9 +518,9 @@ def get_device_status_data(device_name, num_datapoints):
 
     device_id = info["id"]
     device_status_objs = (
-        db.session.query(DeviceStatusTS)
+        db.session.query(DeviceStatus)
         .filter_by(**{"device_id": device_id})
-        .order_by(desc(DeviceStatusTS.timestamp))
+        .order_by(desc(DeviceStatus.timestamp))
         .limit(num_datapoints)
         .all()
     )
@@ -533,9 +535,9 @@ def get_device_status_data(device_name, num_datapoints):
 def get_device_status_data_for_hour(device_id, hour):
 
     device_status_objs = (
-        db.session.query(DeviceStatusTS)
+        db.session.query(DeviceStatus)
         .filter_by(**{"device_id": device_id})
-        .filter(DeviceStatusTS.timestamp.startswith(hour))
+        .filter(DeviceStatus.timestamp.startswith(hour))
         .all()
     )
 
@@ -725,34 +727,6 @@ def record_portscan(portscan_info):
     portscan["timestamp"] = portscan_info["timestamp"]
     portscan["scan_output"] = portscan_info["scan_output"]
 
-    # if (
-    #     "scan_output" not in portscan_info
-    #     or "scan" not in portscan_info["scan_output"]
-    #     or portscan["host_ip"] not in portscan_info["scan_output"]["scan"]
-    # ):
-    #     return
-    # else:
-    #     scan_output = portscan_info["scan_output"]["scan"][portscan["host_ip"]]
-    #
-    # if "addresses" in scan_output:
-    #     portscan["addresses"] = pformat(scan_output["addresses"])
-    # if "hostnames" in scan_output:
-    #     portscan["hostnames"] = pformat(scan_output["hostnames"])
-    # if "osmatch" in scan_output:
-    #     portscan["osmatch"] = pformat(scan_output["osmatch"])
-    # if "portused" in scan_output:
-    #     portscan["portused"] = pformat(scan_output["portused"])
-    # if "status" in scan_output:
-    #     portscan["status"] = pformat(scan_output["status"])
-    # if "vendor" in scan_output:
-    #     portscan["vendor"] = pformat(scan_output["vendor"])
-    # if "tcp" in scan_output:
-    #     portscan["tcp"] = pformat(scan_output["tcp"])
-    # if "udp" in scan_output:
-    #     portscan["udp"] = pformat(scan_output["udp"])
-    # if "ip" in scan_output:
-    #     portscan["ip"] = pformat(scan_output["ip"])
-
     portscan_obj = Portscan(**portscan)
     db.session.add(portscan_obj)
 
@@ -763,7 +737,7 @@ def get_port_scan_extended(host_ip, host_name, token):
 
     max_wait_time = 300  # extended port scan allowed to take 5 minutes max
     start_time = datetime.now()
-    while (datetime.now()-start_time).total_seconds() < max_wait_time:
+    while (datetime.now() - start_time).total_seconds() < max_wait_time:
 
         search = {"host_ip": host_ip, "host_name": host_name, "token": token}
         portscan_obj = db.session.query(Portscan).filter_by(**search).one_or_none()
@@ -778,6 +752,43 @@ def get_port_scan_extended(host_ip, host_name, token):
     return "failed", "No scan results in time provided"
 
 
+def record_device_config(device_id, config):
+
+    device_config = dict()
+    device_config["device_id"] = device_id
+    device_config["timestamp"] = str(datetime.now())[:-3]
+    device_config["config"] = config
+
+    device_config_obj = DeviceConfig(**device_config)
+    db.session.add(device_config_obj)
+
+    db.session.commit()
 
 
+def get_device_config_diff(device, num_configs):
 
+    device_configs = (
+        db.session.query(DeviceConfig)
+        .filter_by(**{"device_id": device["id"]})
+        .order_by(desc(DeviceConfig.timestamp))
+        .limit(num_configs)
+        .all()
+    )
+
+    config_diff = {"current": dict(), "old": dict()}
+    if len(device_configs) == 0:
+        return "success", config_diff
+
+    config_diff["current"]["timestamp"] = device_configs[0].timestamp
+    config_diff["current"]["config"] = device_configs[0].config
+
+    for device_config in device_configs[1:]:
+
+        config_diff["old"]["timestamp"] = device_config.timestamp
+        config_diff["old"]["config"] = device_config.config
+
+        if config_diff["current"]["config"] != device_config.config:
+            return "success", config_diff
+
+    else:
+        return "success", config_diff

@@ -1,18 +1,15 @@
 from quokka import db
 
 
-class DeviceStatus(db.Model):
+class DeviceConfig(db.Model):
 
-    __tablename__ = "device_status"
+    __tablename__ = "device_config"
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     device_id = db.Column(db.Integer)
 
     timestamp = db.Column(db.Text)
-    availability = db.Column(db.Boolean)
-    response_time = db.Column(db.Integer)
-    cpu = db.Column(db.Integer)
-    memory = db.Column(db.Integer)
+    config = db.Column(db.Text)
 
     def __repr__(self):
         return f"Status {self.device_id}"

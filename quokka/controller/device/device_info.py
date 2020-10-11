@@ -115,7 +115,10 @@ def get_device_info_ncclient(device, requested_info, get_live_info=False):
 
     config = nc_connection.get_config("running")
 
-    if requested_info == "facts":
+    if requested_info == "config":
+        return "success", {"config": {"running": config.xml}}
+
+    elif requested_info == "facts":
         facts = {"vendor": device["vendor"],
                  "os_version": None,
                  "hostname": None,

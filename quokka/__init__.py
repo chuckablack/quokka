@@ -20,6 +20,11 @@ if interval.isnumeric():
     compliance_monitor_interval = max(10, int(interval))
 else:
     compliance_monitor_interval = 300
+interval = os.environ.get("CONFIGURATION_MONITOR_INTERVAL", default='300')
+if interval.isnumeric():
+    configuration_monitor_interval = max(10, int(interval))
+else:
+    configuration_monitor_interval = 300
 interval = os.environ.get("HOST_MONITOR_INTERVAL", default='60')
 if interval.isnumeric():
     host_monitor_interval = max(10, int(interval))
@@ -62,10 +67,10 @@ import_services(filename="services.yaml")
 Host.query.delete()
 
 # Reset time-series data tables
-from quokka.models.DeviceStatus import DeviceStatusTS
+from quokka.models.DeviceStatus import DeviceStatus
 from quokka.models.HostStatus import HostStatus
 from quokka.models.ServiceStatus import ServiceStatus
-DeviceStatusTS.query.delete()
+DeviceStatus.query.delete()
 HostStatus.query.delete()
 ServiceStatus.query.delete()
 
@@ -78,7 +83,9 @@ Capture.query.delete()
 db.session.commit()
 
 from quokka.controller.ThreadManager import ThreadManager
-ThreadManager.start_device_threads(device_monitor_interval, compliance_monitor_interval)
+ThreadManager.start_device_threads(device_monitor_interval=device_monitor_interval,
+                                   compliance_monitor_interval=compliance_monitor_interval,
+                                   configuration_monitor_interval=configuration_monitor_interval)
 ThreadManager.start_service_thread(service_monitor_interval)
 ThreadManager.start_discovery_thread(discovery_interval)
 ThreadManager.start_host_thread(host_monitor_interval)
