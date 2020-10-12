@@ -103,6 +103,7 @@ class Devices extends Component {
     renderConfigDiffDialog(deviceName) {
         this.fetchDeviceConfigDiff(deviceName)
         this.setState({openConfigDiffDialog: true, deviceName: deviceName})
+        this.setState({configDiff: {current: {}, old: {}}});
     }
 
     handleCloseConfigDiffDialog(parent) {
