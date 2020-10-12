@@ -82,7 +82,22 @@ def get_facts(device_name):
 
 def set_devices(devices):
 
+    # validate devices: make sure no duplicate ids or names
+    ids = set()
+    names = set()
+
     for device in devices:
+
+        if device["id"] in ids:
+            log_event(str(datetime.now())[:-3], "devices.yaml", device['id'], "ERROR", "Duplicate device id")
+            continue
+        if device["name"] in names:
+            log_event(str(datetime.now())[:-3], "devices.yaml", device['name'], "ERROR", "Duplicate device name")
+            continue
+
+        ids.add(device["id"])
+        names.add(device["name"])
+
         device_obj = Device(**device)
         db.session.add(device_obj)
 

@@ -60,6 +60,12 @@ from quokka.models.apis import import_devices, import_compliance, import_service
 from quokka.models.apis import get_all_devices, set_facts
 from quokka.models.Host import Host
 
+# Reset event log and packet capture tables
+from quokka.models.Event import Event
+from quokka.models.Capture import Capture
+Event.query.delete()
+Capture.query.delete()
+
 import_devices(filename="devices.yaml", filetype="yaml")
 import_compliance(filename="compliance.yaml")
 import_services(filename="services.yaml")
@@ -73,12 +79,6 @@ from quokka.models.ServiceStatus import ServiceStatus
 DeviceStatus.query.delete()
 HostStatus.query.delete()
 ServiceStatus.query.delete()
-
-# Reset event log and packet capture tables
-from quokka.models.Event import Event
-from quokka.models.Capture import Capture
-Event.query.delete()
-Capture.query.delete()
 
 db.session.commit()
 
