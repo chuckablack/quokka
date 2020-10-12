@@ -107,21 +107,3 @@
   transport: HTTP-REST
   hostname: sdwan-atlanta-midtown.tallac.com
   vendor: tallac
-
-- id: 10
-  ip_address:
-  serial: 111-111-115
-  name: SDWAN-Atlanta
-  os: talos
-  transport: HTTP-REST
-  hostname: sdwan-atlanta-midtown.tallac.com
-  vendor: tallac
-
-- id: 12
-  ip_address:
-  serial: 111-111-115
-  name: SDWAN-Atlanta
-  os: talos
-  transport: HTTP-REST
-  hostname: sdwan-atlanta-midtown.tallac.com
-  vendor: tallac

@@ -48,10 +48,3 @@
   target: us.pool.ntp.org
   sla_availability: 95
   sla_response_time: 0.5
-
-- id: 7
-  name: NTP us.pool.ntp.org
-  type: ntp
-  target: us.pool.ntp.org
-  sla_availability: 95
-  sla_response_time: 0.5

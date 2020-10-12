@@ -89,10 +89,22 @@ def set_devices(devices):
     for device in devices:
 
         if device["id"] in ids:
-            log_event(str(datetime.now())[:-3], "importing devices", "devices.yaml", "ERROR", f"Duplicate device id: {device['id']}")
+            log_event(
+                str(datetime.now())[:-3],
+                "importing devices",
+                "devices.yaml",
+                "ERROR",
+                f"Duplicate device id: {device['id']}",
+            )
             continue
         if device["name"] in names:
-            log_event(str(datetime.now())[:-3], "importing devices", "devices.yaml", "ERROR", f"Duplicate device name: {device['name']}")
+            log_event(
+                str(datetime.now())[:-3],
+                "importing devices",
+                "devices.yaml",
+                "ERROR",
+                f"Duplicate device name: {device['name']}",
+            )
             continue
 
         ids.add(device["id"])
@@ -255,7 +267,13 @@ def import_services(filename=None):
     for service in services:
 
         if service["id"] in ids:
-            log_event(str(datetime.now())[:-3], "importing services", filename, "ERROR", f"Duplicate service id: {service['id']}")
+            log_event(
+                str(datetime.now())[:-3],
+                "importing services",
+                filename,
+                "ERROR",
+                f"Duplicate service id: {service['id']}",
+            )
             continue
 
         ids.add(service["id"])

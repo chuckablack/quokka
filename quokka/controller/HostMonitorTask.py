@@ -9,7 +9,6 @@ from quokka.controller.utils import log_console
 
 
 class HostMonitorTask:
-
     def __init__(self):
         self.terminate = False
 
@@ -32,14 +31,21 @@ class HostMonitorTask:
                 log_console(f"--- monitor:host pinging {host['ip_address']}")
                 try:
                     ping_output = subprocess.check_output(
-                        ["ping", "-c3", "-n", "-i0.5", "-W2", str(host["ip_address"])])
+                        ["ping", "-c3", "-n", "-i0.5", "-W2", str(host["ip_address"])]
+                    )
                     host["availability"] = True
                     host["response_time"] = get_response_time(str(ping_output))
                     host["last_heard"] = str(datetime.now())[:-3]
 
                 except subprocess.CalledProcessError:
                     host["availability"] = False
-                    log_event(str(datetime.now())[:-3], "host", host['name'], "INFO", "Availability failed")
+                    log_event(
+                        str(datetime.now())[:-3],
+                        "host monitor",
+                        host["name"],
+                        "INFO",
+                        f"Availability failed for host: {host['name']}",
+                    )
 
                 record_host_status(host)
                 set_host(host)

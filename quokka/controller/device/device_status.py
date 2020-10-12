@@ -40,7 +40,9 @@ def get_device_status(device):
         except BaseException as e:
             info = f"!!! Exception in monitoring device, get environment: {repr(e)}"
             log_console(info)
-            log_event(str(datetime.now())[:-3], "device", device['name'], "SEVERE", info)
+            log_event(
+                str(datetime.now())[:-3], "device", device["name"], "SEVERE", info
+            )
             result = "failed"
 
     else:
@@ -52,11 +54,19 @@ def get_device_status(device):
         except BaseException as e:
             info = f"!!! Exception in monitoring device, get facts: {repr(e)}"
             log_console(info)
-            log_event(str(datetime.now())[:-3], "device", device['name'], "SEVERE", info)
+            log_event(
+                str(datetime.now())[:-3], "device", device["name"], "SEVERE", info
+            )
             result = "failed"
 
     if result != "success":
-        log_event(str(datetime.now())[:-3], "device", device['name'], "SEVERE", "Availability failed")
+        log_event(
+            str(datetime.now())[:-3],
+            "device monitor",
+            device["name"],
+            "SEVERE",
+            f"Availability failed for device: {device['name']}",
+        )
 
     else:
         device_status["availability"] = True

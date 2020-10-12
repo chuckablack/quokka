@@ -5,7 +5,12 @@ import requests
 from dns.resolver import Resolver, Timeout, NXDOMAIN
 from ntplib import NTPClient, NTPException
 
-from quokka.models.apis import get_all_services, set_service, record_service_status, log_event
+from quokka.models.apis import (
+    get_all_services,
+    set_service,
+    record_service_status,
+    log_event,
+)
 from quokka.controller.utils import log_console
 
 
@@ -36,7 +41,9 @@ def get_avail_and_rsp_time(service):
             log_console(f'!!! DNS monitor: nonexistent domain name {service["data"]}')
             return False, None
         except Timeout as e:
-            log_console(f'!!! DNS monitor: DNS request timed out for {service["target"]}')
+            log_console(
+                f'!!! DNS monitor: DNS request timed out for {service["target"]}'
+            )
             return False, None
         except BaseException as e:
             log_console(f"!!! DNS monitor: Exception occurred: {repr(e)}")
@@ -101,7 +108,13 @@ class ServiceMonitorTask:
                 if not availability:
                     record_service_status(service)
                     set_service(service)
-                    log_event(str(datetime.now())[:-3], "service", service['name'], "WARNING", "Availability failed")
+                    log_event(
+                        str(datetime.now())[:-3],
+                        "service monitor",
+                        service["name"],
+                        "WARNING",
+                        f"Availability failed for service: {service['name']}",
+                    )
                     continue
 
                 service["response_time"] = int(response_time * 1000)

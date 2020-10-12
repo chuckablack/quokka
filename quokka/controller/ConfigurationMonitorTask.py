@@ -1,8 +1,14 @@
 from time import sleep
+from datetime import datetime
 
 from quokka.controller.utils import log_console
 from quokka.controller.device.device_info import get_device_info
-from quokka.models.apis import get_all_device_ids, get_device, record_device_config
+from quokka.models.apis import (
+    get_all_device_ids,
+    get_device,
+    record_device_config,
+    log_event,
+)
 
 
 class ConfigurationMonitorTask:
@@ -41,9 +47,13 @@ class ConfigurationMonitorTask:
                     continue
 
                 try:
-                    result, config = get_device_info(device, "config", get_live_info=True)
+                    result, config = get_device_info(
+                        device, "config", get_live_info=True
+                    )
                     if result != "success":
-                        log_console(f"!!! Unable to get device info (config) for {device['name']}")
+                        log_console(
+                            f"!!! Unable to get device info (config) for {device['name']}"
+                        )
                         continue
 
                 except BaseException as e:
@@ -54,6 +64,13 @@ class ConfigurationMonitorTask:
 
                 # If we made it here, we got the configuration, so store it in the DB
                 record_device_config(device_id, config["config"]["running"])
+                log_event(
+                    str(datetime.now())[:-3],
+                    "configuration",
+                    device['name'],
+                    "INFO",
+                    f"Stored configuration for: {device['name']}",
+                )
 
             for _ in range(0, int(interval / 10)):
                 sleep(10)
