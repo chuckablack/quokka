@@ -89,10 +89,10 @@ def set_devices(devices):
     for device in devices:
 
         if device["id"] in ids:
-            log_event(str(datetime.now())[:-3], "devices.yaml", device['id'], "ERROR", "Duplicate device id")
+            log_event(str(datetime.now())[:-3], "importing devices", "devices.yaml", "ERROR", f"Duplicate device id: {device['id']}")
             continue
         if device["name"] in names:
-            log_event(str(datetime.now())[:-3], "devices.yaml", device['name'], "ERROR", "Duplicate device name")
+            log_event(str(datetime.now())[:-3], "importing devices", "devices.yaml", "ERROR", f"Duplicate device name: {device['name']}")
             continue
 
         ids.add(device["id"])
@@ -249,7 +249,17 @@ def import_services(filename=None):
     except FileNotFoundError as e:
         log_console(f"Could not import services file: {repr(e)}")
 
+    # validate services: make sure no duplicate ids
+    ids = set()
+
     for service in services:
+
+        if service["id"] in ids:
+            log_event(str(datetime.now())[:-3], "importing services", filename, "ERROR", f"Duplicate service id: {service['id']}")
+            continue
+
+        ids.add(service["id"])
+
         service_obj = Service(**service)
         db.session.add(service_obj)
 
