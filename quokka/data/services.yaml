@@ -38,7 +38,7 @@
   name: DNS via OpenDNS
   type: dns
   target: 208.67.222.222
-  data: thisisit.io
+  data: news.google.com
   sla_availability: 95
   sla_response_time: 0.5
 
