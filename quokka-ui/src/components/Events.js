@@ -28,7 +28,7 @@ class Events extends Component {
     fetchEvents() {
 
         this.setState({isLoading: true});
-        let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/ui/events'
+        let requestUrl = process.env.REACT_APP_QUOKKA_HOST + '/ui/events'
         fetch(requestUrl)
             .then(res => res.json())
             .then((data) => {

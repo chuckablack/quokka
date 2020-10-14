@@ -29,7 +29,7 @@ class Services extends Component {
 
     fetchServices() {
 
-        let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/ui/services'
+        let requestUrl = process.env.REACT_APP_QUOKKA_HOST + '/ui/services'
         fetch(requestUrl)
             .then(res => res.json())
             .then((data) => {

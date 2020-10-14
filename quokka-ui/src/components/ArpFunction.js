@@ -8,7 +8,7 @@ function ArpFunction(props) {
 
     const fetchArp = () => {
         setIsLoading(true);
-        fetch('http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/ui/device?device=devnet-csr-always-on-sandbox&info=arp')
+        fetch(process.env.REACT_APP_QUOKKA_HOST + '/ui/device?device=devnet-csr-always-on-sandbox&info=arp')
             .then(res => res.json())
             .then((data) => {
                 setArpTable(data);

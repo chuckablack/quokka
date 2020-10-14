@@ -58,7 +58,7 @@ export default function DashboardAppBar(props) {
     };
 
     const fetchReset = (target) => {
-        let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/ui/reset/' + target
+        let requestUrl = process.env.REACT_APP_QUOKKA_HOST + '/ui/reset/' + target
         console.log('performing reset:' + requestUrl)
         fetch(requestUrl, {method: 'POST', mode: 'cors'})
             .then(response => {

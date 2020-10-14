@@ -34,7 +34,7 @@ class Capture extends Component {
         const {ip, protocol, port} = this.state;
 
         this.setState({isLoading: true});
-        let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/ui/capture?num_packets=1000';
+        let requestUrl = process.env.REACT_APP_QUOKKA_HOST + '/ui/capture?num_packets=1000';
         if( ip ) { requestUrl += '&ip=' + ip }
         if( protocol ) { requestUrl += '&protocol=' + protocol }
         if( port ) { requestUrl += '&port=' + port }
@@ -53,7 +53,7 @@ class Capture extends Component {
         const {ip, protocol, port} = this.state;
 
         // this.setState({isLoading: true});
-        let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/ui/capture?num_packets=10';
+        let requestUrl = process.env.REACT_APP_QUOKKA_HOST + '/ui/capture?num_packets=10';
         if( ip ) { requestUrl += '&ip=' + ip }
         if( protocol ) { requestUrl += '&protocol=' + protocol }
         if( port ) { requestUrl += '&port=' + port }

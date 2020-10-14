@@ -35,7 +35,7 @@ class Devices extends Component {
 
     fetchDevices() {
 
-        let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/ui/devices'
+        let requestUrl = process.env.REACT_APP_QUOKKA_HOST + '/ui/devices'
         fetch(requestUrl)
             .then(res => res.json())
             .then((data) => {
@@ -51,7 +51,7 @@ class Devices extends Component {
 
     fetchDeviceConfigDiff(deviceName) {
 
-        let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/ui/device/config?device=' + deviceName
+        let requestUrl = process.env.REACT_APP_QUOKKA_HOST + '/ui/device/config?device=' + deviceName
         fetch(requestUrl)
             .then(res => res.json())
             .then((data) => {

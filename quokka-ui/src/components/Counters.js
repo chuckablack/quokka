@@ -18,7 +18,7 @@ class Counters extends Component {
     fetchCounters() {
         const deviceName = this.state.deviceName
         this.setState({isLoading: true});
-        fetch('http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/ui/device?device=' + deviceName + '&info=counters')
+        fetch(process.env.REACT_APP_QUOKKA_HOST + '/ui/device?device=' + deviceName + '&info=counters')
             .then(res => res.json())
             .then((data) => {
                 this.setState({counters: data, isLoading: false})

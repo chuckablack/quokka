@@ -41,7 +41,7 @@ class Hosts extends Component {
 
     fetchHosts() {
 
-        let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/ui/hosts'
+        let requestUrl = process.env.REACT_APP_QUOKKA_HOST + '/ui/hosts'
         fetch(requestUrl)
             .then(res => res.json())
             .then((data) => {
@@ -58,7 +58,7 @@ class Hosts extends Component {
     fetchPortScan(hostId) {
 
         this.setState({portScanResults: {result: "scanning ...", open_ports: "scanning ..."}})
-        let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/ui/scan?hostid=' + hostId
+        let requestUrl = process.env.REACT_APP_QUOKKA_HOST + '/ui/scan?hostid=' + hostId
         const requestOptions = { method: 'GET'}
         fetch(requestUrl, requestOptions)
             .then(res => res.json())
@@ -72,7 +72,7 @@ class Hosts extends Component {
     initiateExtendedPortScan(hostId) {
 
         this.setState({extendedPortScanResults: {result: "initiating scan ..."}})
-        let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/ui/scan/extended?hostid=' + hostId
+        let requestUrl = process.env.REACT_APP_QUOKKA_HOST + '/ui/scan/extended?hostid=' + hostId
         const requestOptions = { method: 'POST'}
         fetch(requestUrl, requestOptions)
             .then(res => res.json())
@@ -86,7 +86,7 @@ class Hosts extends Component {
 
     fetchExtendedPortScanResults( hostId ) {
        this.setState({extendedPortScanResults: {result: "retrieving scan results ..."}})
-        let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/ui/scan/extended?hostid=' + hostId + '&token=' + this.state.token
+        let requestUrl = process.env.REACT_APP_QUOKKA_HOST + '/ui/scan/extended?hostid=' + hostId + '&token=' + this.state.token
         const requestOptions = { method: 'GET'}
         fetch(requestUrl, requestOptions)
             .then(res => res.json())

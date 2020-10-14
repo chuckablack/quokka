@@ -29,7 +29,7 @@ class Compliance extends Component {
 
     fetchCompliance() {
 
-        let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/ui/devices'
+        let requestUrl = process.env.REACT_APP_QUOKKA_HOST + '/ui/devices'
         fetch(requestUrl)
             .then(res => res.json())
             .then((data) => {
@@ -64,7 +64,7 @@ class Compliance extends Component {
             <div className="container" style={{maxWidth: "100%"}}>
                 <link
                     rel="stylesheet"
-                    href="https://fonts.googleapis.com/icon?family=Material+Icons"
+                    href="http://fonts.googleapis.com/icon?family=Material+Icons"
                 />
                 <Grid container direction="row" justify="space-between" alignItems="center">
                     <h2>Compliance Table</h2>

@@ -17,7 +17,7 @@
     "@material-ui/icons": "^4.9.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "NODE_TLS_REJECT_UNAUTHORIZED=0 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"

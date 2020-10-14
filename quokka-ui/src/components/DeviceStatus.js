@@ -35,7 +35,7 @@ class DeviceDashboard extends Component {
 
         const deviceName = this.state.deviceName;
 
-        let requestUrl = 'http://' + process.env.REACT_APP_QUOKKA_HOST + ':5000/ui/device/status?device='
+        let requestUrl = process.env.REACT_APP_QUOKKA_HOST + '/ui/device/status?device='
                                    + deviceName + '&datapoints=' + process.env.REACT_APP_NUM_DATAPOINTS
 
         fetch(requestUrl)
