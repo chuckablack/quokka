@@ -18,17 +18,17 @@ from quokka.models.apis import (
     get_all_events,
     get_service_summary_data,
     get_host_summary_data,
-    # get_host_capture,
-    # get_protocol_capture,
     get_capture,
     get_port_scan_extended,
     get_device_config_diff,
+    get_traceroute,
 )
 import quokka.models.reset
 from quokka.controller.ThreadManager import ThreadManager
 from quokka.controller.CaptureManager import CaptureManager
 from quokka.controller.PortscanManager import PortscanManager
 from quokka.controller.host.portscan import get_port_scan_tcp_connection
+from quokka.controller.TracerouteManager import TracerouteManager
 
 
 @app.route("/ui/devices", methods=["GET", "POST"])
@@ -302,6 +302,36 @@ def scan_extended():
         token = str(datetime.now())[:-3]
         PortscanManager.initiate_portscan(host["ip_address"], host["name"], token)
         return {"result": f"Portscan initiated for host: {host['name']}, ip: {host['ip_address']}",
+                "token": token}
+
+    else:
+        return "Invalid request method"
+
+
+@app.route("/ui/traceroute", methods=["GET", "POST"])
+def traceroute():
+
+    hostname = request.args.get("hostname")
+
+    if not hostname:
+        return "Must provide hostname", 400
+
+    if request.method == "GET":
+        token = request.args.get("token")
+        if not token:
+            return "Must provide token on GET request", 400
+
+        result, traceroute_image = get_traceroute(hostname, token)
+        return {
+            "result": result,
+            "traceroute_output": str(traceroute_image),
+            "hostname": hostname,
+        }
+
+    elif request.method == "POST":
+        token = str(datetime.now())[:-3]
+        TracerouteManager.initiate_traceroute(hostname, token)
+        return {"result": f"Traceroute initiated for hostname: {hostname}",
                 "token": token}
 
     else:

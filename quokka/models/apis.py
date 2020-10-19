@@ -795,6 +795,25 @@ def get_port_scan_extended(host_ip, host_name, token):
     return "failed", "No scan results in time provided"
 
 
+def get_traceroute(hostname, token):
+
+    max_wait_time = 300  # extended port scan allowed to take 5 minutes max
+    start_time = datetime.now()
+    while (datetime.now() - start_time).total_seconds() < max_wait_time:
+
+        search = {"host_ip": host_ip, "host_name": host_name, "token": token}
+        portscan_obj = db.session.query(Portscan).filter_by(**search).one_or_none()
+
+        if not portscan_obj:
+            time.sleep(2)
+            continue
+
+        portscan = get_model_as_dict(portscan_obj)
+        return "success", portscan["scan_output"]
+
+    return "failed", "No scan results in time provided"
+
+
 def record_device_config(device_id, config):
 
     device_config = dict()

@@ -95,6 +95,8 @@ from quokka.controller.CaptureManager import CaptureManager
 capture_manager = CaptureManager()
 from quokka.controller.PortscanManager import PortscanManager
 portscan_manager = PortscanManager()
+from quokka.controller.TracerouteManager import TracerouteManager
+traceroute_manager = TracerouteManager()
 
 
 def shutdown():
