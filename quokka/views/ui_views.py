@@ -329,7 +329,7 @@ def traceroute():
         }
 
     elif request.method == "POST":
-        token = str(datetime.now())[:-3]
+        token = str(datetime.now())
         TracerouteManager.initiate_traceroute(target, token)
         return {"result": f"Traceroute initiated for target: {target}",
                 "token": token}

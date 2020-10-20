@@ -22,7 +22,7 @@ class Services extends Component {
             countdownValue: process.env.REACT_APP_REFRESH_RATE,
             openTraceRouteDialog: false,
             target: '',
-            traceRouteResults: '',
+            traceRouteResults: {traceroute_output: ''},
             token: '',
         };
     }
@@ -52,7 +52,7 @@ class Services extends Component {
 
     initiateTraceRoute( target ) {
 
-        this.setState({traceRouteResults: {result: "initiating trace route ..."}})
+        this.setState({traceRouteResults: {result: "initiating trace route ...", traceroute_output: ""}})
         let requestUrl = process.env.REACT_APP_QUOKKA_HOST + '/ui/traceroute?target=' + target
         const requestOptions = { method: 'POST'}
         fetch(requestUrl, requestOptions)
@@ -66,7 +66,7 @@ class Services extends Component {
     }
 
     fetchTraceRouteResults( target ) {
-        this.setState({extendedPortScanResults: {result: "retrieving scan results ..."}})
+        this.setState({traceRouteResults: {result: "fetching route results ...", traceroute_output: ""}})
         let requestUrl = process.env.REACT_APP_QUOKKA_HOST + '/ui/traceroute?target=' + target + '&token=' + this.state.token
         const requestOptions = { method: 'GET'}
         fetch(requestUrl, requestOptions)

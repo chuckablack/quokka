@@ -30,7 +30,7 @@ class TracerouteThread(Thread):
         with open(tmp_png, 'rb') as png_file:
             traceroute_graph_bytes = base64.b64encode(png_file.read())
 
-        print(f"TracerouteThread: sending traceroute: {traceroute_graph_bytes[:256]}")
+        print(f"TracerouteThread: sending traceroute: {traceroute_graph_bytes[:1024]}")
         status_code = send_traceroute(
             gethostname(),
             self.quokka_ip,
@@ -46,7 +46,10 @@ class TracerouteThread(Thread):
 
         print(f"TracerouteThread: starting traceroute: target = {self.target}")
 
-        traceroute_output = traceroute(self.target, verbose=0)
-        self.process_traceroute(traceroute_output[0])
+        try:
+            traceroute_output = traceroute(self.target, verbose=0)
+            self.process_traceroute(traceroute_output[0])
+        except BaseException as e:
+            print(f"!!! Caught error attempting to do traceroute: {e}")
 
         print(f"\n\n-----> TracerouteThread: competed traceroute")

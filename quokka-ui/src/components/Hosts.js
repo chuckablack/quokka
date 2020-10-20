@@ -1,13 +1,12 @@
 import React, {Component} from 'react';
 import Button from '@material-ui/core/Button'
-import CircularProgress from "@material-ui/core/CircularProgress";
 import Grid from "@material-ui/core/Grid";
 import 'typeface-roboto'
-import Backdrop from "@material-ui/core/Backdrop";
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
 import {green, red} from '@material-ui/core/colors';
 import MaterialTable from "material-table";
+import AccountTreeTwoToneIcon from '@material-ui/icons/AccountTreeTwoTone'
 import Dialog from '@material-ui/core/Dialog'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import DialogActions from "@material-ui/core/DialogActions";
@@ -29,6 +28,9 @@ class Hosts extends Component {
             portScanResults: '',
             extendedPortScanResults: '',
             token: '',
+            openTraceRouteDialog: false,
+            target: '',
+            traceRouteResults: {traceroute_output: ''},
         };
     }
 
@@ -98,6 +100,35 @@ class Hosts extends Component {
 
     }
 
+    initiateTraceRoute( target ) {
+
+        this.setState({traceRouteResults: {result: "initiating trace route ...", traceroute_output: ""}})
+        let requestUrl = process.env.REACT_APP_QUOKKA_HOST + '/ui/traceroute?target=' + target
+        const requestOptions = { method: 'POST'}
+        fetch(requestUrl, requestOptions)
+            .then(res => res.json())
+            .then((data) => {
+                this.setState({token: data.token})
+                this.fetchTraceRouteResults(target)
+                console.log(this.state.traceRouteResults)
+            })
+            .catch(console.log)
+    }
+
+    fetchTraceRouteResults( target ) {
+        this.setState({traceRouteResults: {result: "fetching route results ...", traceroute_output: ""}})
+        let requestUrl = process.env.REACT_APP_QUOKKA_HOST + '/ui/traceroute?target=' + target + '&token=' + this.state.token
+        const requestOptions = { method: 'GET'}
+        fetch(requestUrl, requestOptions)
+            .then(res => res.json())
+            .then((data) => {
+                this.setState({traceRouteResults: data})
+                console.log(this.state.traceRouteResults)
+            })
+            .catch(console.log)
+
+    }
+
     componentDidMount() {
         this.fetchHosts()
         this.interval = setInterval(() => this.countdown(), 1000)
@@ -123,6 +154,10 @@ class Hosts extends Component {
         parent.setState({openExtendedPortScanDialog: false})
     }
 
+    handleCloseTraceRouteDialog(parent) {
+        parent.setState({openTraceRouteDialog: false})
+    }
+
     renderPortScanDialog(hostId, ip) {
         this.fetchPortScan(hostId)
         this.setState({openPortScanDialog: true, portScanHost: ip})
@@ -131,6 +166,11 @@ class Hosts extends Component {
     renderExtendedPortScanDialog(hostId, ip) {
         this.initiateExtendedPortScan(hostId)
         this.setState({openExtendedPortScanDialog: true, portScanHost: ip})
+    }
+
+    renderTraceRouteDialog(target) {
+        this.initiateTraceRoute(target)
+        this.setState({openTraceRouteDialog: true, target: target})
     }
 
 
@@ -213,8 +253,14 @@ class Hosts extends Component {
                             onClick: (event, rowData) => {
                                 this.renderExtendedPortScanDialog(rowData.id, rowData.ip_address)
                             }
-                        }
-
+                        },
+                        {
+                            icon: AccountTreeTwoToneIcon,
+                            tooltip: 'Trace-route to host',
+                            onClick: (event, rowData) => {
+                                this.renderTraceRouteDialog(rowData.name)
+                            }
+                        },
                     ]}
 
                 />
@@ -254,6 +300,29 @@ class Hosts extends Component {
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={() => this.handleCloseExtendedPortScanDialog(this)}>
+                            Close
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+                <Dialog
+                    open={this.state.openTraceRouteDialog}
+                    maxWidth="lg"
+                >
+                    <DialogTitle>Trace Route Results: {this.state.target}</DialogTitle>
+                    <DialogContent>
+                        <b>Output from trace route:</b><br />
+                        Result: {this.state.traceRouteResults.result}<br />
+                        Trace route results:
+                        <img id="traceroute"
+                             src={"data:image/png;base64," + this.state.traceRouteResults.traceroute_output}
+                             alt="">
+                        </img>
+                        <br /><br />
+                        <b>NOTE:</b><br />
+                        Depending on the target, trace route may take up to a few minutes to complete
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => this.handleCloseTraceRouteDialog(this)}>
                             Close
                         </Button>
                     </DialogActions>

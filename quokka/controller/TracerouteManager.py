@@ -3,6 +3,8 @@ import json
 import yaml
 from quokka.controller.utils import log_console
 
+from urllib.parse import urlparse
+
 
 class TracerouteManager:
 
@@ -37,6 +39,11 @@ class TracerouteManager:
 
     @staticmethod
     def initiate_traceroute(target, token):
+
+        # Target could be a URL; if so, use urlparse to extract the network location (hostname)
+        if target.startswith("http://") or target.startswith("https://"):
+            parsed_target = urlparse(target)
+            target = parsed_target.netloc
 
         monitor = TracerouteManager.find_monitor(target)
         channel = TracerouteManager.get_channel(monitor)

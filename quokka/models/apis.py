@@ -833,7 +833,8 @@ def get_traceroute(target, token):
     start_time = datetime.now()
     while (datetime.now() - start_time).total_seconds() < max_wait_time:
 
-        search = {"target": target, "token": token}
+        # search = {"target": target, "token": token}  # 'target' may have been modified
+        search = {"token": token}
         traceroute_obj = db.session.query(Traceroute).filter_by(**search).one_or_none()
 
         if not traceroute_obj:

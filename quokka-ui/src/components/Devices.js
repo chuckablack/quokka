@@ -26,7 +26,7 @@ class Devices extends Component {
             configDiff: {current: {}, old: {}},
             openTraceRouteDialog: false,
             target: '',
-            traceRouteResults: '',
+            traceRouteResults: {traceroute_output: ''},
             token: '',
         };
     }
@@ -71,7 +71,7 @@ class Devices extends Component {
 
     initiateTraceRoute( target ) {
 
-        this.setState({traceRouteResults: {result: "initiating trace route ..."}})
+        this.setState({traceRouteResults: {result: "initiating trace route ...", traceroute_output: ""}})
         let requestUrl = process.env.REACT_APP_QUOKKA_HOST + '/ui/traceroute?target=' + target
         const requestOptions = { method: 'POST'}
         fetch(requestUrl, requestOptions)
@@ -85,7 +85,7 @@ class Devices extends Component {
     }
 
     fetchTraceRouteResults( target ) {
-        this.setState({extendedPortScanResults: {result: "retrieving scan results ..."}})
+        this.setState({traceRouteResults: {result: "fetching route results ...", traceroute_output: ""}})
         let requestUrl = process.env.REACT_APP_QUOKKA_HOST + '/ui/traceroute?target=' + target + '&token=' + this.state.token
         const requestOptions = { method: 'GET'}
         fetch(requestUrl, requestOptions)
@@ -214,7 +214,7 @@ class Devices extends Component {
                         },
                         {
                             icon: AccountTreeTwoToneIcon,
-                            tooltip: 'Trace-route to service',
+                            tooltip: 'Trace-route to device',
                             onClick: (event, rowData) => {
                                 this.renderTraceRouteDialog(rowData.hostname)
                             }

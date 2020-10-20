@@ -18,6 +18,7 @@ def get_avail_and_rsp_time(service):
 
     time_start = time.time()
     if service["type"] == "https" or service["type"] == "http":
+
         try:
             response = requests.get(service["target"])
         except BaseException as e:
