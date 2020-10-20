@@ -52,6 +52,7 @@ import quokka.views.ui_views
 import quokka.views.device_views
 import quokka.views.capture_views
 import quokka.views.portscan_views
+import quokka.views.traceroute_views
 import quokka.models
 
 db.create_all()

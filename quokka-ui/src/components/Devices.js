@@ -6,6 +6,7 @@ import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import {green, red} from "@material-ui/core/colors";
 import CancelIcon from "@material-ui/icons/Cancel";
 import MaterialTable from "material-table";
+import AccountTreeTwoToneIcon from '@material-ui/icons/AccountTreeTwoTone'
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -22,7 +23,11 @@ class Devices extends Component {
             countdownValue: process.env.REACT_APP_REFRESH_RATE,
             openConfigDiffDialog: false,
             deviceName: '',
-            configDiff: {current: {}, old: {}}
+            configDiff: {current: {}, old: {}},
+            openTraceRouteDialog: false,
+            target: '',
+            traceRouteResults: '',
+            token: '',
         };
     }
 
@@ -64,6 +69,35 @@ class Devices extends Component {
 
     }
 
+    initiateTraceRoute( target ) {
+
+        this.setState({traceRouteResults: {result: "initiating trace route ..."}})
+        let requestUrl = process.env.REACT_APP_QUOKKA_HOST + '/ui/traceroute?target=' + target
+        const requestOptions = { method: 'POST'}
+        fetch(requestUrl, requestOptions)
+            .then(res => res.json())
+            .then((data) => {
+                this.setState({token: data.token})
+                this.fetchTraceRouteResults(target)
+                console.log(this.state.traceRouteResults)
+            })
+            .catch(console.log)
+    }
+
+    fetchTraceRouteResults( target ) {
+        this.setState({extendedPortScanResults: {result: "retrieving scan results ..."}})
+        let requestUrl = process.env.REACT_APP_QUOKKA_HOST + '/ui/traceroute?target=' + target + '&token=' + this.state.token
+        const requestOptions = { method: 'GET'}
+        fetch(requestUrl, requestOptions)
+            .then(res => res.json())
+            .then((data) => {
+                this.setState({traceRouteResults: data})
+                console.log(this.state.traceRouteResults)
+            })
+            .catch(console.log)
+
+    }
+
     componentDidMount() {
         this.fetchDevices(false)
         this.interval = setInterval(() => this.countdown(), 1000)
@@ -89,6 +123,15 @@ class Devices extends Component {
 
     handleCloseConfigDiffDialog(parent) {
         parent.setState({openConfigDiffDialog: false})
+    }
+
+    handleCloseTraceRouteDialog(parent) {
+        parent.setState({openTraceRouteDialog: false})
+    }
+
+    renderTraceRouteDialog(target) {
+        this.initiateTraceRoute(target)
+        this.setState({openTraceRouteDialog: true, target: target})
     }
 
     render() {
@@ -169,7 +212,13 @@ class Devices extends Component {
                                 this.renderConfigDiffDialog(rowData.name)
                             }
                         },
-
+                        {
+                            icon: AccountTreeTwoToneIcon,
+                            tooltip: 'Trace-route to service',
+                            onClick: (event, rowData) => {
+                                this.renderTraceRouteDialog(rowData.hostname)
+                            }
+                        }
                     ]}
                 />
                 <Dialog
@@ -188,6 +237,29 @@ class Devices extends Component {
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={() => this.handleCloseConfigDiffDialog(this)}>
+                            Close
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+                <Dialog
+                    open={this.state.openTraceRouteDialog}
+                    maxWidth="lg"
+                >
+                    <DialogTitle>Trace Route Results: {this.state.target}</DialogTitle>
+                    <DialogContent>
+                        <b>Output from trace route:</b><br />
+                        Result: {this.state.traceRouteResults.result}<br />
+                        Trace route results:
+                        <img id="traceroute"
+                             src={"data:image/png;base64," + this.state.traceRouteResults.traceroute_output}
+                             alt="">
+                        </img>
+                        <br /><br />
+                        <b>NOTE:</b><br />
+                        Depending on the target, trace route may take up to a few minutes to complete
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => this.handleCloseTraceRouteDialog(this)}>
                             Close
                         </Button>
                     </DialogActions>

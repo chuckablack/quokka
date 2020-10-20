@@ -100,22 +100,22 @@ def send_portscan(source, destination, serial_no, host_ip, host_name, token, tim
     return rsp.status_code
 
 
-def send_traceroute(source, destination, serial_no, target_name, token, timestamp, traceroute_graph_bytes):
+def send_traceroute(source, destination, serial_no, target, token, timestamp, traceroute_graph_bytes):
 
     portscan_payload = {
         "source": source,
         "serial": serial_no,
-        "target_name": target_name,
+        "target": target,
         "token": token,
         "timestamp": timestamp,
-        "traceroute": traceroute_graph_bytes,
+        "traceroute_img": traceroute_graph_bytes,
     }
     rsp = requests.post(
-        "http://" + destination + ":5000/portscan/store", json=portscan_payload
+        "http://" + destination + ":5000/traceroute/store", json=portscan_payload
     )
     if rsp.status_code != 200:
         print(
-            f"{str(datetime.now())[:-3]}: Error calling /portscan/store response: {rsp.status_code}, {rsp.content}"
+            f"{str(datetime.now())[:-3]}: Error calling /traceroute/store response: {rsp.status_code}, {rsp.content}"
         )
 
     return rsp.status_code

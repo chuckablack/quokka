@@ -311,27 +311,27 @@ def scan_extended():
 @app.route("/ui/traceroute", methods=["GET", "POST"])
 def traceroute():
 
-    hostname = request.args.get("hostname")
+    target = request.args.get("target")
 
-    if not hostname:
-        return "Must provide hostname", 400
+    if not target:
+        return "Must provide target", 400
 
     if request.method == "GET":
         token = request.args.get("token")
         if not token:
             return "Must provide token on GET request", 400
 
-        result, traceroute_image = get_traceroute(hostname, token)
+        result, traceroute_image = get_traceroute(target, token)
         return {
             "result": result,
             "traceroute_output": str(traceroute_image),
-            "hostname": hostname,
+            "target": target,
         }
 
     elif request.method == "POST":
         token = str(datetime.now())[:-3]
-        TracerouteManager.initiate_traceroute(hostname, token)
-        return {"result": f"Traceroute initiated for hostname: {hostname}",
+        TracerouteManager.initiate_traceroute(target, token)
+        return {"result": f"Traceroute initiated for target: {target}",
                 "token": token}
 
     else:

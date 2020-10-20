@@ -13,13 +13,13 @@ class TracerouteThread(Thread):
         super().__init__()
         print(f"TracerouteThread: initializing thread object: traceroute_info={traceroute_info}")
 
-        if "hostname" not in traceroute_info:
+        if "target" not in traceroute_info:
             print(f"TracerouteThread: missing information in traceroute_info: {traceroute_info}")
             return
 
         self.quokka_ip = quokka_ip
         self.serial_no = serial_no
-        self.hostname = traceroute_info["hostname"]
+        self.target = traceroute_info["target"]
         self.token = traceroute_info["token"]
 
     def process_traceroute(self, traceroute):
@@ -30,12 +30,12 @@ class TracerouteThread(Thread):
         with open(tmp_png, 'rb') as png_file:
             traceroute_graph_bytes = base64.b64encode(png_file.read())
 
-        print(f"TracerouteThread: sending traceroute: {traceroute_graph_bytes}")
+        print(f"TracerouteThread: sending traceroute: {traceroute_graph_bytes[:256]}")
         status_code = send_traceroute(
             gethostname(),
             self.quokka_ip,
             self.serial_no,
-            self.hostname,
+            self.target,
             self.token,
             str(datetime.now())[:-1],
             traceroute_graph_bytes,
@@ -44,9 +44,9 @@ class TracerouteThread(Thread):
 
     def run(self):
 
-        print(f"TracerouteThread: starting traceroute: hostname = {self.hostname}")
+        print(f"TracerouteThread: starting traceroute: target = {self.target}")
 
-        traceroute_output = traceroute(self.hostname, verbose=0)
+        traceroute_output = traceroute(self.target, verbose=0)
         self.process_traceroute(traceroute_output[0])
 
         print(f"\n\n-----> TracerouteThread: competed traceroute")

@@ -23,26 +23,26 @@ class TracerouteManager:
         return channel
 
     @staticmethod
-    def find_monitor(hostname=None):
+    def find_monitor(target=None):
 
-        if not hostname:
+        if not target:
             return "localhost"
 
-        if hostname in TracerouteManager.traceroute_monitors:
-            return TracerouteManager.traceroute_monitors[hostname]
+        if target in TracerouteManager.traceroute_monitors:
+            return TracerouteManager.traceroute_monitors[target]
 
         else:
             # If we didn't find a specific monitor, default to localhost
             return "localhost"
 
     @staticmethod
-    def initiate_traceroute(hostname, token):
+    def initiate_traceroute(target, token):
 
-        monitor = TracerouteManager.find_monitor(hostname)
+        monitor = TracerouteManager.find_monitor(target)
         channel = TracerouteManager.get_channel(monitor)
 
         traceroute_info = {
-            "hostname": hostname,
+            "target": target,
             "token": token,
         }
 
@@ -52,5 +52,5 @@ class TracerouteManager:
         )
 
         log_console(
-            f"Traceroute Manager: starting traceroute: hostname : {hostname}"
+            f"Traceroute Manager: starting traceroute: target : {target}"
         )

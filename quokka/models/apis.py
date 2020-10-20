@@ -16,6 +16,7 @@ from quokka.models.Service import Service
 from quokka.models.Event import Event
 from quokka.models.Capture import Capture
 from quokka.models.Portscan import Portscan
+from quokka.models.Traceroute import Traceroute
 
 from quokka.models.DeviceStatus import DeviceStatus
 from quokka.models.HostStatus import HostStatus
@@ -795,23 +796,54 @@ def get_port_scan_extended(host_ip, host_name, token):
     return "failed", "No scan results in time provided"
 
 
-def get_traceroute(hostname, token):
+def record_traceroute(traceroute_info):
+
+    traceroute = dict()
+    if "source" not in traceroute_info:
+        log_console(f"record_traceroute: missing 'source' in traceroute info")
+        return
+    if "target" not in traceroute_info:
+        log_console(f"record_traceroute: missing 'target' in traceroute info")
+        return
+    if "token" not in traceroute_info:
+        log_console(f"record_traceroute: missing 'token' in traceroute_info")
+        return
+    if "timestamp" not in traceroute_info:
+        log_console(f"record_traceroute: missing 'timestamp' in traceroute info")
+        return
+    if "traceroute_img" not in traceroute_info:
+        log_console(f"record_traceroute: missing 'traceroute_img' in traceroute info")
+        return
+
+    traceroute["source"] = traceroute_info["source"]
+    traceroute["target"] = traceroute_info["target"]
+    traceroute["token"] = traceroute_info["token"]
+    traceroute["timestamp"] = traceroute_info["timestamp"]
+    traceroute["traceroute_img"] = traceroute_info["traceroute_img"]
+
+    traceroute_obj = Traceroute(**traceroute)
+    db.session.add(traceroute_obj)
+
+    db.session.commit()
+
+
+def get_traceroute(target, token):
 
     max_wait_time = 300  # extended port scan allowed to take 5 minutes max
     start_time = datetime.now()
     while (datetime.now() - start_time).total_seconds() < max_wait_time:
 
-        search = {"host_ip": host_ip, "host_name": host_name, "token": token}
-        portscan_obj = db.session.query(Portscan).filter_by(**search).one_or_none()
+        search = {"target": target, "token": token}
+        traceroute_obj = db.session.query(Traceroute).filter_by(**search).one_or_none()
 
-        if not portscan_obj:
+        if not traceroute_obj:
             time.sleep(2)
             continue
 
-        portscan = get_model_as_dict(portscan_obj)
-        return "success", portscan["scan_output"]
+        traceroute = get_model_as_dict(traceroute_obj)
+        return "success", traceroute["traceroute_img"]
 
-    return "failed", "No scan results in time provided"
+    return "failed", "No traceroute results in time provided"
 
 
 def record_device_config(device_id, config):
