@@ -4,7 +4,6 @@ import pika
 import json
 from PortscanThread import PortscanThread
 
-quokka_ip = "localhost"
 serial_no = "111.111.111"
 
 connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
@@ -25,6 +24,11 @@ def receive_portscan_request(portscan_channel, method, properties, body):
     if "host_ip" not in portscan_info or "host_name" not in portscan_info or "token" not in portscan_info:
         print(f"portscan worker: missing information in portscan_info: {portscan_info}")
     else:
+        if "quokka" not in portscan_info:
+            quokka_ip = "localhost"
+        else:
+            quokka_ip = portscan_info["quokka"]
+
         portscan_thread = PortscanThread(quokka_ip, serial_no, portscan_info)
         portscan_thread.start()
 

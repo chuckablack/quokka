@@ -3,6 +3,7 @@ import json
 import yaml
 from netaddr import IPNetwork
 from quokka.controller.utils import log_console
+from socket import gethostname
 
 
 class PortscanManager:
@@ -17,7 +18,8 @@ class PortscanManager:
     @staticmethod
     def get_channel(monitor):
 
-        connection = pika.BlockingConnection(pika.ConnectionParameters(host=monitor))
+        credentials = pika.PlainCredentials('quokkaUser', 'quokkaPass')
+        connection = pika.BlockingConnection(pika.ConnectionParameters(host=monitor, credentials=credentials))
         channel = connection.channel()
         channel.queue_declare(queue="portscan_queue", durable=True)
 
@@ -48,6 +50,7 @@ class PortscanManager:
         channel = PortscanManager.get_channel(monitor)
 
         portscan_info = {
+            "quokka": gethostname(),
             "host_ip": host_ip,
             "host_name": host_name,
             "token": token,
