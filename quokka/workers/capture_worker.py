@@ -4,7 +4,6 @@ import pika
 import json
 from CaptureThread import CaptureThread
 
-quokka_ip = "localhost"
 serial_no = "111.111.111"
 
 connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
@@ -21,6 +20,11 @@ def receive_capture_request(capture_channel, method, properties, body):
     print(f"capture info: {capture_info}")
 
     channel.basic_ack(delivery_tag=method.delivery_tag)
+
+    if "quokka" not in capture_info:
+        quokka_ip = "localhost"
+    else:
+        quokka_ip = capture_info["quokka"]
 
     capture_thread = CaptureThread(quokka_ip, serial_no, capture_info)
     capture_thread.start()

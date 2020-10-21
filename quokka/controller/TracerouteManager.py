@@ -1,7 +1,7 @@
 import pika
 import json
 import yaml
-from quokka.controller.utils import log_console
+from quokka.controller.utils import log_console, get_this_ip
 
 from urllib.parse import urlparse
 
@@ -18,7 +18,8 @@ class TracerouteManager:
     @staticmethod
     def get_channel(monitor):
 
-        connection = pika.BlockingConnection(pika.ConnectionParameters(host=monitor))
+        credentials = pika.PlainCredentials('quokkaUser', 'quokkaPass')
+        connection = pika.BlockingConnection(pika.ConnectionParameters(host=monitor, credentials=credentials))
         channel = connection.channel()
         channel.queue_declare(queue="traceroute_queue", durable=True)
 
@@ -49,6 +50,7 @@ class TracerouteManager:
         channel = TracerouteManager.get_channel(monitor)
 
         traceroute_info = {
+            "quokka": get_this_ip(),
             "target": target,
             "token": token,
         }

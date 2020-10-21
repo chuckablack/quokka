@@ -4,7 +4,6 @@ import pika
 import json
 from TracerouteThread import TracerouteThread
 
-quokka_ip = "localhost"
 serial_no = "111.111.111"
 
 connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
@@ -21,6 +20,11 @@ def receive_traceroute_request(traceroute_channel, method, properties, body):
     print(f"traceroute info: {traceroute_info}")
 
     channel.basic_ack(delivery_tag=method.delivery_tag)
+
+    if "quokka" not in traceroute_info:
+        quokka_ip = "localhost"
+    else:
+        quokka_ip = traceroute_info["quokka"]
 
     traceroute_thread = TracerouteThread(quokka_ip, serial_no, traceroute_info)
     traceroute_thread.start()

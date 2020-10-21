@@ -2,7 +2,7 @@ import pika
 import json
 import yaml
 from netaddr import IPNetwork
-from quokka.controller.utils import log_console
+from quokka.controller.utils import log_console, get_this_ip
 
 interface = "enp0s3"
 
@@ -19,7 +19,8 @@ class CaptureManager:
     @staticmethod
     def get_channel(monitor):
 
-        connection = pika.BlockingConnection(pika.ConnectionParameters(host=monitor))
+        credentials = pika.PlainCredentials('quokkaUser', 'quokkaPass')
+        connection = pika.BlockingConnection(pika.ConnectionParameters(host=monitor, credentials=credentials))
         channel = connection.channel()
         channel.queue_declare(queue="capture_queue", durable=True)
 
@@ -69,6 +70,7 @@ class CaptureManager:
             protocol, port = CaptureManager.translate_protocol_and_port(protocol, port)
 
         capture_info = {
+            "quokka": get_this_ip(),
             "interface": interface,
             "ip": ip,
             "protocol": protocol,
