@@ -38,9 +38,11 @@ class PortscanManager:
             if ip in IPNetwork(network):
                 return PortscanManager.portscan_monitors[network]
 
-        else:
-            # If we didn't find a specific monitor, default to localhost
-            return "localhost"
+        if "0.0.0.0/0" in PortscanManager.portscan_monitors:
+            return PortscanManager.portscan_monitors["0.0.0.0/0"]
+
+        # If we didn't find a specific monitor, default to localhost
+        return "localhost"
 
     @staticmethod
     def initiate_portscan(host_ip, host_name, token):

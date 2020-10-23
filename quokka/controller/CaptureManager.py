@@ -56,9 +56,11 @@ class CaptureManager:
             if ip in IPNetwork(network):
                 return CaptureManager.capture_monitors[network]
 
-        else:
-            # If we didn't find a specific monitor, default to localhost
-            return "localhost"
+        if "0.0.0.0/0" in CaptureManager.capture_monitors:
+            return CaptureManager.capture_monitors["0.0.0.0/0"]
+
+        # If we didn't find a specific monitor, default to localhost
+        return "localhost"
 
     @staticmethod
     def initiate_capture(ip, protocol, port, count):

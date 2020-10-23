@@ -34,9 +34,11 @@ class TracerouteManager:
         if target in TracerouteManager.traceroute_monitors:
             return TracerouteManager.traceroute_monitors[target]
 
-        else:
-            # If we didn't find a specific monitor, default to localhost
-            return "localhost"
+        if "0.0.0.0/0" in TracerouteManager.traceroute_monitors:
+            return TracerouteManager.traceroute_monitors["0.0.0.0/0"]
+
+        # If we didn't find a specific monitor, default to localhost
+        return "localhost"
 
     @staticmethod
     def initiate_traceroute(target, token):
