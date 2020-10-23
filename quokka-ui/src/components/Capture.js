@@ -77,6 +77,9 @@ class Capture extends Component {
     renderHosts(dashboard) {
         dashboard.setState({show: "hosts"})
     }
+    renderDevices(dashboard) {
+        dashboard.setState({show: "devices"})
+    }
 
     render() {
 
@@ -94,6 +97,7 @@ class Capture extends Component {
                         <br /><br />  <br /><br />
                         <Button variant="contained" style={{width: '100%'}} onClick={() => this.startCapture()}>Start capture</Button>
                         <br /><br />
+                        <Button variant="contained" style={{width: '100%'}} onClick={() => this.renderDevices(this.state.dashboard)}>Return to Devices</Button>
                         <Button variant="contained" style={{width: '100%'}} onClick={() => this.renderHosts(this.state.dashboard)}>Return to Hosts</Button>
                         <Button variant="contained" style={{width: '100%'}} onClick={() => this.renderServices(this.state.dashboard)}>Return to Services</Button>
                     </Grid>
