@@ -53,11 +53,12 @@ import quokka.views.device_views
 import quokka.views.capture_views
 import quokka.views.portscan_views
 import quokka.views.traceroute_views
+import quokka.views.worker_views
 import quokka.models
 
 db.create_all()
 
-from quokka.models.apis import import_devices, import_compliance, import_services
+from quokka.models.apis import import_devices, import_compliance, import_services, import_workers
 from quokka.models.apis import get_all_devices, set_facts
 from quokka.models.Host import Host
 
@@ -70,6 +71,7 @@ Capture.query.delete()
 import_devices(filename="devices.yaml", filetype="yaml")
 import_compliance(filename="compliance.yaml")
 import_services(filename="services.yaml")
+import_workers(filename="workers.yaml", filetype="yaml")
 
 Host.query.delete()
 

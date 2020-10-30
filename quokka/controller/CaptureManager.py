@@ -3,6 +3,7 @@ import json
 import yaml
 from netaddr import IPNetwork
 from quokka.controller.utils import log_console, get_this_ip
+from quokka.models.apis import get_worker, set_command
 
 interface = "enp0s3"
 
@@ -15,6 +16,8 @@ class CaptureManager:
     except FileNotFoundError as e:
         log_console(f"Could not import capture monitors file: {repr(e)}")
         capture_monitors["0.0.0.0/0"] = "localhost"
+
+    worker_type = "capture"
 
     @staticmethod
     def get_channel(monitor):
@@ -66,7 +69,10 @@ class CaptureManager:
     def initiate_capture(ip, protocol, port, count):
 
         monitor = CaptureManager.find_monitor(ip)
-        channel = CaptureManager.get_channel(monitor)
+        result, worker = get_worker(host=monitor)
+        if result != "success":
+            log_console(f"Capture Manager: could not find worker, host={monitor}, in DB")
+            return
 
         if protocol:  # Translate port and protocol if necessary, e.g. 'http' must become 'tcp', '80'
             protocol, port = CaptureManager.translate_protocol_and_port(protocol, port)
@@ -79,12 +85,28 @@ class CaptureManager:
             "port": port,
             "count": count,
         }
-
         capture_info_json = json.dumps(capture_info)
-        channel.basic_publish(
-            exchange="", routing_key="capture_queue", body=capture_info_json
-        )
 
-        log_console(
-            f"Capture Manager: starting capture: ip:{ip} protocol:{protocol} port:{port} count:{count}"
-        )
+        if worker["connection_type"] == "rabbitmq":
+
+            channel = CaptureManager.get_channel(monitor)
+            channel.basic_publish(
+                exchange="", routing_key="capture_queue", body=capture_info_json
+            )
+
+            log_console(
+                f"Capture Manager: starting capture: ip:{ip} protocol:{protocol} port:{port} count:{count}"
+            )
+
+        elif worker["connection_type"] == "http":
+
+            command = dict()
+            command["host"] = worker["host"]
+            command["serial"] = worker["serial"]
+            command["worker_type"] = CaptureManager.worker_type
+            command["command"] = "start-capture"
+            command["command_info"] = capture_info_json
+            command["delivered"] = False
+
+            set_command(command)
+

@@ -12,6 +12,8 @@ from quokka.models.DeviceFacts import DeviceFacts
 from quokka.models.Compliance import Compliance
 from quokka.models.Host import Host
 from quokka.models.Service import Service
+from quokka.models.Worker import Worker
+from quokka.models.Command import Command
 
 from quokka.models.Event import Event
 from quokka.models.Capture import Capture
@@ -21,6 +23,7 @@ from quokka.models.Traceroute import Traceroute
 from quokka.models.DeviceStatus import DeviceStatus
 from quokka.models.HostStatus import HostStatus
 from quokka.models.ServiceStatus import ServiceStatus
+from quokka.models.WorkerStatus import WorkerStatus
 from quokka.models.HostStatusSummary import HostStatusSummary
 from quokka.models.ServiceStatusSummary import ServiceStatusSummary
 
@@ -128,7 +131,7 @@ def set_device(device):
         if "ip_address" in device and device["ip_address"]:
             device_obj.ip_address = device["ip_address"]
         if "serial" in device and device["serial"]:
-            device_obj.serial = device["serial"]
+            device_obj.serial_no = device["serial"]
         if "mac_address" in device and device["mac_address"]:
             device_obj.mac_address = device["mac_address"]
         if "vendor" in device and device["vendor"]:
@@ -887,3 +890,157 @@ def get_device_config_diff(device, num_configs):
 
     else:
         return "success", config_diff
+
+
+def get_worker(serial=None, host=None):
+
+    if not serial and not host:
+        return "failed", "Must provide serial or host"
+
+    search = dict()
+    if serial:
+        search["serial"] = serial
+    if host:
+        search["host"] = host
+
+    worker_obj = db.session.query(Worker).filter_by(**search).one_or_none()
+    if not worker_obj:
+        return "failed", "Could not find worker in DB"
+
+    return "success", get_model_as_dict(worker_obj)
+
+
+def set_worker(worker):
+
+    search = {"name": worker["name"]}
+    worker_obj = db.session.query(Worker).filter_by(**search).one_or_none()
+    if not worker_obj:
+        worker_obj = Worker(**worker)
+        db.session.add(worker_obj)
+    else:
+        if "ip_address" in worker and worker["ip_address"]:
+            worker_obj.ip_address = worker["ip_address"]
+        if "serial" in worker and worker["serial"]:
+            worker_obj.serial_no = worker["serial"]
+        if "uptime" in worker and worker["uptime"]:
+            worker_obj.uptime = worker["uptime"]
+        if "availability" in worker and worker["availability"] is not None:
+            worker_obj.availability = worker["availability"]
+        if "response_time" in worker and worker["response_time"]:
+            worker_obj.response_time = worker["response_time"]
+        if "last_heard" in worker and worker["last_heard"]:
+            worker_obj.last_heard = worker["last_heard"]
+        if "cpu" in worker and worker["cpu"]:
+            worker_obj.cpu = worker["cpu"]
+        if "memory" in worker and worker["memory"]:
+            worker_obj.memory = worker["memory"]
+
+    db.session.commit()
+
+
+def record_worker_status(worker):
+
+    worker_status = dict()
+    worker_status["worker_id"] = worker["id"]
+    worker_status["timestamp"] = str(datetime.now())[:-3]
+    worker_status["availability"] = worker["availability"]
+    worker_status["response_time"] = worker["response_time"]
+    worker_status["cpu"] = worker["cpu"]
+    worker_status["memory"] = worker["memory"]
+
+    worker_status_obj = WorkerStatus(**worker_status)
+    db.session.add(worker_status_obj)
+
+    db.session.commit()
+
+
+def import_workers(filename=None, filetype=None):
+
+    if not filename or not filetype:
+        return None
+
+    db.session.query(Worker).delete()
+    with open("quokka/data/" + filename, "r") as import_file:
+
+        if filetype.lower() == "json":
+            workers = json.loads(import_file.read())
+        elif filetype.lower() == "yaml":
+            workers = yaml.safe_load(import_file.read())
+        else:
+            return None
+
+    set_workers(workers)
+    return {"workers": workers}
+
+
+def set_workers(workers):
+
+    # validate workers: make sure no duplicate ids or names
+    ids = set()
+    names = set()
+
+    for worker in workers:
+
+        if worker["id"] in ids:
+            log_event(
+                str(datetime.now())[:-3],
+                "importing workers",
+                "workers.yaml",
+                "ERROR",
+                f"Duplicate worker id: {worker['id']}",
+            )
+            continue
+        if worker["name"] in names:
+            log_event(
+                str(datetime.now())[:-3],
+                "importing workers",
+                "workers.yaml",
+                "ERROR",
+                f"Duplicate worker name: {worker['name']}",
+            )
+            continue
+
+        ids.add(worker["id"])
+        names.add(worker["name"])
+
+        worker_obj = Worker(**worker)
+        db.session.add(worker_obj)
+
+    db.session.commit()
+
+
+def set_command(command):
+
+    command_obj = Command(**command)
+    db.session.add(command_obj)
+
+    db.session.commit()
+
+
+def get_commands(serial=None, host=None, worker_type=None, set_delivered=False):
+
+    if not serial and not host:
+        return "failed", "Must provide serial or host"
+    if not worker_type:
+        return "failed", "must provide worker_type"
+
+    search = dict()
+    if serial:
+        search["serial"] = serial
+    if host:
+        search["host"] = host
+    search["worker_type"] = worker_type
+    search["delivered"] = False
+
+    command_objs = db.session.query(Command).filter_by(**search).all()
+
+    commands = list()
+    for command_obj in command_objs:
+        commands.append(get_model_as_dict(command_obj))
+
+    if set_delivered:
+        for command_obj in command_objs:
+            command_obj.delivered = True
+        db.session.commit()
+
+    return "success", commands

@@ -3,6 +3,7 @@ import json
 import yaml
 from netaddr import IPNetwork
 from quokka.controller.utils import log_console, get_this_ip
+from quokka.models.apis import get_worker, set_command
 
 
 class PortscanManager:
@@ -13,6 +14,8 @@ class PortscanManager:
     except FileNotFoundError as e:
         log_console(f"Could not import portscan monitors file: {repr(e)}")
         portscan_monitors["0.0.0.0/0"] = "localhost"
+
+    worker_type = "portscan"
 
     @staticmethod
     def get_channel(monitor):
@@ -48,7 +51,10 @@ class PortscanManager:
     def initiate_portscan(host_ip, host_name, token):
 
         monitor = PortscanManager.find_monitor(host_ip)
-        channel = PortscanManager.get_channel(monitor)
+        result, worker = get_worker(host=monitor)
+        if result != "success":
+            log_console(f"Portscan Manager: could not find worker, host={monitor}, in DB")
+            return
 
         portscan_info = {
             "quokka": get_this_ip(),
@@ -56,13 +62,29 @@ class PortscanManager:
             "host_name": host_name,
             "token": token,
         }
-
         portscan_info_json = json.dumps(portscan_info)
-        channel.basic_publish(
-            exchange="", routing_key="portscan_queue", body=portscan_info_json
-        )
 
-        log_console(
-            f"Portscan Manager: starting portscan: host_ip   : {host_ip}"
-            f"Portscan Manager: starting portscan: host_name : {host_name}"
-        )
+        if worker["connection_type"] == "rabbitmq":
+
+            channel = PortscanManager.get_channel(monitor)
+
+            channel.basic_publish(
+                exchange="", routing_key="portscan_queue", body=portscan_info_json
+            )
+
+            log_console(
+                f"Portscan Manager: starting portscan: host_ip   : {host_ip}"
+                f"Portscan Manager: starting portscan: host_name : {host_name}"
+            )
+
+        elif worker["connection_type"] == "http":
+
+            command = dict()
+            command["host"] = worker["host"]
+            command["serial"] = worker["serial"]
+            command["worker_type"] = PortscanManager.worker_type
+            command["command"] = "start-capture"
+            command["command_info"] = portscan_info_json
+            command["delivered"] = False
+
+            set_command(command)
