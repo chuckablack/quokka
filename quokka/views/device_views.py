@@ -12,17 +12,17 @@ def device_register():
 
     registration_info = request.get_json()
     if not registration_info:
-        return "Must provide registration information in JSON body", 404
+        return "Must provide registration information in JSON body", 400
     if "serial" not in registration_info:
-        return "Must provide 'serial' in registration information", 404
+        return "Must provide 'serial' in registration information", 400
     if "name" not in registration_info:
-        return "Must provide 'name' in registration information", 404
+        return "Must provide 'name' in registration information", 400
 
     result, device = get_device(device_name=registration_info["name"])
     if result != "success":
-        return "Unknown device name in registration information", 404
+        return "Unknown device name in registration information", 400
     if registration_info["serial"] != device["serial"]:
-        return "Serial number in registration information does not match device serial", 404
+        return "Serial number in registration information does not match device serial", 400
 
     log_console(
         f"Received registration request from {registration_info['name']}, serial no: {registration_info['serial']}"
@@ -39,17 +39,17 @@ def device_heartbeat():
 
     heartbeat_info = request.get_json()
     if not heartbeat_info:
-        return "Must provide heartbeat information in JSON body", 404
+        return "Must provide heartbeat information in JSON body", 400
     if "serial" not in heartbeat_info:
-        return "Must provide 'serial' in heartbeat information", 404
+        return "Must provide 'serial' in heartbeat information", 400
     if "name" not in heartbeat_info:
-        return "Must provide 'name' in heartbeat information", 404
+        return "Must provide 'name' in heartbeat information", 400
 
     result, device = get_device(device_name=heartbeat_info["name"])
     if result != "success":
-        return "Unknown device name in heartbeat information", 404
+        return "Unknown device name in heartbeat information", 400
     if heartbeat_info["serial"] != device["serial"]:
-        return "Serial number in heartbeat information does not match device serial", 404
+        return "Serial number in heartbeat information does not match device serial", 400
 
     device["availability"] = True
     device["last_heard"] = str(datetime.now())[:-3]

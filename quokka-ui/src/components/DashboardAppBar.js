@@ -47,6 +47,10 @@ function renderCapture(dashboard) {
     dashboard.setState({show: "capture"})
 }
 
+function renderWorkers(dashboard) {
+    dashboard.setState({show: "workers"})
+}
+
 export default function DashboardAppBar(props) {
     const classes = useStyles();
     const dashboard = props.dashboard;
@@ -73,8 +77,9 @@ export default function DashboardAppBar(props) {
                     renderEvents(dashboard)
                 } else if (target === "capture") {
                     renderCapture(dashboard)
+                } else if (target === "workers") {
+                    renderWorkers(dashboard)
                 }
-
 
                 setIsLoading(false)
             })
@@ -139,6 +144,7 @@ export default function DashboardAppBar(props) {
                     <Button color="inherit" onClick={() => renderServices(dashboard)}>Services</Button>
                     <Button color="inherit" onClick={() => renderEvents(dashboard)}>Events</Button>
                     <Button color="inherit" onClick={() => renderCapture(dashboard)}>Capture</Button>
+                    <Button color="inherit" onClick={() => renderWorkers(dashboard)}>Workers</Button>
                 </Toolbar>
             </AppBar>
             {isLoading ?

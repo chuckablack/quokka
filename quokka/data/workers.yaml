@@ -1,14 +1,46 @@
-- id: 1
-  name: quokka server
+- name: quokka server
   host: localhost
+  worker_type: capture
   connection_type: http
   sla_availability: 95
   sla_response_time: 15
   serial: 111-111-111
 
-- id: 2
-  name: yoga laptop
+- name: quokka server
+  host: localhost
+  worker_type: portscan
+  connection_type: http
+  sla_availability: 95
+  sla_response_time: 15
+  serial: 111-111-111
+
+- name: quokka server
+  host: localhost
+  worker_type: traceroute
+  connection_type: http
+  sla_availability: 95
+  sla_response_time: 15
+  serial: 111-111-111
+
+- name: yoga laptop
   host: 192.168.254.136
+  worker_type: capture
+  connection_type: rabbitmq
+  sla_availability: 95
+  sla_response_time: 15
+  serial: 111-111-112
+
+- name: yoga laptop
+  host: 192.168.254.136
+  worker_type: portscan
+  connection_type: rabbitmq
+  sla_availability: 95
+  sla_response_time: 15
+  serial: 111-111-112
+
+- name: yoga laptop
+  host: 192.168.254.136
+  worker_type: traceroute
   connection_type: rabbitmq
   sla_availability: 95
   sla_response_time: 15

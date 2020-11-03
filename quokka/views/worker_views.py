@@ -12,17 +12,17 @@ def worker_register():
 
     registration_info = request.get_json()
     if not registration_info:
-        return "Must provide registration information in JSON body", 404
+        return "Must provide registration information in JSON body", 400
     if "serial" not in registration_info:
-        return "Must provide 'serial' in registration information", 404
+        return "Must provide 'serial' in registration information", 400
     if "name" not in registration_info:
-        return "Must provide 'name' in registration information", 404
+        return "Must provide 'name' in registration information", 400
 
-    result, worker = get_worker(host=registration_info["name"])
+    result, worker = get_worker(host=registration_info["name"], worker_type=registration_info["worker_type"])
     if result != "success":
-        return "Unknown worker name in registration information", 404
+        return "Unknown worker name in registration information", 400
     if registration_info["serial"] != worker["serial"]:
-        return "Serial number in registration information does not match worker serial", 404
+        return "Serial number in registration information does not match worker serial", 400
 
     log_console(
         f"Received registration request from {registration_info['name']}, serial no: {registration_info['serial']}"
@@ -39,13 +39,13 @@ def worker_heartbeat():
 
     heartbeat_info = request.get_json()
     if not heartbeat_info:
-        return "Must provide heartbeat information in JSON body", 404
+        return "Must provide heartbeat information in JSON body", 400
     if "serial" not in heartbeat_info:
-        return "Must provide 'serial' in heartbeat information", 404
+        return "Must provide 'serial' in heartbeat information", 400
 
-    result, worker = get_worker(serial=heartbeat_info["serial"])
+    result, worker = get_worker(serial=heartbeat_info["serial"], worker_type=heartbeat_info["worker_type"])
     if result != "success":
-        return "Unknown worker name in heartbeat information", 404
+        return "Unknown worker serial number in heartbeat information", 400
 
     worker["availability"] = True
     worker["last_heard"] = str(datetime.now())[:-3]

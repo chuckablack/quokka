@@ -10,17 +10,17 @@ def capture_register():
 
     registration_info = request.get_json()
     if not registration_info:
-        return "Must provide registration information in JSON body", 404
+        return "Must provide registration information in JSON body", 400
     if "serial" not in registration_info:
-        return "Must provide 'serial' in registration information", 404
+        return "Must provide 'serial' in registration information", 400
     if "name" not in registration_info:
-        return "Must provide 'name' in registration information", 404
+        return "Must provide 'name' in registration information", 400
 
     result, device = get_device(device_name=registration_info["name"])
     if result != "success":
-        return "Unknown device name in registration information", 404
+        return "Unknown device name in registration information", 400
     if registration_info["serial"] != device["serial"]:
-        return "Serial number in registration information does not match device serial", 404
+        return "Serial number in registration information does not match device serial", 400
 
     log_console(
         f"Received registration request from {registration_info['name']}, serial no: {registration_info['serial']}"
@@ -34,15 +34,15 @@ def capture_store():
 
     capture_info = request.get_json()
     if not capture_info:
-        return "Must provide capture information in JSON body", 404
+        return "Must provide capture information in JSON body", 400
     if "serial" not in capture_info:
-        return "Must provide 'serial' in capture information", 404
+        return "Must provide 'serial' in capture information", 400
     if "source" not in capture_info:
-        return "Must provide 'source' in capture information", 404
+        return "Must provide 'source' in capture information", 400
     if "timestamp" not in capture_info:
-        return "Must provide 'timestamp' in capture information", 404
+        return "Must provide 'timestamp' in capture information", 400
     if "packets" not in capture_info:
-        return "Must include 'packets' in capture information", 404
+        return "Must include 'packets' in capture information", 400
 
     record_capture(capture_info["timestamp"], capture_info["source"], capture_info["packets"])
 

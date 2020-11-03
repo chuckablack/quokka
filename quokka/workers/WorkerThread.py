@@ -34,7 +34,7 @@ class WorkerThread(threading.Thread):
 
     def run(self):
 
-        print(f"{self.worker_type} worker: starting work")
+        print(f"{self.worker_type} worker: starting work, quokka={self.quokka}")
         heartbeat_thread = threading.Thread(target=self.heartbeat, args=(self.heartbeat_interval,))
         heartbeat_thread.start()
 
@@ -65,11 +65,12 @@ class WorkerThread(threading.Thread):
             )
             self.latest_response_time = (time.time() - start) * 1000
             if rsp.status_code != 200:
-                print(f"{str(datetime.now())[:-3]}: --- heartbeat failed, response: {rsp.status_code}")
+                print(f"{str(datetime.now())[:-3]}: --- {self.worker_type} heartbeat failed, response: {rsp.status_code}")
+                print(f"{str(datetime.now())[:-3]}: --- --- reason: {rsp.reason}")
             else:
-                print(f"{str(datetime.now())[:-3]}: --- heartbeat successful, response: {rsp.status_code} {rsp.json()}")
+                print(f"{str(datetime.now())[:-3]}: --- {self.worker_type} heartbeat successful, response: {rsp.status_code} {rsp.json()}")
 
-            if "commands" in rsp.json():
+            if rsp.headers.get("content-type") == "application/json" and "commands" in rsp.json():
                 for command in rsp.json()["commands"]:
                     print(f"{str(datetime.now())[:-3]}: --- --- begin processing command: {command}")
                     command_info = json.loads(command["command_info"])

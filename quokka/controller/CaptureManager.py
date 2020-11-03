@@ -22,8 +22,10 @@ class CaptureManager:
     @staticmethod
     def get_channel(monitor):
 
-        credentials = pika.PlainCredentials('quokkaUser', 'quokkaPass')
-        connection = pika.BlockingConnection(pika.ConnectionParameters(host=monitor, credentials=credentials))
+        credentials = pika.PlainCredentials("quokkaUser", "quokkaPass")
+        connection = pika.BlockingConnection(
+            pika.ConnectionParameters(host=monitor, credentials=credentials)
+        )
         channel = connection.channel()
         channel.queue_declare(queue="capture_queue", durable=True)
 
@@ -69,12 +71,16 @@ class CaptureManager:
     def initiate_capture(ip, protocol, port, count):
 
         monitor = CaptureManager.find_monitor(ip)
-        result, worker = get_worker(host=monitor)
+        result, worker = get_worker(host=monitor, worker_type=CaptureManager.worker_type)
         if result != "success":
-            log_console(f"Capture Manager: could not find worker, host={monitor}, in DB")
+            log_console(
+                f"Capture Manager: could not find worker, host={monitor}, worker_type={CaptureManager.worker_type} in DB"
+            )
             return
 
-        if protocol:  # Translate port and protocol if necessary, e.g. 'http' must become 'tcp', '80'
+        if (
+            protocol
+        ):  # Translate port and protocol if necessary, e.g. 'http' must become 'tcp', '80'
             protocol, port = CaptureManager.translate_protocol_and_port(protocol, port)
 
         capture_info = {
@@ -90,9 +96,7 @@ class CaptureManager:
         if worker["connection_type"] == "rabbitmq":
 
             channel = CaptureManager.get_channel(monitor)
-            channel.basic_publish(
-                exchange="", routing_key="capture_queue", body=capture_info_json
-            )
+            channel.basic_publish(exchange="", routing_key="capture_queue", body=capture_info_json)
 
             log_console(
                 f"Capture Manager: starting capture: ip:{ip} protocol:{protocol} port:{port} count:{count}"
@@ -109,4 +113,3 @@ class CaptureManager:
             command["delivered"] = False
 
             set_command(command)
-

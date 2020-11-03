@@ -187,7 +187,7 @@ def device_status():
 
     result, info = get_device(device_name=device_name)
     if result != "success":
-        return "Could not find device in DB", 404
+        return "Could not find device in DB", 400
 
     device = info
     return {
@@ -264,7 +264,7 @@ def scan():
 
     host = get_host(host_id)
     if not host:
-        return f"Unknown host id={host_id}", 404
+        return f"Unknown host id={host_id}", 400
 
     result, scan_results = get_port_scan_tcp_connection(host["ip_address"])
     return {
@@ -284,7 +284,7 @@ def scan_extended():
 
     host = get_host(host_id)
     if not host:
-        return f"Unknown host id={host_id}", 404
+        return f"Unknown host id={host_id}", 400
 
     if request.method == "GET":
         token = request.args.get("token")

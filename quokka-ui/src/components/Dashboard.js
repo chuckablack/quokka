@@ -12,6 +12,7 @@ import DeviceDashboard from "./DeviceDashboard";
 import ServiceStatus from "./ServiceStatus";
 import Events from "./Events";
 import Capture from "./Capture";
+import Workers from "./Workers";
 
 class Dashboard extends Component {
 
@@ -47,6 +48,8 @@ class Dashboard extends Component {
             info = <Events dashboard={this}/>;
         } else if (show === "capture") {
             info = <Capture ip={ip} protocol={protocol} port={port} dashboard={this}/>;
+        } else if (show === "workers") {
+            info = <Workers dashboard={this}/>;
         }
 
 

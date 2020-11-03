@@ -5,9 +5,9 @@ class Worker(db.Model):
 
     __tablename__ = "worker"
 
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.Text, unique=True, nullable=False)
-    host = db.Column(db.Text, unique=True, nullable=False)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.Text, nullable=False)
+    host = db.Column(db.Text, nullable=False)
     serial = db.Column(db.Text)
 
     worker_type = db.Column(db.Text)

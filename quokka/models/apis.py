@@ -892,16 +892,20 @@ def get_device_config_diff(device, num_configs):
         return "success", config_diff
 
 
-def get_worker(serial=None, host=None):
+def get_worker(serial=None, host=None, worker_type=None):
 
     if not serial and not host:
         return "failed", "Must provide serial or host"
+
+    if not worker_type:
+        return "failed", "Must provide worker type"
 
     search = dict()
     if serial:
         search["serial"] = serial
     if host:
         search["host"] = host
+    search["worker_type"] = worker_type
 
     worker_obj = db.session.query(Worker).filter_by(**search).one_or_none()
     if not worker_obj:
@@ -912,7 +916,7 @@ def get_worker(serial=None, host=None):
 
 def set_worker(worker):
 
-    search = {"name": worker["name"]}
+    search = {"name": worker["name"], "worker_type": worker["worker_type"]}
     worker_obj = db.session.query(Worker).filter_by(**search).one_or_none()
     if not worker_obj:
         worker_obj = Worker(**worker)
@@ -976,32 +980,32 @@ def import_workers(filename=None, filetype=None):
 def set_workers(workers):
 
     # validate workers: make sure no duplicate ids or names
-    ids = set()
-    names = set()
+    # ids = set()
+    # names = set()
 
     for worker in workers:
 
-        if worker["id"] in ids:
-            log_event(
-                str(datetime.now())[:-3],
-                "importing workers",
-                "workers.yaml",
-                "ERROR",
-                f"Duplicate worker id: {worker['id']}",
-            )
-            continue
-        if worker["name"] in names:
-            log_event(
-                str(datetime.now())[:-3],
-                "importing workers",
-                "workers.yaml",
-                "ERROR",
-                f"Duplicate worker name: {worker['name']}",
-            )
-            continue
-
-        ids.add(worker["id"])
-        names.add(worker["name"])
+        # if worker["id"] in ids:
+        #     log_event(
+        #         str(datetime.now())[:-3],
+        #         "importing workers",
+        #         "workers.yaml",
+        #         "ERROR",
+        #         f"Duplicate worker id: {worker['id']}",
+        #     )
+        #     continue
+        # if worker["name"] in names:
+        #     log_event(
+        #         str(datetime.now())[:-3],
+        #         "importing workers",
+        #         "workers.yaml",
+        #         "ERROR",
+        #         f"Duplicate worker name: {worker['name']}",
+        #     )
+        #     continue
+        #
+        # ids.add(worker["id"])
+        # names.add(worker["name"])
 
         worker_obj = Worker(**worker)
         db.session.add(worker_obj)

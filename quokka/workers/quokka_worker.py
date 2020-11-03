@@ -39,7 +39,7 @@ parser.add_argument(
 parser.add_argument(
     "-H",
     "--heartbeat",
-    default="60",
+    default="30",
     help="Frequency of heartbeats sent to quokka server, in seconds",
 )
 
@@ -74,6 +74,7 @@ workerThread = WorkerThread(quokka=quokka,
 
 # try:
 workerThread.start()
+
 
 def shutdown():
 
