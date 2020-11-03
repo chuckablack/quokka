@@ -21,7 +21,7 @@ class Workers extends Component {
             dashboard: props.dashboard,
             countdownValue: process.env.REACT_APP_REFRESH_RATE,
             openConfigDiffDialog: false,
-            deviceName: '',
+            workerId: '',
             openTraceRouteDialog: false,
             target: '',
             traceRouteResults: {traceroute_output: ''},
@@ -90,8 +90,8 @@ class Workers extends Component {
         clearInterval(this.interval)
     }
 
-    renderWorkersStatus(deviceName) {
-        this.state.dashboard.setState({deviceName: deviceName, show: "workerstatus"})
+    renderWorkersStatus(workerId) {
+        this.state.dashboard.setState({workerId: workerId, show: "workerstatus"})
     }
 
     renderCapture(ip) {
@@ -166,21 +166,21 @@ class Workers extends Component {
                     actions={[
                         {
                             icon: 'dns',
-                            tooltip: 'Display Workers Status',
+                            tooltip: 'Display Worker Status',
                             onClick: (event, rowData) => {
-                                this.renderWorkersStatus(rowData.name)
+                                this.renderWorkersStatus(rowData.id)
                             }
                         },
                         {
                             icon: 'pageview',
-                            tooltip: 'Capture packets for device',
+                            tooltip: 'Capture packets for worker',
                             onClick: (event, rowData) => {
                                 this.renderCapture(rowData.ip_address)
                             }
                         },
                         {
                             icon: AccountTreeTwoToneIcon,
-                            tooltip: 'Trace-route to device',
+                            tooltip: 'Trace-route to worker',
                             onClick: (event, rowData) => {
                                 this.renderTraceRouteDialog(rowData.hostname)
                             }

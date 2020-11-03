@@ -7,6 +7,7 @@ from quokka.controller.HostMonitorTask import HostMonitorTask
 from quokka.controller.ServiceMonitorTask import ServiceMonitorTask
 from quokka.controller.DiscoverTask import DiscoverTask
 from quokka.controller.SummariesTask import SummariesTask
+from quokka.controller.WorkerMonitorTask import WorkerMonitorTask
 from quokka.controller.utils import log_console
 
 
@@ -26,8 +27,8 @@ class ThreadManager:
     discovery_thread = None
     summaries_task = None
     summaries_thread = None
-
-    sniffing_processes = list()
+    worker_monitor_task = None
+    worker_monitor_thread = None
 
     @staticmethod
     def stop_device_threads():
@@ -166,6 +167,28 @@ class ThreadManager:
         ThreadManager.summaries_thread.start()
 
     @staticmethod
+    def stop_worker_thread():
+
+        log_console("--- ---> Shutting down worker monitoring thread")
+
+        if ThreadManager.worker_monitor_task and ThreadManager.worker_monitor_thread:
+            ThreadManager.worker_monitor_task.set_terminate()
+            ThreadManager.worker_monitor_thread.join()
+
+        ThreadManager.worker_monitor_task = None
+        ThreadManager.worker_monitor_thread = None
+
+    @staticmethod
+    def start_worker_thread(worker_monitor_interval=60):
+
+        ThreadManager.worker_monitor_task = WorkerMonitorTask()
+        ThreadManager.worker_monitor_thread = threading.Thread(
+            target=ThreadManager.worker_monitor_task.monitor,
+            args=(worker_monitor_interval,),
+        )
+        ThreadManager.worker_monitor_thread.start()
+
+    @staticmethod
     def initiate_terminate_all_threads():
 
         if ThreadManager.device_monitor_task and ThreadManager.device_monitor_thread:
@@ -182,8 +205,5 @@ class ThreadManager:
             ThreadManager.discovery_task.set_terminate()
         if ThreadManager.summaries_task and ThreadManager.summaries_thread:
             ThreadManager.summaries_task.set_terminate()
-
-        # Kill all outstanding sniffing processes, if any
-        for sniffing_process in ThreadManager.sniffing_processes:
-            if sniffing_process.is_alive():
-                sniffing_process.terminate()
+        if ThreadManager.worker_monitor_task and ThreadManager.worker_monitor_thread:
+            ThreadManager.worker_monitor_task.set_terminate()

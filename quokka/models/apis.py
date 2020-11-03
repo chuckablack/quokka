@@ -892,26 +892,55 @@ def get_device_config_diff(device, num_configs):
         return "success", config_diff
 
 
-def get_worker(serial=None, host=None, worker_type=None):
-
-    if not serial and not host:
-        return "failed", "Must provide serial or host"
-
-    if not worker_type:
-        return "failed", "Must provide worker type"
+def get_worker(worker_id=None, serial=None, host=None, worker_type=None):
 
     search = dict()
-    if serial:
-        search["serial"] = serial
-    if host:
-        search["host"] = host
-    search["worker_type"] = worker_type
+    if worker_id:
+        search["id"] = worker_id
+    else:
+        if not serial and not host:
+            return "failed", "Must provide serial or host"
+        if not worker_type:
+            return "failed", "Must provide worker type"
+        if serial:
+            search["serial"] = serial
+        if host:
+            search["host"] = host
+        search["worker_type"] = worker_type
 
     worker_obj = db.session.query(Worker).filter_by(**search).one_or_none()
     if not worker_obj:
         return "failed", "Could not find worker in DB"
 
     return "success", get_model_as_dict(worker_obj)
+
+
+def get_all_workers():
+
+    worker_objs = db.session.query(Worker).all()
+
+    workers = list()
+    for worker_obj in worker_objs:
+        workers.append(get_model_as_dict(worker_obj))
+
+    return workers
+
+
+def get_worker_status_data(worker_id, num_datapoints):
+
+    worker_status_objs = (
+        db.session.query(WorkerStatus)
+        .filter_by(**{"worker_id": worker_id})
+        .order_by(desc(WorkerStatus.timestamp))
+        .limit(num_datapoints)
+        .all()
+    )
+
+    worker_status_data = list()
+    for worker_status_obj in worker_status_objs:
+        worker_status_data.append(get_model_as_dict(worker_status_obj))
+
+    return worker_status_data
 
 
 def set_worker(worker):
@@ -979,33 +1008,7 @@ def import_workers(filename=None, filetype=None):
 
 def set_workers(workers):
 
-    # validate workers: make sure no duplicate ids or names
-    # ids = set()
-    # names = set()
-
     for worker in workers:
-
-        # if worker["id"] in ids:
-        #     log_event(
-        #         str(datetime.now())[:-3],
-        #         "importing workers",
-        #         "workers.yaml",
-        #         "ERROR",
-        #         f"Duplicate worker id: {worker['id']}",
-        #     )
-        #     continue
-        # if worker["name"] in names:
-        #     log_event(
-        #         str(datetime.now())[:-3],
-        #         "importing workers",
-        #         "workers.yaml",
-        #         "ERROR",
-        #         f"Duplicate worker name: {worker['name']}",
-        #     )
-        #     continue
-        #
-        # ids.add(worker["id"])
-        # names.add(worker["name"])
 
         worker_obj = Worker(**worker)
         db.session.add(worker_obj)

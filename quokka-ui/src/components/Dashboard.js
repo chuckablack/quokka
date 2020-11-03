@@ -13,6 +13,7 @@ import ServiceStatus from "./ServiceStatus";
 import Events from "./Events";
 import Capture from "./Capture";
 import Workers from "./Workers";
+import WorkerStatus from "./WorkerStatus"
 
 class Dashboard extends Component {
 
@@ -26,7 +27,7 @@ class Dashboard extends Component {
     }
 
     render() {
-        const {deviceName, show, hostId, serviceId, ip, protocol, port} = this.state
+        const {deviceName, show, hostId, serviceId, workerId, ip, protocol, port} = this.state
 
         let info;
 
@@ -50,6 +51,8 @@ class Dashboard extends Component {
             info = <Capture ip={ip} protocol={protocol} port={port} dashboard={this}/>;
         } else if (show === "workers") {
             info = <Workers dashboard={this}/>;
+        } else if (show === "workerstatus") {
+            info = <WorkerStatus workerId={workerId} dashboard={this}/>;
         }
 
 

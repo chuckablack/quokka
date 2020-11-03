@@ -2,13 +2,13 @@ import {FlexibleXYPlot, HorizontalGridLines, LineMarkSeries, LineSeries, XAxis, 
 import React, {Component} from "react";
 import Grid from "@material-ui/core/Grid";
 
-class DeviceStatus extends Component {
+class WorkerStatus extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            deviceName: props.deviceName,
-            deviceData: {device_data: [], device: {}},
+            workerId: props.workerId,
+            workerData: {worker_data: [], worker: {}},
             dashboard: props.dashboard,
             countdownValue: process.env.REACT_APP_REFRESH_RATE,
         };
@@ -18,12 +18,12 @@ class DeviceStatus extends Component {
     countdown() {
         this.setState({countdownValue: this.state.countdownValue-1})
         if (this.state.countdownValue === 0) {
-            this.fetchDeviceStatusData()
+            this.fetchWorkerStatusData()
         }
     }
 
     componentDidMount() {
-        this.fetchDeviceStatusData()
+        this.fetchWorkerStatusData()
         this.interval = setInterval(() => this.countdown(), 1000)
     }
 
@@ -31,18 +31,18 @@ class DeviceStatus extends Component {
         clearInterval(this.interval)
     }
 
-    fetchDeviceStatusData() {
+    fetchWorkerStatusData() {
 
-        const deviceName = this.state.deviceName;
+        const workerId = this.state.workerId;
 
-        let requestUrl = process.env.REACT_APP_QUOKKA_HOST + '/ui/device/status?device='
-                                   + deviceName + '&datapoints=' + process.env.REACT_APP_NUM_DATAPOINTS
+        let requestUrl = process.env.REACT_APP_QUOKKA_HOST + '/ui/worker/status?workerid='
+                                   + workerId + '&datapoints=' + process.env.REACT_APP_NUM_DATAPOINTS
 
         fetch(requestUrl)
             .then(res => res.json())
             .then((data) => {
                 console.log(data)
-                this.setState({deviceData: data});
+                this.setState({workerData: data});
                 this.setState({countdownValue: process.env.REACT_APP_REFRESH_RATE})
             })
             .catch((e) => {
@@ -57,24 +57,24 @@ class DeviceStatus extends Component {
         let tsData = [];
         let maxY = 0;
         let yValue = 0;
-        const deviceData = this.state.deviceData.device_data;
+        const workerData = this.state.workerData.worker_data;
 
-        for (let i = 0; i < deviceData.length; i++) {
+        for (let i = 0; i < workerData.length; i++) {
 
             if (measurement === "RSP_TIME") {
-                yValue = (deviceData[i].response_time)/1000;
+                yValue = (workerData[i].response_time)/1000;
             } else if (measurement === "AVAILABILITY") {
-                yValue = deviceData[i].availability ? 100 : 0;
+                yValue = workerData[i].availability ? 100 : 0;
             } else if (measurement === "CPU") {
-                yValue = deviceData[i].cpu;
+                yValue = workerData[i].cpu;
             } else if (measurement === "MEMORY") {
-                yValue = deviceData[i].memory;
+                yValue = workerData[i].memory;
             }
             else {
                 yValue = 0;
             }
 
-            const tsDataItem = {x: new Date(deviceData[i].timestamp), y: yValue};
+            const tsDataItem = {x: new Date(workerData[i].timestamp), y: yValue};
             tsData.push(tsDataItem);
             if (tsDataItem.y > maxY) {
                 maxY = tsDataItem.y;
@@ -166,5 +166,5 @@ class DeviceStatus extends Component {
     }
 }
 
-export default DeviceStatus
+export default WorkerStatus
 

@@ -59,23 +59,27 @@ class WorkerThread(threading.Thread):
                 "uptime": int(time.time()) - self.creation_time,
             }
 
-            start = time.time()
-            rsp = requests.post(
-                "http://" + self.quokka + ":5000/worker/heartbeat", json=heartbeat_info
-            )
-            self.latest_response_time = (time.time() - start) * 1000
-            if rsp.status_code != 200:
-                print(f"{str(datetime.now())[:-3]}: --- {self.worker_type} heartbeat failed, response: {rsp.status_code}")
-                print(f"{str(datetime.now())[:-3]}: --- --- reason: {rsp.reason}")
-            else:
-                print(f"{str(datetime.now())[:-3]}: --- {self.worker_type} heartbeat successful, response: {rsp.status_code} {rsp.json()}")
+            try:
+                start = time.time()
+                rsp = requests.post(
+                    "http://" + self.quokka + ":5000/worker/heartbeat", json=heartbeat_info
+                )
+                self.latest_response_time = (time.time() - start) * 1000
+                if rsp.status_code != 200:
+                    print(f"{str(datetime.now())[:-3]}: --- {self.worker_type} heartbeat failed, response: {rsp.status_code}")
+                    print(f"{str(datetime.now())[:-3]}: --- --- reason: {rsp.reason}")
+                else:
+                    print(f"{str(datetime.now())[:-3]}: --- {self.worker_type} heartbeat successful, response: {rsp.status_code} {rsp.json()}")
 
-            if rsp.headers.get("content-type") == "application/json" and "commands" in rsp.json():
-                for command in rsp.json()["commands"]:
-                    print(f"{str(datetime.now())[:-3]}: --- --- begin processing command: {command}")
-                    command_info = json.loads(command["command_info"])
-                    self.process_command(command_info)
-                    print(f"{str(datetime.now())[:-3]}: --- --- end processing command: {command}")
+                if rsp.headers.get("content-type") == "application/json" and "commands" in rsp.json():
+                    for command in rsp.json()["commands"]:
+                        print(f"{str(datetime.now())[:-3]}: --- --- begin processing command: {command}")
+                        command_info = json.loads(command["command_info"])
+                        self.process_command(command_info)
+                        print(f"{str(datetime.now())[:-3]}: --- --- end processing command: {command}")
+
+            except BaseException as e:
+                print(f"{str(datetime.now())[:-3]}: --- {self.worker_type} error connecting to quokka server: {e}")
 
             time.sleep(interval)
 

@@ -22,6 +22,9 @@ from quokka.models.apis import (
     get_port_scan_extended,
     get_device_config_diff,
     get_traceroute,
+    get_worker,
+    get_all_workers,
+    get_worker_status_data,
 )
 import quokka.models.reset
 from quokka.controller.ThreadManager import ThreadManager
@@ -336,3 +339,28 @@ def traceroute():
 
     else:
         return "Invalid request method"
+
+
+@app.route("/ui/workers", methods=["GET"])
+def workers():
+
+    if request.method == "GET":
+        return {"workers": get_all_workers()}
+
+    else:
+        return "Invalid request method"
+
+
+@app.route("/ui/worker/status", methods=["GET"])
+def worker_status():
+
+    worker_id = request.args.get("workerid")
+    num_datapoints = request.args.get("datapoints")
+
+    if not worker_id or not num_datapoints:
+        return "Must provide workerid and datapoints", 400
+
+    return {
+        "worker_data": get_worker_status_data(worker_id, num_datapoints),
+        "worker": get_worker(worker_id),
+    }
