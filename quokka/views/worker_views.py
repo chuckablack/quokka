@@ -18,8 +18,8 @@ def worker_register():
     if "name" not in registration_info:
         return "Must provide 'name' in registration information", 400
 
-    result, worker = get_worker(host=registration_info["name"], worker_type=registration_info["worker_type"])
-    if result != "success":
+    worker = get_worker(host=registration_info["name"], worker_type=registration_info["worker_type"])
+    if worker is None:
         return "Unknown worker name in registration information", 400
     if registration_info["serial"] != worker["serial"]:
         return "Serial number in registration information does not match worker serial", 400
@@ -43,8 +43,8 @@ def worker_heartbeat():
     if "serial" not in heartbeat_info:
         return "Must provide 'serial' in heartbeat information", 400
 
-    result, worker = get_worker(serial=heartbeat_info["serial"], worker_type=heartbeat_info["worker_type"])
-    if result != "success":
+    worker = get_worker(serial=heartbeat_info["serial"], worker_type=heartbeat_info["worker_type"])
+    if worker is None:
         return "Unknown worker serial number in heartbeat information", 400
 
     worker["availability"] = True

@@ -99,7 +99,7 @@ ThreadManager.start_service_thread(service_monitor_interval)
 ThreadManager.start_discovery_thread(discovery_interval)
 ThreadManager.start_host_thread(host_monitor_interval)
 ThreadManager.start_summaries_thread()
-# ThreadManager.start_worker_thread(worker_monitor_interval)
+ThreadManager.start_worker_thread(worker_monitor_interval)
 
 from quokka.controller.CaptureManager import CaptureManager
 capture_manager = CaptureManager()
@@ -119,7 +119,7 @@ def shutdown():
     ThreadManager.stop_host_thread()
     ThreadManager.stop_service_thread()
     ThreadManager.stop_summaries_thread()
-    # ThreadManager.stop_worker_thread()
+    ThreadManager.stop_worker_thread()
     ThreadManager.stop_device_threads()
 
     log_console("\n---> all threads shut down, terminating.")

@@ -51,8 +51,8 @@ class PortscanManager:
     def initiate_portscan(host_ip, host_name, token):
 
         monitor = PortscanManager.find_monitor(host_ip)
-        result, worker = get_worker(host=monitor, worker_type=PortscanManager.worker_type)
-        if result != "success":
+        worker = get_worker(host=monitor, worker_type=PortscanManager.worker_type)
+        if worker is None:
             log_console(
                 f"Portscan Manager: could not find worker, host={monitor}, worker_type={PortscanManager.worker_type} in DB"
             )
