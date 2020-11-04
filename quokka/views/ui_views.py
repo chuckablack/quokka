@@ -247,9 +247,6 @@ def capture():
     if not num_packets:
         num_packets = 10
 
-    if ip == "localhost":
-        ip = get_this_ip()
-
     if request.method == "GET":
         return {"packets": get_capture(ip, protocol, port, num_packets)}
 
