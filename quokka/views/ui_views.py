@@ -209,8 +209,10 @@ def reset_devices():
 
 @app.route("/ui/reset/hosts", methods=["POST"])
 def reset_hosts():
+    ThreadManager.stop_discovery_thread()
     ThreadManager.stop_host_thread()
     quokka.models.reset.reset_hosts()
+    ThreadManager.start_discovery_thread()
     ThreadManager.start_host_thread()
     return "Hosts reset and host thread restarted"
 
