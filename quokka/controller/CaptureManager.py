@@ -71,8 +71,8 @@ class CaptureManager:
     def initiate_capture(ip, protocol, port, count):
 
         monitor = CaptureManager.find_monitor(ip)
-        result, worker = get_worker(host=monitor, worker_type=CaptureManager.worker_type)
-        if result != "success":
+        worker = get_worker(host=monitor, worker_type=CaptureManager.worker_type)
+        if worker is None:
             log_console(
                 f"Capture Manager: could not find worker, host={monitor}, worker_type={CaptureManager.worker_type} in DB"
             )

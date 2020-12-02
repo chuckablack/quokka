@@ -54,8 +54,8 @@ class TracerouteManager:
             target = parsed_target.netloc
 
         monitor = TracerouteManager.find_monitor(target)
-        result, worker = get_worker(host=monitor, worker_type=TracerouteManager.worker_type)
-        if result != "success":
+        worker = get_worker(host=monitor, worker_type=TracerouteManager.worker_type)
+        if worker is None:
             log_console(
                 f"Traceroute Manager: could not find worker, host={monitor}, worker_type={TracerouteManager.worker_type} in DB"
             )

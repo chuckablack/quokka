@@ -3,6 +3,7 @@ from flask import request
 from datetime import datetime
 
 from quokka.controller.device.device_info import get_device_info
+from quokka.controller.utils import get_this_ip
 from quokka.models.apis import (
     get_device,
     get_all_devices,

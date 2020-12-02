@@ -910,9 +910,9 @@ def get_worker(worker_id=None, serial=None, host=None, worker_type=None):
 
     worker_obj = db.session.query(Worker).filter_by(**search).one_or_none()
     if not worker_obj:
-        return "failed", "Could not find worker in DB"
-
-    return "success", get_model_as_dict(worker_obj)
+        return None
+    else:
+        return get_model_as_dict(worker_obj)
 
 
 def get_all_workers():

@@ -95,6 +95,9 @@ class Workers extends Component {
     }
 
     renderCapture(ip) {
+        if(ip === 'localhost') {
+            return;
+        }
         this.state.dashboard.setState({ip: ip, protocol: null, port: null, show: "capture"})
     }
 
@@ -103,6 +106,9 @@ class Workers extends Component {
     }
 
     renderTraceRouteDialog(target) {
+        if(target === 'localhost') {
+            return;
+        }
         this.initiateTraceRoute(target)
         this.setState({openTraceRouteDialog: true, target: target})
     }
@@ -175,15 +181,15 @@ class Workers extends Component {
                             icon: 'pageview',
                             tooltip: 'Capture packets for worker',
                             onClick: (event, rowData) => {
-                                this.renderCapture(rowData.ip_address)
-                            }
+                                this.renderCapture(rowData.host)
+                            },
                         },
                         {
                             icon: AccountTreeTwoToneIcon,
                             tooltip: 'Trace-route to worker',
                             onClick: (event, rowData) => {
-                                this.renderTraceRouteDialog(rowData.hostname)
-                            }
+                                this.renderTraceRouteDialog(rowData.host)
+                            },
                         }
                     ]}
                 />
