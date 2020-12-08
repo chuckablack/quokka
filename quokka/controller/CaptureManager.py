@@ -50,16 +50,15 @@ class CaptureManager:
     @staticmethod
     def find_monitor(ip=None):
 
-        if not ip:
-            return "localhost"
+        if ip:
 
-        if ip in CaptureManager.capture_monitors:
-            return CaptureManager.capture_monitors[ip]
+            if ip in CaptureManager.capture_monitors:
+                return CaptureManager.capture_monitors[ip]
 
-        # If not a per-IP monitor, get the subnet for this IP and find match
-        for network, monitor in CaptureManager.capture_monitors.items():
-            if ip in IPNetwork(network):
-                return CaptureManager.capture_monitors[network]
+            # If not a per-IP monitor, get the subnet for this IP and find match
+            for network, monitor in CaptureManager.capture_monitors.items():
+                if ip in IPNetwork(network):
+                    return CaptureManager.capture_monitors[network]
 
         if "0.0.0.0/0" in CaptureManager.capture_monitors:
             return CaptureManager.capture_monitors["0.0.0.0/0"]

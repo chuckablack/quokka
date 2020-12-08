@@ -23,7 +23,7 @@
   serial: 111-111-111
 
 - name: yoga laptop
-  host: 192.168.254.136
+  host: 192.168.254.153
   worker_type: capture
   connection_type: rabbitmq
   sla_availability: 95
@@ -31,7 +31,7 @@
   serial: 111-111-112
 
 - name: yoga laptop
-  host: 192.168.254.136
+  host: 192.168.254.153
   worker_type: portscan
   connection_type: rabbitmq
   sla_availability: 95
@@ -39,7 +39,7 @@
   serial: 111-111-112
 
 - name: yoga laptop
-  host: 192.168.254.136
+  host: 192.168.254.153
   worker_type: traceroute
   connection_type: rabbitmq
   sla_availability: 95
