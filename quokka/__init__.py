@@ -46,8 +46,6 @@ if interval.isnumeric():
 else:
     worker_monitor_interval = 60
 
-
-
 from flask_sqlalchemy import SQLAlchemy
 
 # app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////tmp/test.db"
@@ -69,25 +67,25 @@ from quokka.models.apis import get_all_devices, set_facts
 from quokka.models.Host import Host
 
 # Reset event log and packet capture tables
-from quokka.models.Event import Event
-from quokka.models.Capture import Capture
-Event.query.delete()
-Capture.query.delete()
+# from quokka.models.Event import Event
+# from quokka.models.Capture import Capture
+# Event.query.delete()
+# Capture.query.delete()
 
 import_devices(filename="devices.yaml", filetype="yaml")
 import_compliance(filename="compliance.yaml")
 import_services(filename="services.yaml")
 import_workers(filename="workers.yaml", filetype="yaml")
 
-Host.query.delete()
+# Host.query.delete()
 
 # Reset time-series data tables
 from quokka.models.DeviceStatus import DeviceStatus
 from quokka.models.HostStatus import HostStatus
 from quokka.models.ServiceStatus import ServiceStatus
-DeviceStatus.query.delete()
-HostStatus.query.delete()
-ServiceStatus.query.delete()
+# DeviceStatus.query.delete()
+# HostStatus.query.delete()
+# ServiceStatus.query.delete()
 
 db.session.commit()
 
@@ -100,6 +98,7 @@ ThreadManager.start_discovery_thread(discovery_interval)
 ThreadManager.start_host_thread(host_monitor_interval)
 ThreadManager.start_summaries_thread()
 ThreadManager.start_worker_thread(worker_monitor_interval)
+ThreadManager.start_db_maintenance_thread()
 
 from quokka.controller.CaptureManager import CaptureManager
 capture_manager = CaptureManager()
@@ -121,6 +120,7 @@ def shutdown():
     ThreadManager.stop_summaries_thread()
     ThreadManager.stop_worker_thread()
     ThreadManager.stop_device_threads()
+    ThreadManager.stop_db_maintenance_thread()
 
     log_console("\n---> all threads shut down, terminating.")
 

@@ -14,6 +14,7 @@ class Command(db.Model):
     command = db.Column(db.Text)
     command_info = db.Column(db.Text)
     delivered = db.Column(db.Boolean)
+    timestamp = db.Column(db.Text)
 
     def __repr__(self):
         return f"Worker: {self.name}"

@@ -8,6 +8,7 @@ from quokka.controller.ServiceMonitorTask import ServiceMonitorTask
 from quokka.controller.DiscoverTask import DiscoverTask
 from quokka.controller.SummariesTask import SummariesTask
 from quokka.controller.WorkerMonitorTask import WorkerMonitorTask
+from quokka.controller.DbMaintenanceTask import DbMaintenanceTask
 from quokka.controller.utils import log_console
 
 
@@ -29,6 +30,8 @@ class ThreadManager:
     summaries_thread = None
     worker_monitor_task = None
     worker_monitor_thread = None
+    db_maintenance_task = None
+    db_maintenance_thread = None
 
     @staticmethod
     def stop_device_threads():
@@ -189,6 +192,27 @@ class ThreadManager:
         ThreadManager.worker_monitor_thread.start()
 
     @staticmethod
+    def stop_db_maintenance_thread():
+
+        log_console("--- ---> Shutting down dbmaintenance thread")
+
+        if ThreadManager.db_maintenance_task and ThreadManager.db_maintenance_thread:
+            ThreadManager.db_maintenance_task.set_terminate()
+            ThreadManager.db_maintenance_thread.join()
+
+        ThreadManager.db_maintenance_task = None
+        ThreadManager.db_maintenance_thread = None
+
+    @staticmethod
+    def start_db_maintenance_thread():
+
+        ThreadManager.db_maintenance_task = DbMaintenanceTask()
+        ThreadManager.db_maintenance_thread = threading.Thread(
+            target=ThreadManager.db_maintenance_task.start, args=(60,)
+        )
+        ThreadManager.db_maintenance_thread.start()
+
+    @staticmethod
     def initiate_terminate_all_threads():
 
         if ThreadManager.device_monitor_task and ThreadManager.device_monitor_thread:
@@ -207,3 +231,5 @@ class ThreadManager:
             ThreadManager.summaries_task.set_terminate()
         if ThreadManager.worker_monitor_task and ThreadManager.worker_monitor_thread:
             ThreadManager.worker_monitor_task.set_terminate()
+        if ThreadManager.db_maintenance_task and ThreadManager.db_maintenance_thread:
+            ThreadManager.db_maintenance_task.set_terminate()
