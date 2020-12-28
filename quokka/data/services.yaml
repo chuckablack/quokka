@@ -6,9 +6,9 @@
   sla_response_time: 0.5
 
 - id: 2
-  name: HTTP wikipedia
+  name: HTTP davidbombal
   type: https
-  target: https://www.wikipedia.com
+  target: http://www.davidbombal.com
   sla_availability: 95
   sla_response_time: 0.5
 
@@ -30,7 +30,15 @@
   name: DNS via google
   type: dns
   target: 8.8.8.8
-  data: davidbombal.com
+  data: www.google.com
+  sla_availability: 95
+  sla_response_time: 0.5
+
+- id: 8
+  name: DNS via google 2
+  type: dns
+  target: 8.8.4.4
+  data: www.google.com
   sla_availability: 95
   sla_response_time: 0.5
 

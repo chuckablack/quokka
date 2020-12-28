@@ -1,9 +1,15 @@
-from quokka import app
-from flask import request
 from datetime import datetime
 
+from flask import request
+
+import quokka.models.reset
+from quokka import app
+from quokka.controller.CaptureManager import CaptureManager
+from quokka.controller.PortscanManager import PortscanManager
+from quokka.controller.ThreadManager import ThreadManager
+from quokka.controller.TracerouteManager import TracerouteManager
 from quokka.controller.device.device_info import get_device_info
-from quokka.controller.utils import get_this_ip
+from quokka.controller.host.portscan import get_port_scan_tcp_connection
 from quokka.models.apis import (
     get_device,
     get_all_devices,
@@ -27,12 +33,6 @@ from quokka.models.apis import (
     get_all_workers,
     get_worker_status_data,
 )
-import quokka.models.reset
-from quokka.controller.ThreadManager import ThreadManager
-from quokka.controller.CaptureManager import CaptureManager
-from quokka.controller.PortscanManager import PortscanManager
-from quokka.controller.host.portscan import get_port_scan_tcp_connection
-from quokka.controller.TracerouteManager import TracerouteManager
 
 
 @app.route("/ui/devices", methods=["GET", "POST"])
@@ -210,8 +210,10 @@ def reset_devices():
 
 @app.route("/ui/reset/hosts", methods=["POST"])
 def reset_hosts():
+    ThreadManager.stop_discovery_thread()
     ThreadManager.stop_host_thread()
     quokka.models.reset.reset_hosts()
+    ThreadManager.start_discovery_thread()
     ThreadManager.start_host_thread()
     return "Hosts reset and host thread restarted"
 
