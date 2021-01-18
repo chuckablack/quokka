@@ -61,6 +61,7 @@ import quokka.views.traceroute_views
 import quokka.views.worker_views
 
 import quokka.models
+
 db.create_all()
 
 from quokka.models.apis import (
@@ -69,22 +70,11 @@ from quokka.models.apis import (
     import_services,
     import_workers,
 )
-from quokka.models.apis import get_all_devices, set_facts
-from quokka.models.Host import Host
 
 import_devices(filename="devices.yaml", filetype="yaml")
 import_compliance(filename="compliance.yaml")
 import_services(filename="services.yaml")
 import_workers(filename="workers.yaml", filetype="yaml")
-
-# Host.query.delete()
-
-# Reset time-series data tables
-from quokka.models.DeviceStatus import DeviceStatus
-from quokka.models.HostStatus import HostStatus
-from quokka.models.ServiceStatus import ServiceStatus
-
-db.session.commit()
 
 from quokka.controller.ThreadManager import ThreadManager
 
@@ -100,15 +90,12 @@ ThreadManager.start_summaries_thread()
 ThreadManager.start_worker_thread(worker_monitor_interval)
 ThreadManager.start_db_maintenance_thread()
 
-from quokka.controller.CaptureManager import CaptureManager
-
-capture_manager = CaptureManager()
-from quokka.controller.PortscanManager import PortscanManager
-
-portscan_manager = PortscanManager()
-from quokka.controller.TracerouteManager import TracerouteManager
-
-traceroute_manager = TracerouteManager()
+# from quokka.controller.CaptureManager import CaptureManager
+# capture_manager = CaptureManager()
+# from quokka.controller.PortscanManager import PortscanManager
+# portscan_manager = PortscanManager()
+# from quokka.controller.TracerouteManager import TracerouteManager
+# traceroute_manager = TracerouteManager()
 
 
 def shutdown():
