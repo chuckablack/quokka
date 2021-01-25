@@ -53,15 +53,15 @@ from flask_sqlalchemy import SQLAlchemy
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgres:///quokka"
 db = SQLAlchemy(app)
 
-import quokka.views.ui_views.ui_views
-import quokka.views.ui_views.device_views
-import quokka.views.ui_views.host_views
-import quokka.views.ui_views.service_views
-import quokka.views.device_views
-import quokka.views.capture_views
-import quokka.views.portscan_views
-import quokka.views.traceroute_views
-import quokka.views.worker_views
+import quokka.views.ui.misc_views
+import quokka.views.ui.device_views
+import quokka.views.ui.host_views
+import quokka.views.ui.service_views
+import quokka.views.device.device_views
+import quokka.views.worker.capture_views
+import quokka.views.worker.portscan_views
+import quokka.views.worker.traceroute_views
+import quokka.views.worker.worker_views
 
 import quokka.models
 
