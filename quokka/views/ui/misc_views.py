@@ -25,12 +25,7 @@ from quokka.models.apis import (
 def events():
 
     num_events = request.args.get("num_events", default=1000)
-
-    if request.method == "GET":
-        return {"events": get_all_events(num_events)}
-
-    else:
-        return "Invalid request method"
+    return {"events": get_all_events(num_events)}
 
 
 @app.route("/ui/reset/devices", methods=["POST"])
@@ -89,9 +84,6 @@ def capture():
         CaptureManager.initiate_capture(ip, protocol, port, num_packets)
         return "Capture initiated"
 
-    else:
-        return "Invalid request method"
-
 
 @app.route("/ui/scan", methods=["GET"])
 def scan():
@@ -143,9 +135,6 @@ def scan_extended():
         return {"result": f"Portscan initiated for host: {host['name']}, ip: {host['ip_address']}",
                 "token": token}
 
-    else:
-        return "Invalid request method"
-
 
 @app.route("/ui/traceroute", methods=["GET", "POST"])
 def traceroute():
@@ -173,18 +162,11 @@ def traceroute():
         return {"result": f"Traceroute initiated for target: {target}",
                 "token": token}
 
-    else:
-        return "Invalid request method"
-
 
 @app.route("/ui/workers", methods=["GET"])
 def workers():
 
-    if request.method == "GET":
-        return {"workers": get_all_workers()}
-
-    else:
-        return "Invalid request method"
+    return {"workers": get_all_workers()}
 
 
 @app.route("/ui/worker/status", methods=["GET"])

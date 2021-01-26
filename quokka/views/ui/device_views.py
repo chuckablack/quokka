@@ -59,40 +59,35 @@ def devices():
         else:
             return "Must specify either 'export_to' or 'import_from' on POST devices"
 
-    else:
-        return "Invalid request method"
-
 
 @app.route("/ui/device", methods=["GET"])
 def device_info():
 
-    if request.method == "GET":
+    device_name = request.args.get("device")
+    requested_info = request.args.get("info")
+    live = request.args.get("live")
 
-        device_name = request.args.get("device")
-        requested_info = request.args.get("info")
-        live = request.args.get("live")
+    if not device_name or not requested_info:
+        return "Must provide device and info", 400
 
-        if not device_name or not requested_info:
-            return "Must provide device and info", 400
+    result, info = get_device(device_name=device_name)
+    if result == "failed":
+        return info, 406
+    device = info
 
-        result, info = get_device(device_name=device_name)
-        if result == "failed":
-            return info, 406
-        device = info
-
-        if not live:
-            get_live_info = False
+    if not live:
+        get_live_info = False
+    else:
+        if live.lower() not in {"true", "false"}:
+            return "Value of 'live', if specified, must be 'true' or 'false'"
         else:
-            if live.lower() not in {"true", "false"}:
-                return "Value of 'live', if specified, must be 'true' or 'false'"
-            else:
-                get_live_info = bool(live)
+            get_live_info = bool(live)
 
-        status, result_info = get_device_info(device, requested_info, get_live_info)
-        if status == "success":
-            return result_info, 200
-        else:
-            return result_info, 406
+    status, result_info = get_device_info(device, requested_info, get_live_info)
+    if status == "success":
+        return result_info, 200
+    else:
+        return result_info, 406
 
 
 @app.route("/ui/device/config", methods=["GET"])

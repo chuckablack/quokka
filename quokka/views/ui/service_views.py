@@ -12,11 +12,7 @@ from quokka.models.apis import (
 @app.route("/ui/services", methods=["GET"])
 def services():
 
-    if request.method == "GET":
-        return {"services": get_all_services()}
-
-    else:
-        return "Invalid request method"
+    return {"services": get_all_services()}
 
 
 @app.route("/ui/service/status", methods=["GET"])

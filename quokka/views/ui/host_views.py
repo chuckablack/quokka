@@ -11,12 +11,7 @@ from quokka.models.apis import (
 
 @app.route("/ui/hosts", methods=["GET"])
 def hosts():
-
-    if request.method == "GET":
-        return {"hosts": get_all_hosts()}
-
-    else:
-        return "Invalid request method"
+    return {"hosts": get_all_hosts()}
 
 
 @app.route("/ui/host/status", methods=["GET"])
