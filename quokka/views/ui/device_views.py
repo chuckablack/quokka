@@ -1,37 +1,14 @@
-from datetime import datetime
-
 from flask import request
 
-import quokka.models.reset
 from quokka import app
-from quokka.controller.CaptureManager import CaptureManager
-from quokka.controller.PortscanManager import PortscanManager
-from quokka.controller.ThreadManager import ThreadManager
-from quokka.controller.TracerouteManager import TracerouteManager
 from quokka.controller.device.device_info import get_device_info
-from quokka.controller.host.portscan import get_port_scan_tcp_connection
 from quokka.models.apis import (
     get_device,
     get_all_devices,
     import_devices,
     export_devices,
     get_device_status_data,
-    get_host,
-    get_all_hosts,
-    get_host_status_data,
-    get_service,
-    get_all_services,
-    get_service_status_data,
-    get_all_events,
-    get_service_summary_data,
-    get_host_summary_data,
-    get_capture,
-    get_port_scan_extended,
     get_device_config_diff,
-    get_traceroute,
-    get_worker,
-    get_all_workers,
-    get_worker_status_data,
 )
 
 
