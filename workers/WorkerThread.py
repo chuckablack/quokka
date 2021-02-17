@@ -14,6 +14,7 @@ from TracerouteThread import TracerouteThread
 
 
 class WorkerThread(threading.Thread):
+
     def __init__(self, quokka, worker_type, connection_type, serial_no, heartbeat):
 
         threading.Thread.__init__(self)

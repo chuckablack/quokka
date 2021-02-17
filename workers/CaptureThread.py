@@ -10,10 +10,9 @@ from util import bytes_to_string, send_capture
 
 
 class CaptureThread(Thread):
+
     def __init__(self, quokka_ip, serial_no, capture_info):
-
         super().__init__()
-
         print(
             f"CaptureThread: initializing thread object: quokka_ip={quokka_ip}, serial={serial_no}, capture info={capture_info}"
         )

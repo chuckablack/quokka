@@ -1,12 +1,2 @@
-cfs eth distribute
-feature vpc
-feature telemetry
-vlan 1-9,100-105
-  name LL_VLAN_DEMO1
-vpc domain 10
-  description My Learning Lab Loopback
-telemetry
-  sensor-group 1
-    path sys/intf/phys-[eth1/11] depth 0
-  subscription 1
-    snsr-grp 1 sample-interval 10000
+interface Ethernet1/11
+  description Configured with NX-API REST

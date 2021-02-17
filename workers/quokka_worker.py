@@ -1,13 +1,7 @@
 # ---- Worker application --------------------------------
 
-import pika
-import json
-from CaptureThread import CaptureThread
 import argparse
 import os
-import threading
-import sys
-import time
 
 from WorkerThread import WorkerThread
 
@@ -53,7 +47,7 @@ heartbeat = args.heartbeat
 
 if (
     worker_type not in {"capture", "portscan", "traceroute"}
-    or connection_type not in {"rabbitmq", "http",}
+    or connection_type not in {"rabbitmq", "http"}
     or not heartbeat.isnumeric()
 ):
     parser.print_help()
@@ -72,7 +66,6 @@ workerThread = WorkerThread(quokka=quokka,
                             connection_type=connection_type,
                             heartbeat=heartbeat)
 
-# try:
 workerThread.start()
 
 
@@ -86,12 +79,3 @@ def shutdown():
 
 import atexit
 atexit.register(shutdown)
-
-
-# except BaseException as e:
-# except KeyboardInterrupt as e:
-#     print(f"\nquokka_worker: {worker_type} worker: begin shutting down")
-#     worker.terminate = True
-#     worker.join()
-#     print(f"\nquokka_worker: {worker_type} worker: successfully shut down")
-    # worker.channel.close()

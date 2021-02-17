@@ -12,7 +12,7 @@ def config_diff(device, config_to_diff):
         try:
             napalm_device.open()
 
-            napalm_device.load_merge_candidate(filename=config_to_diff)
+            napalm_device.load_replace_candidate(filename=config_to_diff)
             return "success", napalm_device.compare_config()
 
         except BaseException as e:
