@@ -1,8 +1,9 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from quokka import app
 from flask import request
-from quokka.models.apis import get_worker, set_worker, record_worker_status, get_commands
+from quokka.models.apis.worker_data_apis import get_commands
+from quokka.models.apis.worker_model_apis import get_worker, set_worker, record_worker_status
 
 from quokka.controller.utils import log_console
 

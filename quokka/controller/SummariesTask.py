@@ -2,16 +2,20 @@ from datetime import datetime
 import time
 
 from quokka.controller.utils import log_console
-from quokka.models.apis import (
-    get_all_hosts,
-    get_host_status_data_for_hour,
+from quokka.models.apis.event_model_apis import log_event
+from quokka.models.apis.service_model_apis import (
     get_all_services,
     get_service_status_data_for_hour,
+    record_service_hourly_summaries,
+)
+from quokka.models.apis.host_model_apis import (
+    get_all_hosts,
+    get_host_status_data_for_hour,
+    record_host_hourly_summaries,
+ )
+from quokka.models.apis.device_model_apis import (
     get_all_devices,
     get_device_status_data_for_hour,
-    record_service_hourly_summaries,
-    record_host_hourly_summaries,
-    log_event,
 )
 
 

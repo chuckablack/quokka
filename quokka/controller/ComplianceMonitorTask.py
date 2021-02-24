@@ -5,7 +5,7 @@ from quokka.controller.device.config_diff import config_diff
 from quokka.controller.device.device_info import get_device_info
 from quokka.controller.utils import log_console
 from quokka.models.Compliance import Compliance
-from quokka.models.apis import get_all_device_ids, get_device, set_device
+from quokka.models.apis.device_model_apis import get_all_device_ids, get_device, set_device
 
 
 def check_version(device, standard, actual):

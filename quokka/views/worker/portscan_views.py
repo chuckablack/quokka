@@ -2,7 +2,8 @@ from flask import request
 
 from quokka import app
 from quokka.controller.utils import log_console
-from quokka.models.apis import get_device, record_portscan
+from quokka.models.apis.device_model_apis import get_device
+from quokka.models.apis.worker_data_apis import record_portscan
 
 
 @app.route("/portscan/register", methods=["GET", "POST"])

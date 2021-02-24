@@ -1,5 +1,5 @@
 import napalm
-from quokka.models.apis import get_facts, set_facts
+from quokka.models.apis.device_model_apis import get_facts, set_facts
 from quokka.controller.utils import log_console
 from ncclient import manager
 # the following comment/lines are to workaround a PyCharm bug

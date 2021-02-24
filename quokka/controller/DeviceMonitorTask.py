@@ -4,7 +4,13 @@ from time import sleep
 
 from quokka.controller.device.device_status import get_device_status
 from quokka.controller.utils import log_console
-from quokka.models.apis import get_all_device_ids, get_device, set_device, record_device_status, log_event
+from quokka.models.apis.device_model_apis import (
+    get_all_device_ids,
+    get_device,
+    set_device,
+    record_device_status,
+)
+from quokka.models.apis.event_model_apis import log_event
 
 MAX_NOT_HEARD_SECONDS = 90  # For sdwan devices, time to have not seen a heartbeat
 
@@ -26,7 +32,6 @@ def calculate_memory(memory):
 
 
 class DeviceMonitorTask:
-
     def __init__(self):
         self.terminate = False
 
@@ -46,19 +51,27 @@ class DeviceMonitorTask:
 
             for device_id in device_ids:
 
-                result, device = get_device(device_id=device_id)  # re-retrieve device as it may have been changed
+                result, device = get_device(
+                    device_id=device_id
+                )  # re-retrieve device as it may have been changed
 
                 if result != "success":
-                    log_console(f"Device Monitor: Error retrieving device from DB. id: {device_id}, error: {device}")
+                    log_console(
+                        f"Device Monitor: Error retrieving device from DB. id: {device_id}, error: {device}"
+                    )
                     continue
 
                 if device["transport"] == "HTTP-REST":
                     if not device["last_heard"]:
                         continue
 
-                    last_heard_time = datetime.strptime(device["last_heard"], "%Y-%m-%d %H:%M:%S.%f")
+                    last_heard_time = datetime.strptime(
+                        device["last_heard"], "%Y-%m-%d %H:%M:%S.%f"
+                    )
                     print(f"now: {datetime.now()}, last_heard: {last_heard_time}")
-                    if (datetime.now() - last_heard_time) > timedelta(seconds=MAX_NOT_HEARD_SECONDS):
+                    if (datetime.now() - last_heard_time) > timedelta(
+                        seconds=MAX_NOT_HEARD_SECONDS
+                    ):
                         device["availability"] = False
                         record_device_status(device)
                         set_device(device)
@@ -68,9 +81,17 @@ class DeviceMonitorTask:
                 try:
                     ip_address = socket.gethostbyname(device["hostname"])
                 except (socket.error, socket.gaierror) as e:
-                    info = f"!!! Caught socket error {repr(e)}, continuing to next device"
+                    info = (
+                        f"!!! Caught socket error {repr(e)}, continuing to next device"
+                    )
                     log_console(info)
-                    log_event(str(datetime.now())[:-3], "device", device['name'], "SEVERE", info)
+                    log_event(
+                        str(datetime.now())[:-3],
+                        "device",
+                        device["name"],
+                        "SEVERE",
+                        info,
+                    )
                     ip_address = None
 
                 if self.terminate:

@@ -4,7 +4,7 @@ import subprocess
 from datetime import datetime
 from time import sleep
 
-from quokka.models.apis import set_host
+from quokka.models.apis.host_model_apis import set_host
 from quokka.controller.utils import get_response_time
 from quokka.controller.utils import log_console
 

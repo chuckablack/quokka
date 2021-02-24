@@ -10,7 +10,8 @@ from quokka.models.Service import Service
 from quokka.models.ServiceStatus import ServiceStatus
 from quokka.models.Event import Event
 from quokka.models.Capture import Capture
-from quokka.models.apis import import_devices, import_services, import_compliance
+from quokka.models.apis.device_model_apis import import_devices, import_compliance
+from quokka.models.apis.service_model_apis import import_services
 
 
 def reset_devices():

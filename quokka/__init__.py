@@ -64,15 +64,11 @@ import quokka.views.worker.traceroute_views
 import quokka.views.worker.worker_views
 
 import quokka.models
-
 db.create_all()
 
-from quokka.models.apis import (
-    import_devices,
-    import_compliance,
-    import_services,
-    import_workers,
-)
+from quokka.models.apis.device_model_apis import import_devices, import_compliance
+from quokka.models.apis.service_model_apis import import_services
+from quokka.models.apis.worker_model_apis import import_workers
 
 import_devices(filename="devices.yaml", filetype="yaml")
 import_compliance(filename="compliance.yaml")

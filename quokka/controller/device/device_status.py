@@ -2,7 +2,7 @@ from datetime import datetime
 import time
 
 from quokka.controller.device.device_info import get_device_info
-from quokka.models.apis import log_event
+from quokka.models.apis.event_model_apis import log_event
 from quokka.controller.utils import log_console
 
 

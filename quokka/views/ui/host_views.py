@@ -1,7 +1,7 @@
 from flask import request
 
 from quokka import app
-from quokka.models.apis import (
+from quokka.models.apis.host_model_apis import (
     get_host,
     get_all_hosts,
     get_host_status_data,

@@ -2,23 +2,25 @@ from datetime import datetime
 
 from flask import request
 
-import quokka.models.reset
+import quokka.models.apis.reset_apis
 from quokka import app
 from quokka.controller.CaptureManager import CaptureManager
 from quokka.controller.PortscanManager import PortscanManager
 from quokka.controller.ThreadManager import ThreadManager
 from quokka.controller.TracerouteManager import TracerouteManager
 from quokka.controller.host.portscan import get_port_scan_tcp_connection
-from quokka.models.apis import (
-    get_host,
-    get_all_events,
+from quokka.models.apis.worker_data_apis import (
     get_capture,
     get_port_scan_extended,
     get_traceroute,
+)
+from quokka.models.apis.worker_model_apis import (
     get_worker,
     get_all_workers,
     get_worker_status_data,
 )
+from quokka.models.apis.host_model_apis import get_host
+from quokka.models.apis.event_model_apis import get_all_events
 
 
 @app.route("/ui/events", methods=["GET"])
@@ -31,7 +33,7 @@ def events():
 @app.route("/ui/reset/devices", methods=["POST"])
 def reset_devices():
     ThreadManager.stop_device_threads()
-    quokka.models.reset.reset_devices()
+    quokka.models.apis.reset_apis.reset_devices()
     ThreadManager.start_device_threads()
     return "Devices reset and monitoring threads restarted"
 
@@ -40,7 +42,7 @@ def reset_devices():
 def reset_hosts():
     ThreadManager.stop_discovery_thread()
     ThreadManager.stop_host_thread()
-    quokka.models.reset.reset_hosts()
+    quokka.models.apis.reset_apis.reset_hosts()
     ThreadManager.start_discovery_thread()
     ThreadManager.start_host_thread()
     return "Hosts reset and host thread restarted"
@@ -49,20 +51,20 @@ def reset_hosts():
 @app.route("/ui/reset/services", methods=["POST"])
 def reset_services():
     ThreadManager.stop_service_thread()
-    quokka.models.reset.reset_services()
+    quokka.models.apis.reset_apis.reset_services()
     ThreadManager.start_service_thread()
     return "Services reset and service thread restarted"
 
 
 @app.route("/ui/reset/events", methods=["POST"])
 def reset_events():
-    quokka.models.reset.reset_events()
+    quokka.models.apis.reset_apis.reset_events()
     return "Events table reset"
 
 
 @app.route("/ui/reset/capture", methods=["POST"])
 def reset_capture():
-    quokka.models.reset.reset_capture()
+    quokka.models.apis.reset_apis.reset_capture()
     return "Capture table reset"
 
 

@@ -5,11 +5,11 @@ import requests
 from dns.resolver import Resolver, Timeout, NXDOMAIN
 from ntplib import NTPClient, NTPException
 
-from quokka.models.apis import (
+from quokka.models.apis.event_model_apis import log_event
+from quokka.models.apis.service_model_apis import (
     get_all_services,
     set_service,
     record_service_status,
-    log_event,
 )
 from quokka.controller.utils import log_console
 

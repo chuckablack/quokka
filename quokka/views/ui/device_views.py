@@ -2,7 +2,7 @@ from flask import request
 
 from quokka import app
 from quokka.controller.device.device_info import get_device_info
-from quokka.models.apis import (
+from quokka.models.apis.device_model_apis import (
     get_device,
     get_all_devices,
     import_devices,

@@ -2,7 +2,7 @@ import time
 from datetime import datetime, timedelta
 
 from quokka.controller.utils import log_console
-from quokka.models.apis import get_all_workers, set_worker, record_worker_status
+from quokka.models.apis.worker_model_apis import get_all_workers, set_worker, record_worker_status
 
 MAX_NOT_HEARD_SECONDS = 90  # For http workers, time to have not seen a heartbeat
 

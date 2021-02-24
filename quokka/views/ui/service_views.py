@@ -1,7 +1,7 @@
 from flask import request
 
 from quokka import app
-from quokka.models.apis import (
+from quokka.models.apis.service_model_apis import (
     get_service,
     get_all_services,
     get_service_status_data,

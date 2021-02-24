@@ -3,12 +3,12 @@ from datetime import datetime
 
 from quokka.controller.utils import log_console
 from quokka.controller.device.device_info import get_device_info
-from quokka.models.apis import (
+from quokka.models.apis.device_model_apis import (
     get_all_device_ids,
     get_device,
     record_device_config,
-    log_event,
 )
+from quokka.models.apis.event_model_apis import log_event
 
 
 class ConfigurationMonitorTask:

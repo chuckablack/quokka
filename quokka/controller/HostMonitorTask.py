@@ -4,7 +4,8 @@ from datetime import datetime
 import time
 
 from quokka.controller.utils import get_response_time
-from quokka.models.apis import get_all_hosts, set_host, record_host_status, log_event
+from quokka.models.apis.host_model_apis import get_all_hosts, set_host, record_host_status
+from quokka.models.apis.event_model_apis import log_event
 from quokka.controller.utils import log_console
 
 

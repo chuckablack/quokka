@@ -3,7 +3,8 @@ import json
 import yaml
 from netaddr import IPNetwork
 from quokka.controller.utils import log_console, get_this_ip
-from quokka.models.apis import get_worker, set_command
+from quokka.models.apis.worker_data_apis import set_command
+from quokka.models.apis.worker_model_apis import get_worker
 
 interface = "enp0s3"
 
